@@ -1,824 +1,554 @@
 <!DOCTYPE html>
-<html lang="pt">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Painel Financeiro</title>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Painel Financeiro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-      /* CONFIGURAÇÃO GERAL */
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f2f2f2;
-        margin: 0;
-        padding: 20px;
-        color: black; /* Texto padrão em preto */
-      }
-      .container {
-        max-width: 1200px;
-        margin: auto;
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 8px;
-      }
-      /* Caixas (exceto o container principal) */
-      .totals-section,
-      .categorias-section,
-      .form-section,
-      .cartoes-section,
-      .compras-responsaveis,
-      .categoria-box,
-      .responsavel-box {
-        background-color: #e3f2fd;
-        border: 1px solid #90caf9;
-        border-radius: 5px;
-      }
-      /* BOTÕES */
-      button {
-        background-color: #4caf50;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        padding: 8px 12px;
-      }
-      button:hover {
-        background-color: #43a047;
-      }
-      /* Força inputs e selects a terem texto preto */
-      input, select {
-        color: black;
-      }
-      /* CENTRALIZAÇÃO DOS TÍTULOS */
-      h1, h2, h3 {
-        text-align: center;
-      }
-      /* CABEÇALHO E NAVEGAÇÃO */
-      header {
-        text-align: center;
-        margin-bottom: 10px;
-      }
-      header h1 {
-        margin: 0;
-        font-size: 2.5em;
-      }
-      header h2 {
-        margin: 5px 0 10px;
-        font-size: 2em;
-      }
-      .nav-buttons {
-        text-align: center;
-        margin-bottom: 20px;
-      }
-      .nav-buttons button {
-        padding: 10px 15px;
-        margin: 0 10px;
-      }
-      /* TOTAIS – RESUMO DO MÊS */
-      .totals-section {
-        margin-bottom: 20px;
-        padding: 15px;
-      }
-      .totals-wrapper {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 1.2em;
-      }
-      .saldo-bar-container {
-        position: relative;
-        background-color: #ddd;
-        height: 20px;
-        border-radius: 10px;
-        overflow: hidden;
-        margin: 10px 0;
-      }
-      .saldo-bar {
-        height: 100%;
-        width: 40%;
-        background-color: green;
-        transition: width 0.5s;
-      }
-      .saldo-label {
-        position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        font-weight: bold;
-        color: black;
-      }
-      /* CATEGORIAS – Receitas, Contas Fixas, Contas Variáveis */
-      .categorias-section {
-        margin-bottom: 20px;
-        padding: 15px;
-      }
-      .categorias-section h2 {
-        margin: 0 0 15px;
-        font-size: 1.8em;
-      }
-      .categorias-columns {
-        display: flex;
-        justify-content: space-between;
-        gap: 15px;
-      }
-      /* CAIXA RECEITAS */
-      .categoria-box.receitas {
-        width: 32%;
-        padding: 10px;
-      }
-      .categoria-box.receitas h3 {
-        margin: 0 0 10px;
-        font-size: 1.2em;
-        border-bottom: 1px solid #90caf9;
-        padding-bottom: 5px;
-        text-align: center;
-      }
-      .categoria-box.receitas .categoria-list .receita-item {
-        margin-bottom: 8px;
-        text-align: center;
-      }
-      .categoria-box.receitas .categoria-list .receita-item input {
-        padding: 5px;
-        margin: 5px;
-        box-sizing: border-box;
-      }
-      /* CAIXA CONTAS FIXAS */
-      .categoria-box.contas {
-        width: 32%;
-        padding: 10px;
-      }
-      .categoria-box.contas h3 {
-        margin: 0 0 10px;
-        font-size: 1.2em;
-        border-bottom: 1px solid #90caf9;
-        padding-bottom: 5px;
-      }
-      .categoria-box.contas .categoria-list .conta-item {
-        padding: 5px;
-        font-size: 0.9em;
-        border-bottom: 1px dashed #90caf9;
-        text-align: center;
-      }
-      .categoria-box.contas .categoria-list .conta-item:last-child {
-        border-bottom: none;
-      }
-      .categoria-box.contas .conta-total {
-        text-align: right;
-        font-weight: bold;
-        margin-top: 5px;
-      }
-      .categoria-box.receitas button {
-        display: block;
-        margin: 10px auto 0;
-      }
-      /* FORMULÁRIOS */
-      .form-section {
-        padding: 15px;
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-      .form-section h2 {
-        margin: 0 0 15px;
-        font-size: 1.8em;
-      }
-      .form-section .row {
-        width: 100%;
-        text-align: center;
-        margin: 10px 0;
-      }
-      .form-section select,
-      .form-section input {
-        width: 20%;
-        padding: 8px;
-        margin: 5px;
-        box-sizing: border-box;
-      }
-      .form-section .nome-field {
-        width: 40% !important;
-      }
-      .forms-container {
-        display: flex;
-        gap: 20px;
-        margin-bottom: 20px;
-      }
-      .forms-container > .form-section {
-        width: 50%;
-      }
-      /* CARTÕES */
-      .cartoes-section {
-        margin-bottom: 20px;
-        padding: 15px;
-      }
-      .cartoes-section h2 {
-        margin-top: 0;
-        font-size: 1.8em;
-      }
-      .cartoes-columns {
-        display: flex;
-        justify-content: space-between;
-        gap: 15px;
-      }
-      .cartao-box {
-        width: 23%;
-        padding: 10px;
-        text-align: center;
-        border: 1px solid #90caf9;
-        border-radius: 5px;
-      }
-      .cartao-box h3 {
-        margin: 0 0 10px;
-        font-size: 1.2em;
-        border-bottom: 1px solid;
-        padding-bottom: 5px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      .cartao-total {
-        margin: 10px 0;
-        font-weight: bold;
-        color: black;
-      }
-      .cartao-list div {
-        padding: 5px;
-        font-size: 0.9em;
-        border-bottom: 1px dashed;
-        color: black;
-      }
-      .cartao-list div:last-child {
-        border-bottom: none;
-      }
-      /* Cartões Personalizados */
-      #nubankCard {
-        background: linear-gradient(to bottom, #e8ccf5, #d1a9ea, #ba86e0, #8605b8);
-        border: 1px solid #8605b8;
-      }
-      #santanderCard {
-        background: linear-gradient(to bottom, #ffe6e6, #ffcccc, #ffb3b3, #e50000);
-        border: 1px solid #e50000;
-      }
-      #mpagoCard {
-        background: linear-gradient(to bottom, #d1e0f0, #a3c1e1, #75a2d2, #1c3d91);
-        border: 1px solid #1c3d91;
-      }
-      #amazonCard {
-        background: linear-gradient(to bottom, #ff9700, #d47c00, #aa6100, #222e3d);
-        border: 1px solid #222e3d;
-      }
-      /* TOTAL DE COMPRAS POR RESPONSÁVEL - CENTRALIZADO */
-      .compras-responsaveis {
-        margin-bottom: 20px;
-        padding: 15px;
-        text-align: center;
-      }
-      .compras-responsaveis h2 {
-        margin-bottom: 15px;
-        font-size: 1.8em;
-      }
-      .responsaveis-container {
-        display: flex;
-        justify-content: space-around;
-        gap: 15px;
-        flex-wrap: wrap;
-      }
-      .responsavel-box {
-        width: 22%;
-        padding: 10px;
-        background-color: #e3f2fd;
-        border: 1px solid #90caf9;
-        border-radius: 5px;
-        text-align: center;
-      }
-      .responsavel-box h3 {
-        margin-bottom: 10px;
-        font-size: 1.2em;
-      }
-      .responsavel-box p {
-        margin: 5px 0;
-        font-size: 0.9em;
-      }
-      /* Cores para Responsáveis (background) */
-      .liana {
-        background-color: #add8e6;
-        padding: 4px 8px;
-        border-radius: 3px;
-      }
-      .stefany {
-        background-color: #ffb347;
-        padding: 4px 8px;
-        border-radius: 3px;
-      }
-      .marilia {
-        background-color: #dda0dd;
-        padding: 4px 8px;
-        border-radius: 3px;
-      }
-      .nosso {
-        background-color: #ffc0cb;
-        padding: 4px 8px;
-        border-radius: 3px;
-      }
-      /* RODAPÉ */
-      footer {
-        text-align: center;
-        margin-top: 20px;
-      }
-      footer p span {
-        margin: 0 5px;
-        font-weight: bold;
-      }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background-color: #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .summary-box h4 {
+            color: #495057;
+            margin-bottom: 10px;
+        }
+        .summary-box p {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #007bff;
+        }
+        .saldo-positivo p {
+            color: #28a745; /* Verde para saldo positivo */
+        }
+        .saldo-negativo p {
+            color: #dc3545; /* Vermelho para saldo negativo */
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+        .table-responsive {
+            margin-top: 20px;
+        }
+        .table thead {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+        .table tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .form-label {
+            font-weight: 500;
+        }
+        .nav-tabs .nav-link.active {
+            font-weight: bold;
+            color: #007bff;
+            border-color: #007bff #007bff #fff;
+        }
+        .nav-tabs .nav-link {
+            color: #6c757d;
+        }
+        /* Estilos para botões de ação na tabela */
+        .action-btns .btn {
+            padding: .25rem .5rem;
+            font-size: .875rem;
+            line-height: 1.5;
+            border-radius: .2rem;
+            margin-right: 5px;
+        }
+        .action-btns .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+        }
+        .action-btns .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+        }
+        .action-btns .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        .action-btns .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
     </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">Meu Painel Financeiro</h1>
 
-<script>
-  const webAppUrl = "https://script.google.com/macros/s/AKfycbw-8WgNJUgL2-W38RiY_y3gDtKJf1EGDQ1RMTFFdBWRroILWzqvt2_7Esu-bZHi0VD12A/exec"; // VERIFIQUE ESTA URL!
+        <div class="row text-center mb-4">
+            <div class="col-md-4">
+                <div class="summary-box">
+                    <h4>Total de Receitas</h4>
+                    <p id="totalReceitas">R$ 0,00</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="summary-box">
+                    <h4>Total de Despesas</h4>
+                    <p id="totalCompras">R$ 0,00</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="summary-box" id="saldoBox">
+                    <h4>Saldo Total</h4>
+                    <p id="saldoTotal">R$ 0,00</p>
+                </div>
+            </div>
+        </div>
 
-async function fetchData(action, data = {}) {
-    try {
-        const response = await fetch(webAppUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ action, ...data })
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="receitas-tab" data-bs-toggle="tab" data-bs-target="#receitas" type="button" role="tab" aria-controls="receitas" aria-selected="true">Receitas</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="compras-tab" data-bs-toggle="tab" data-bs-target="#compras" type="button" role="tab" aria-controls="compras" aria-selected="false">Compras</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="contas-tab" data-bs-toggle="tab" data-bs-target="#contas" type="button" role="tab" aria-controls="contas" aria-selected="false">Contas</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="receitas" role="tabpanel" aria-labelledby="receitas-tab">
+                <h3 class="mt-4">Adicionar Nova Receita</h3>
+                <form id="formReceita" class="mb-4">
+                    <input type="hidden" id="receitaId">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label for="receitaDescricao" class="form-label">Descrição</label>
+                            <input type="text" class="form-control" id="receitaDescricao" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="receitaValor" class="form-label">Valor</label>
+                            <input type="number" step="0.01" class="form-control" id="receitaValor" required>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">Adicionar/Atualizar Receita</button>
+                        </div>
+                    </div>
+                </form>
+
+                <h3 class="mt-4">Minhas Receitas</h3>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Descrição</th>
+                                <th>Valor</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaReceitas">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="compras" role="tabpanel" aria-labelledby="compras-tab">
+                <h3 class="mt-4">Adicionar Nova Compra</h3>
+                <form id="formCompra" class="mb-4">
+                    <input type="hidden" id="compraId">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label for="compraDescricao" class="form-label">Descrição</label>
+                            <input type="text" class="form-control" id="compraDescricao" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="compraValor" class="form-label">Valor</label>
+                            <input type="number" step="0.01" class="form-control" id="compraValor" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="compraParcelas" class="form-label">Parcelas (Atual/Total)</label>
+                            <input type="text" class="form-control" id="compraParcelas" placeholder="Ex: 1/3">
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">Adicionar/Atualizar Compra</button>
+                        </div>
+                    </div>
+                </form>
+
+                <h3 class="mt-4">Minhas Compras</h3>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Descrição</th>
+                                <th>Valor</th>
+                                <th>Parcelas</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaCompras">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="contas" role="tabpanel" aria-labelledby="contas-tab">
+                <h3 class="mt-4">Adicionar Nova Conta</h3>
+                <form id="formConta" class="mb-4">
+                    <input type="hidden" id="contaId">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label for="contaDescricao" class="form-label">Descrição</label>
+                            <input type="text" class="form-control" id="contaDescricao" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="contaValor" class="form-label">Valor</label>
+                            <input type="number" step="0.01" class="form-control" id="contaValor" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="contaParcelas" class="form-label">Parcelas (Atual/Total)</label>
+                            <input type="text" class="form-control" id="contaParcelas" placeholder="Ex: 1/1">
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">Adicionar/Atualizar Conta</button>
+                        </div>
+                    </div>
+                </form>
+
+                <h3 class="mt-4">Minhas Contas</h3>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Descrição</th>
+                                <th>Valor</th>
+                                <th>Parcelas</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaContas">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+        // *** AQUI É ONDE A URL DO SEU CLOUDFLARE WORKER DEVE ENTRAR ***
+        const webAppUrl = "https://painel-financas-proxy.mariliaedua.workers.dev/"; 
+        // ***************************************************************
+
+        // Função genérica para fazer requisições à API
+        async function fetchData(action, data = {}, recordId = null) {
+            const body = { action, data };
+            if (recordId) {
+                body.id = recordId; // Ou recordId, dependendo da sua necessidade
+            }
+            try {
+                const response = await fetch(webAppUrl, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(body),
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Erro na rede: ${response.status} - ${response.statusText}. Detalhes: ${errorText}`);
+                }
+
+                const result = await response.json();
+                if (result.status === 'error') {
+                    throw new Error(result.message);
+                }
+                return result;
+            } catch (error) {
+                console.error('Erro ao buscar dados:', error);
+                alert('Erro ao buscar dados: ' + error.message);
+                throw error;
+            }
+        }
+
+        // --- Funções de Receitas ---
+        async function atualizarReceitas() {
+            try {
+                const receitas = await fetchData('getReceitas');
+                const tabelaReceitas = document.getElementById('tabelaReceitas');
+                tabelaReceitas.innerHTML = '';
+                receitas.forEach(receita => {
+                    const row = tabelaReceitas.insertRow();
+                    row.insertCell(0).innerText = receita.id;
+                    row.insertCell(1).innerText = receita.descricao;
+                    row.insertCell(2).innerText = parseFloat(receita.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                    const actionCell = row.insertCell(3);
+                    actionCell.classList.add('action-btns');
+                    actionCell.innerHTML = `
+                        <button class="btn btn-warning btn-sm" onclick="editarRegistro('receitas', ${receita.id}, '${receita.descricao}', ${receita.valor})">Editar</button>
+                        <button class="btn btn-danger btn-sm" onclick="excluirRegistro('receitas', ${receita.id})">Excluir</button>
+                    `;
+                });
+                atualizarTotais();
+            } catch (error) {
+                console.error('Erro ao carregar receitas:', error);
+                // alert('Erro ao carregar receitas: ' + error.message);
+            }
+        }
+
+        document.getElementById('formReceita').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const id = document.getElementById('receitaId').value;
+            const descricao = document.getElementById('receitaDescricao').value;
+            const valor = parseFloat(document.getElementById('receitaValor').value);
+
+            if (isNaN(valor)) {
+                alert("Por favor, insira um valor numérico válido.");
+                return;
+            }
+
+            const data = { descricao, valor };
+            let result;
+            if (id) {
+                result = await fetchData('editReceita', data, id);
+            } else {
+                result = await fetchData('addReceita', data);
+            }
+
+            if (result && result.status === 'success') {
+                alert(result.message);
+                document.getElementById('formReceita').reset();
+                document.getElementById('receitaId').value = ''; // Limpa o ID
+                atualizarReceitas();
+            }
         });
 
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Erro HTTP! Status: ${response.status}, Mensagem: ${errorText}`);
+        // --- Funções de Compras ---
+        async function atualizarCompras() {
+            try {
+                const compras = await fetchData('getCompras');
+                const tabelaCompras = document.getElementById('tabelaCompras');
+                tabelaCompras.innerHTML = '';
+                compras.forEach(compra => {
+                    const row = tabelaCompras.insertRow();
+                    row.insertCell(0).innerText = compra.id;
+                    row.insertCell(1).innerText = compra.descricao;
+                    row.insertCell(2).innerText = parseFloat(compra.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                    row.insertCell(3).innerText = compra.parcelas || '1/1';
+                    const actionCell = row.insertCell(4);
+                    actionCell.classList.add('action-btns');
+                    actionCell.innerHTML = `
+                        <button class="btn btn-warning btn-sm" onclick="editarRegistro('compras', ${compra.id}, '${compra.descricao}', ${compra.valor}, '${compra.parcelas}')">Editar</button>
+                        <button class="btn btn-danger btn-sm" onclick="excluirRegistro('compras', ${compra.id})">Excluir</button>
+                    `;
+                });
+                atualizarTotais();
+            } catch (error) {
+                console.error('Erro ao carregar compras:', error);
+                // alert('Erro ao carregar compras: ' + error.message);
+            }
         }
 
-        const result = await response.json();
-        return result;
-    } catch (error) {
-        console.error('Erro ao buscar dados:', error);
-        throw error; // Re-lança o erro para que as funções chamadoras possam lidar com ele
-    }
-}
+        document.getElementById('formCompra').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const id = document.getElementById('compraId').value;
+            const descricao = document.getElementById('compraDescricao').value;
+            const valor = parseFloat(document.getElementById('compraValor').value);
+            const parcelas = document.getElementById('compraParcelas').value;
 
-// =========================================================
-// FUNÇÕES DE ATUALIZAÇÃO (GET)
-// =========================================================
+            if (isNaN(valor)) {
+                alert("Por favor, insira um valor numérico válido.");
+                return;
+            }
 
-async function atualizarReceitas() {
-    const receitasTableBody = document.getElementById('receitasTableBody');
-    receitasTableBody.innerHTML = '';
-    try {
-        const receitas = await fetchData('getReceitas');
-        console.log('Receitas carregadas:', receitas);
+            const data = { descricao, valor, parcelas };
+            let result;
+            if (id) {
+                result = await fetchData('editCompra', data, id);
+            } else {
+                result = await fetchData('addCompra', data);
+            }
 
-        if (Array.isArray(receitas)) {
-            receitas.forEach(receita => {
-                const row = receitasTableBody.insertRow();
-                row.insertCell(0).textContent = receita.id || '';
-                row.insertCell(1).textContent = receita.nome || '';
-                row.insertCell(2).textContent = receita.valor ? `R$ ${parseFloat(receita.valor).toFixed(2).replace('.', ',')}` : 'R$ 0,00';
-            });
-        } else {
-            console.error('Resposta de receitas não é um array:', receitas);
+            if (result && result.status === 'success') {
+                alert(result.message);
+                document.getElementById('formCompra').reset();
+                document.getElementById('compraId').value = '';
+                atualizarCompras();
+            }
+        });
+
+        // --- Funções de Contas ---
+        async function atualizarContas() {
+            try {
+                const contas = await fetchData('getContas');
+                const tabelaContas = document.getElementById('tabelaContas');
+                tabelaContas.innerHTML = '';
+                contas.forEach(conta => {
+                    const row = tabelaContas.insertRow();
+                    row.insertCell(0).innerText = conta.id;
+                    row.insertCell(1).innerText = conta.descricao;
+                    row.insertCell(2).innerText = parseFloat(conta.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                    row.insertCell(3).innerText = conta.parcelas || '1/1';
+                    const actionCell = row.insertCell(4);
+                    actionCell.classList.add('action-btns');
+                    actionCell.innerHTML = `
+                        <button class="btn btn-warning btn-sm" onclick="editarRegistro('contas', ${conta.id}, '${conta.descricao}', ${conta.valor}, '${conta.parcelas}')">Editar</button>
+                        <button class="btn btn-danger btn-sm" onclick="excluirRegistro('contas', ${conta.id})">Excluir</button>
+                    `;
+                });
+                atualizarTotais();
+            } catch (error) {
+                console.error('Erro ao carregar contas:', error);
+                // alert('Erro ao carregar contas: ' + error.message);
+            }
         }
-    } catch (error) {
-        console.error('Erro ao carregar receitas:', error);
-    }
-}
 
-async function atualizarCompras() {
-    const container = document.getElementById("listaCompras");
-    container.innerHTML = "";
-    try {
-        const data = await fetchData('getCompras');
-        console.log('Compras carregadas:', data);
+        document.getElementById('formConta').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const id = document.getElementById('contaId').value;
+            const descricao = document.getElementById('contaDescricao').value;
+            const valor = parseFloat(document.getElementById('contaValor').value);
+            const parcelas = document.getElementById('contaParcelas').value;
 
-        if (Array.isArray(data)) {
-            data.forEach(item => {
-                const div = document.createElement("div");
-                div.innerHTML =
-                    "Compra: " + (item.nome || '') + " - Valor: R$ " + (Number(item.valor) ? Number(item.valor).toFixed(2).replace('.', ',') : '0,00') +
-                    " <button onclick='deleteCompraFront(\"" + (item.id || '') + "\")'>X</button>" +
-                    " <button onclick='editCompraFront(\"" + (item.id || '') + "\")'>Edit</button>";
-                container.appendChild(div);
-            });
-        } else {
-            console.error('Resposta de compras não é um array:', data);
+            if (isNaN(valor)) {
+                alert("Por favor, insira um valor numérico válido.");
+                return;
+            }
+
+            const data = { descricao, valor, parcelas };
+            let result;
+            if (id) {
+                result = await fetchData('editConta', data, id);
+            } else {
+                result = await fetchData('addConta', data);
+            }
+
+            if (result && result.status === 'success') {
+                alert(result.message);
+                document.getElementById('formConta').reset();
+                document.getElementById('contaId').value = '';
+                atualizarContas();
+            }
+        });
+
+        // --- Funções de Edição e Exclusão Genéricas ---
+        function editarRegistro(tipo, id, descricao, valor, parcelas = '') {
+            if (tipo === 'receitas') {
+                document.getElementById('receitaId').value = id;
+                document.getElementById('receitaDescricao').value = descricao;
+                document.getElementById('receitaValor').value = valor;
+                document.getElementById('receitas-tab').click(); // Troca para a aba de receitas
+            } else if (tipo === 'compras') {
+                document.getElementById('compraId').value = id;
+                document.getElementById('compraDescricao').value = descricao;
+                document.getElementById('compraValor').value = valor;
+                document.getElementById('compraParcelas').value = parcelas;
+                document.getElementById('compras-tab').click(); // Troca para a aba de compras
+            } else if (tipo === 'contas') {
+                document.getElementById('contaId').value = id;
+                document.getElementById('contaDescricao').value = descricao;
+                document.getElementById('contaValor').value = valor;
+                document.getElementById('contaParcelas').value = parcelas;
+                document.getElementById('contas-tab').click(); // Troca para a aba de contas
+            }
         }
-    } catch (error) {
-        console.error('Erro ao carregar compras:', error);
-    }
-}
 
-async function atualizarContas() {
-    const contasTableBody = document.getElementById('contasTableBody');
-    contasTableBody.innerHTML = '';
-    try {
-        const contas = await fetchData('getContas');
-        console.log('Contas carregadas:', contas);
+        async function excluirRegistro(tipo, id) {
+            if (!confirm(`Tem certeza que deseja excluir o registro ${id} de ${tipo}?`)) {
+                return;
+            }
+            let result;
+            if (tipo === 'receitas') {
+                result = await fetchData('deleteReceita', {}, id);
+            } else if (tipo === 'compras') {
+                result = await fetchData('deleteCompra', {}, id);
+            } else if (tipo === 'contas') {
+                result = await fetchData('deleteConta', {}, id);
+            }
 
-        if (Array.isArray(contas)) {
-            contas.forEach(conta => {
-                const row = contasTableBody.insertRow();
-                row.insertCell(0).textContent = conta.id || '';
-                row.insertCell(1).textContent = conta.nome || '';
-                row.insertCell(2).textContent = conta.valor ? `R$ ${parseFloat(conta.valor).toFixed(2).replace('.', ',')}` : 'R$ 0,00';
-            });
-        } else {
-            console.error('Resposta de contas não é um array:', contas);
+            if (result && result.status === 'success') {
+                alert(result.message);
+                if (tipo === 'receitas') atualizarReceitas();
+                else if (tipo === 'compras') atualizarCompras();
+                else if (tipo === 'contas') atualizarContas();
+            }
         }
-    } catch (error) {
-        console.error('Erro ao carregar contas:', error);
-    }
-}
 
-async function atualizarTotais() {
-    try {
-        const totais = await fetchData('getTotais');
-        console.log('Totais carregados:', totais);
+        // --- Funções de Totais ---
+        async function atualizarTotais() {
+            try {
+                const totais = await fetchData('getTotais');
+                document.getElementById('totalReceitas').innerText = parseFloat(totais.totalReceitas).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                document.getElementById('totalCompras').innerText = parseFloat(totais.totalCompras).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                const saldoTotalElement = document.getElementById('saldoTotal');
+                const saldoBoxElement = document.getElementById('saldoBox');
 
-        if (totais && typeof totais === 'object') {
-            document.getElementById('totalReceitas').textContent = totais.totalReceitas ? `R$ ${parseFloat(totais.totalReceitas).toFixed(2).replace('.', ',')}` : 'R$ 0,00';
-            document.getElementById('totalCompras').textContent = totais.totalCompras ? `R$ ${parseFloat(totais.totalCompras).toFixed(2).replace('.', ',')}` : 'R$ 0,00';
-            document.getElementById('saldoTotal').textContent = totais.saldoTotal ? `R$ ${parseFloat(totais.saldoTotal).toFixed(2).replace('.', ',')}` : 'R$ 0,00';
-        } else {
-            console.error('Resposta de totais não é um objeto válido:', totais);
+                saldoTotalElement.innerText = parseFloat(totais.saldoTotal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+                // Atualiza a cor do saldo
+                saldoBoxElement.classList.remove('saldo-positivo', 'saldo-negativo');
+                if (totais.saldoTotal >= 0) {
+                    saldoBoxElement.classList.add('saldo-positivo');
+                } else {
+                    saldoBoxElement.classList.add('saldo-negativo');
+                }
+
+            } catch (error) {
+                console.error('Erro ao atualizar totais:', error);
+                // alert('Erro ao atualizar totais: ' + error.message);
+            }
         }
-    } catch (error) {
-        console.error('Erro ao atualizar totais:', error);
-    }
-}
 
-
-// =========================================================
-// FUNÇÕES DE ADIÇÃO (POST)
-// =========================================================
-
-async function adicionarReceita() {
-    const nome = document.getElementById('novaReceitaNome').value;
-    const valor = document.getElementById('novaReceitaValor').value;
-    if (!nome || !valor) {
-        alert('Por favor, preencha nome e valor para a receita.');
-        return;
-    }
-    try {
-        const result = await fetchData('addReceita', { nome, valor });
-        console.log('Receita adicionada:', result);
-        alert(result.message);
-        document.getElementById('novaReceitaNome').value = '';
-        document.getElementById('novaReceitaValor').value = '';
-        atualizarReceitas();
-        atualizarTotais();
-    } catch (error) {
-        console.error('Erro ao adicionar receita:', error);
-        alert('Erro ao adicionar receita. Verifique o console para detalhes.');
-    }
-}
-
-async function adicionarCompra() {
-    const nome = document.getElementById('novaCompraNome').value;
-    const valor = document.getElementById('novaCompraValor').value;
-    if (!nome || !valor) {
-        alert('Por favor, preencha nome e valor para a compra.');
-        return;
-    }
-    try {
-        const result = await fetchData('addCompra', { nome, valor });
-        console.log('Compra adicionada:', result);
-        alert(result.message);
-        document.getElementById('novaCompraNome').value = '';
-        document.getElementById('novaCompraValor').value = '';
-        atualizarCompras();
-        atualizarTotais();
-    } catch (error) {
-        console.error('Erro ao adicionar compra:', error);
-        alert('Erro ao adicionar compra. Verifique o console para detalhes.');
-    }
-}
-
-async function adicionarConta() {
-    const nome = document.getElementById('novaContaNome').value;
-    const valor = document.getElementById('novaContaValor').value;
-    if (!nome || !valor) {
-        alert('Por favor, preencha nome e valor para a conta.');
-        return;
-    }
-    try {
-        const result = await fetchData('addConta', { nome, valor });
-        console.log('Conta adicionada:', result);
-        alert(result.message);
-        document.getElementById('novaContaNome').value = '';
-        document.getElementById('novaContaValor').value = '';
-        atualizarContas();
-        atualizarTotais();
-    } catch (error) {
-        console.error('Erro ao adicionar conta:', error);
-        alert('Erro ao adicionar conta. Verifique o console para detalhes.');
-    }
-}
-
-// =========================================================
-// FUNÇÕES DE EXCLUSÃO (DELETE) - FRONT-END e BACKEND
-// =========================================================
-
-async function deleteReceitaFront(id) {
-    if (confirm('Tem certeza que deseja excluir esta receita?')) {
-        try {
-            const result = await fetchData('deleteReceita', { id });
-            console.log('Receita excluída:', result);
-            alert(result.message);
+        // Carregar dados iniciais ao carregar a página
+        document.addEventListener('DOMContentLoaded', () => {
             atualizarReceitas();
-            atualizarTotais();
-        } catch (error) {
-            console.error('Erro ao excluir receita:', error);
-            alert('Erro ao excluir receita. Verifique o console para detalhes.');
-        }
-    }
-}
-
-async function deleteCompraFront(id) {
-    if (confirm('Tem certeza que deseja excluir esta compra?')) {
-        try {
-            const result = await fetchData('deleteCompra', { id });
-            console.log('Compra excluída:', result);
-            alert(result.message);
             atualizarCompras();
-            atualizarTotais();
-        } catch (error) {
-            console.error('Erro ao excluir compra:', error);
-            alert('Erro ao excluir compra. Verifique o console para detalhes.');
-        }
-    }
-}
-
-async function deleteContaFront(id) {
-    if (confirm('Tem certeza que deseja excluir esta conta?')) {
-        try {
-            const result = await fetchData('deleteConta', { id });
-            console.log('Conta excluída:', result);
-            alert(result.message);
             atualizarContas();
             atualizarTotais();
-        } catch (error) {
-            console.error('Erro ao excluir conta:', error);
-            alert('Erro ao excluir conta. Verifique o console para detalhes.');
-        }
-    }
-}
 
-
-// =========================================================
-// FUNÇÕES DE EDIÇÃO (EDIT) - FRONT-END e BACKEND
-// =========================================================
-
-async function editReceitaFront(id) {
-    const nome = prompt("Novo nome da receita (deixe em branco para não alterar):");
-    const valor = prompt("Novo valor da receita (deixe em branco para não alterar):");
-
-    if (!nome && !valor) {
-        alert("Nenhuma alteração informada.");
-        return;
-    }
-    try {
-        const dataToUpdate = { id };
-        if (nome) dataToUpdate.nome = nome;
-        if (valor) dataToUpdate.valor = valor;
-
-        const result = await fetchData('editReceita', dataToUpdate);
-        console.log('Receita editada:', result);
-        alert(result.message);
-        atualizarReceitas();
-        atualizarTotais();
-    } catch (error) {
-        console.error('Erro ao editar receita:', error);
-        alert('Erro ao editar receita. Verifique o console para detalhes.');
-    }
-}
-
-async function editCompraFront(id) {
-    const nome = prompt("Novo nome da compra (deixe em branco para não alterar):");
-    const valor = prompt("Novo valor da compra (deixe em branco para não alterar):");
-
-    if (!nome && !valor) {
-        alert("Nenhuma alteração informada.");
-        return;
-    }
-    try {
-        const dataToUpdate = { id };
-        if (nome) dataToUpdate.nome = nome;
-        if (valor) dataToUpdate.valor = valor;
-
-        const result = await fetchData('editCompra', dataToUpdate);
-        console.log('Compra editada:', result);
-        alert(result.message);
-        atualizarCompras();
-        atualizarTotais();
-    } catch (error) {
-        console.error('Erro ao editar compra:', error);
-        alert('Erro ao editar compra. Verifique o console para detalhes.');
-    }
-}
-
-async function editContaFront(id) {
-    const nome = prompt("Novo nome da conta (deixe em branco para não alterar):");
-    const valor = prompt("Novo valor da conta (deixe em branco para não alterar):");
-
-    if (!nome && !valor) {
-        alert("Nenhuma alteração informada.");
-        return;
-    }
-    try {
-        const dataToUpdate = { id };
-        if (nome) dataToUpdate.nome = nome;
-        if (valor) dataToUpdate.valor = valor;
-
-        const result = await fetchData('editConta', dataToUpdate);
-        console.log('Conta editada:', result);
-        alert(result.message);
-        atualizarContas();
-        atualizarTotais();
-    } catch (error) {
-        console.error('Erro ao editar conta:', error);
-        alert('Erro ao editar conta. Verifique o console para detalhes.');
-    }
-}
-
-
-// =========================================================
-// EVENT LISTENERS E INICIALIZAÇÃO
-// =========================================================
-
-document.addEventListener('DOMContentLoaded', () => {
-    // Adicionando event listeners para os botões de adicionar
-    document.getElementById('adicionarReceitaBtn').addEventListener('click', adicionarReceita);
-    document.getElementById('adicionarCompraBtn').addEventListener('click', adicionarCompra);
-    document.getElementById('adicionarContaBtn').addEventListener('click', adicionarConta);
-
-    // Carrega os dados iniciais ao carregar a página
-    atualizarReceitas();
-    atualizarCompras();
-    atualizarContas();
-    atualizarTotais();
-});
-
-</script>
-    
-  </head>
-  <body><body>
-  <div class="container">
-    <header>
-      <h1>Painel Financeiro</h1>
-      <h2>Maio 2025</h2>
-      <div class="nav-buttons">
-        <button>&laquo; Mês Anterior</button>
-        <button>Mês Seguinte &raquo;</button>
-      </div>
-    </header>
-
-    <div class="totals-section">
-      <div class="totals-wrapper">
-        <span>Total de Receitas: <span id="totalReceitas">R$ 0,00</span></span>
-        <span>Total de Despesas: <span id="totalCompras">R$ 0,00</span></span>
-      </div>
-      <div class="saldo-bar-container">
-        <div class="saldo-bar"></div>
-        <div class="saldo-label">Saldo: <span id="saldoTotal">R$ 0,00</span></div>
-      </div>
-    </div>
-
-    <div class="categorias-section">
-      <h2>Resumo do Mês</h2>
-      <div class="categorias-columns">
-        <div class="categoria-box receitas">
-          <h3>Receitas</h3>
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Valor</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody id="receitasTableBody">
-              </tbody>
-          </table>
-          <div class="add-item-form">
-            <input type="text" id="novaReceitaNome" placeholder="Nome da Receita" />
-            <input type="number" id="novaReceitaValor" placeholder="Valor" />
-            <button id="adicionarReceitaBtn">Adicionar Receita</button>
-          </div>
-        </div>
-
-        <div class="categoria-box contas">
-          <h3>Contas</h3>
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Valor</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody id="contasTableBody">
-              </tbody>
-          </table>
-          <div class="add-item-form">
-            <input type="text" id="novaContaNome" placeholder="Nome da Conta" />
-            <input type="number" id="novaContaValor" placeholder="Valor" />
-            <button id="adicionarContaBtn">Adicionar Conta</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="cartoes-section" id="cartoesSection">
-      <h2>Compras Detalhadas</h2>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Valor</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody id="listaCompras">
-          </tbody>
-      </table>
-    </div>
-
-    <div class="forms-container">
-      <div class="form-section">
-        <h2>Adicionar Compra no Cartão</h2>
-        <div class="row">
-          <select id="respCompra">
-            <option value="Liana">Liana</option>
-            <option value="Stefany">Stefany</option>
-            <option value="Marília">Marília</option>
-            <option value="Nosso ❤️">Nosso ❤️</option>
-          </select>
-          <select id="cartaoCompra">
-            <option value="Nubank">NUBANK</option>
-            <option value="Santander">SANTANDER</option>
-            <option value="Mercado Pago">M.PAGO</option>
-            <option value="Amazon">AMAZON</option>
-          </select>
-        </div>
-        <div class="row">
-          <input type="text" id="novaCompraNome" class="nome-field" placeholder="Nome da Compra" />
-        </div>
-        <div class="row">
-          <input type="number" id="novaCompraValor" placeholder="Valor" />
-          <input type="text" id="novaCompraParcelas" placeholder="Parcelas (ex: 2/6)" />
-        </div>
-        <button id="adicionarCompraBtn">Adicionar Compra no Cartão</button>
-      </div>
-    </div>
-
-    <div class="compras-responsaveis">
-      <h2>Total de Compras por Responsável</h2>
-      <div class="responsaveis-container">
-        <div class="responsavel-box">
-          <h3><span class="liana">Liana</span></h3>
-          <p>Nubank: R$100,00</p>
-          <p>Santander: R$250,00</p>
-          <p>M.PAGO: R$0,00</p>
-          <p>Amazon: R$150,00</p>
-          <p><strong>Total: R$500,00</strong></p>
-        </div>
-        <div class="responsavel-box">
-          <h3><span class="stefany">Stefany</span></h3>
-          <p>Nubank: R$200,00</p>
-          <p>Santander: R$300,00</p>
-          <p>M.PAGO: R$50,00</p>
-          <p>Amazon: R$100,00</p>
-          <p><strong>Total: R$650,00</strong></p>
-        </div>
-        <div class="responsavel-box">
-          <h3><span class="marilia">Marília</span></h3>
-          <p>Nubank: R$150,00</p>
-          <p>Santander: R$300,00</p>
-          <p>M.PAGO: R$2,00</p>
-          <p>Amazon: R$0,00</p>
-          <p><strong>Total: R$452,00</strong></p>
-        </div>
-        <div class="responsavel-box">
-          <h3><span class="nosso">Nosso ❤️</span></h3>
-          <p>Nubank: R$50,00</p>
-          <p>Santander: R$100,00</p>
-          <p>M.PAGO: R$0,00</p>
-          <p>Amazon: R$200,00</p>
-          <p><strong>Total: R$350,00</strong></p>
-        </div>
-      </div>
-    </div>
-
-    <footer>
-      <p>
-        <span class="liana">Liana</span>,
-        <span class="stefany">Stefany</span>,
-        <span class="marilia">Marília</span>,
-        <span class="nosso">Nosso ❤️</span>
-      </p>
-    </footer>
-  </div>
-  </body>
+             // Lidar com a troca de abas para recarregar os dados
+            const tabButtons = document.querySelectorAll('.nav-tabs .nav-link');
+            tabButtons.forEach(button => {
+                button.addEventListener('shown.bs.tab', function (event) {
+                    const activeTabId = event.target.id;
+                    if (activeTabId === 'receitas-tab') {
+                        atualizarReceitas();
+                    } else if (activeTabId === 'compras-tab') {
+                        atualizarCompras();
+                    } else if (activeTabId === 'contas-tab') {
+                        atualizarContas();
+                    }
+                    atualizarTotais(); // Atualiza os totais sempre que a aba é trocada
+                });
+            });
+        });
+    </script>
+</body>
 </html>
