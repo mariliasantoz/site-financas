@@ -328,12 +328,65 @@
         margin: 0 5px;
         font-weight: bold;
       }
+      .list-item-controls {
+          display: flex;
+          justify-content: flex-end; /* Alinha botões à direita */
+          gap: 5px;
+          margin-top: 5px;
+      }
+      .list-item-controls button {
+          padding: 3px 8px;
+          font-size: 0.8em;
+          margin-left: 5px;
+      }
+      .list-item-content {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+      }
+      .checkbox-pago {
+        margin-left: 10px;
+        transform: scale(1.2); /* Aumenta o tamanho do checkbox */
+      }
     </style>
     <script>
       // *** AQUI É ONDE A URL DO SEU CLOUDFLARE WORKER DEVE ENTRAR ***
-      const webAppUrl = "https://painel-financas-proxy.mariliaedua.workers.dev/"; 
+      const webAppUrl = "https://painel-financas-proxy.mariliaedua.workers.dev/";
       // ***************************************************************
       
+      let currentMonth = new Date().getMonth(); // 0-Janeiro, 1-Fevereiro, etc.
+      let currentYear = new Date().getFullYear();
+
+      const monthNames = [
+        "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+        "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+      ];
+
+      function updateMonthDisplay() {
+        document.querySelector("header h2").textContent = `${monthNames[currentMonth]} ${currentYear}`;
+      }
+
+      function changeMonth(delta) {
+        currentMonth += delta;
+        if (currentMonth < 0) {
+          currentMonth = 11;
+          currentYear--;
+        } else if (currentMonth > 11) {
+          currentMonth = 0;
+          currentYear++;
+        }
+        updateMonthDisplay();
+        // Recarrega todos os dados para o novo mês/ano (o Apps Script ainda não filtra por mês/ano, mas o ideal seria passar esses parâmetros)
+        // Por enquanto, as funções do Apps Script continuarão buscando o mês atual do servidor.
+        // Se quiser filtrar por mês/ano no backend, as funções como getReceitas, getCompras, etc. precisarão receber month e year como parâmetros.
+        atualizarReceitas();
+        atualizarCompras();
+        atualizarContas();
+        atualizarTotais();
+        atualizarCartoes(); // Chamar a nova função
+        atualizarComprasPorResponsavel(); // Chamar a nova função
+      }
+
       // RECEITAS
       function atualizarReceitas() {
         const payload = { action: "getReceitas" };
@@ -346,21 +399,33 @@
         .then(data => {
           const container = document.getElementById("listaReceitas");
           container.innerHTML = "";
-          data.forEach(item => {
-            const div = document.createElement("div");
-            div.innerHTML =
-              "Nome: " + item.nome + " - Valor: R$ " + Number(item.valor).toFixed(2) +
-              " <button onclick='deleteReceitaFront(\"" + item.id + "\")'>X</button>" +
-              " <button onclick='editReceitaFront(\"" + item.id + "\")'>Edit</button>";
-            container.appendChild(div);
-          });
+          if (data && data.length > 0) {
+            data.forEach(item => {
+              const div = document.createElement("div");
+              div.classList.add("receita-item"); // Adiciona classe para estilização
+              div.innerHTML = `
+                <div class="list-item-content">
+                  <span>${item.nome} - R$ ${Number(item.valor).toFixed(2)}</span>
+                  <div class="list-item-controls">
+                    <button onclick='editReceitaFront("${item.id}")'>Edit</button>
+                    <button onclick='deleteReceitaFront("${item.id}")'>X</button>
+                  </div>
+                </div>
+              `;
+              container.appendChild(div);
+            });
+          } else {
+            container.innerHTML = "<p>Nenhuma receita cadastrada.</p>";
+          }
         })
         .catch(error => {
           console.error("Erro ao carregar receitas:", error);
+          document.getElementById("listaReceitas").innerHTML = "<p>Erro ao carregar receitas.</p>";
         });
       }
       
       function deleteReceitaFront(recordId) {
+        if (!confirm("Tem certeza que deseja excluir esta receita?")) return;
         const payload = { action: "deleteReceita", recordId: recordId };
         fetch(webAppUrl, {
           method: "POST",
@@ -369,18 +434,28 @@
         })
         .then(response => response.json())
         .then(data => {
-          alert("Resposta: " + JSON.stringify(data));
+          alert(data.message);
           atualizarReceitas();
           atualizarTotais();
         })
         .catch(error => {
-          alert("Erro: " + error.message);
+          alert("Erro ao excluir receita: " + error.message);
         });
       }
       
       function editReceitaFront(recordId) {
-        let novoNome = prompt("Digite o novo nome:");
-        let novoValor = prompt("Digite o novo valor:");
+        let novoNome = prompt("Digite o novo nome da receita:");
+        if (novoNome === null) return; // Usuário cancelou
+        let novoValor = prompt("Digite o novo valor da receita:");
+        if (novoValor === null) return; // Usuário cancelou
+
+        // Validação básica do valor
+        novoValor = parseFloat(novoValor.replace(',', '.'));
+        if (isNaN(novoValor)) {
+          alert("Valor inválido. Digite um número.");
+          return;
+        }
+
         const payload = {
           action: "updateReceita",
           recordId: recordId,
@@ -393,16 +468,54 @@
         })
         .then(response => response.json())
         .then(data => {
-          alert("Resposta: " + JSON.stringify(data));
+          alert(data.message);
           atualizarReceitas();
           atualizarTotais();
         })
         .catch(error => {
-          alert("Erro: " + error.message);
+          alert("Erro ao editar receita: " + error.message);
         });
       }
+
+      function submitReceita() {
+          const nome = prompt("Nome da Receita:");
+          if (nome === null || nome.trim() === "") {
+              alert("Nome da receita não pode ser vazio.");
+              return;
+          }
+          const valor = prompt("Valor da Receita:");
+          if (valor === null || valor.trim() === "") {
+              alert("Valor da receita não pode ser vazio.");
+              return;
+          }
+          const valorFloat = parseFloat(valor.replace(',', '.'));
+          if (isNaN(valorFloat)) {
+              alert("Valor inválido. Digite um número.");
+              return;
+          }
+
+          const payload = {
+              action: "addReceita",
+              data: { nome: nome, valor: valorFloat }
+          };
+
+          fetch(webAppUrl, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload)
+          })
+          .then(response => response.json())
+          .then(data => {
+              alert(data.message);
+              atualizarReceitas();
+              atualizarTotais();
+          })
+          .catch(error => {
+              alert("Erro ao adicionar receita: " + error.message);
+          });
+      }
       
-      // TOTAlIZAR
+      // TOTAIS (Resumo do Mês)
       function atualizarTotais() {
         const payload = { action: "getTotais" };
         fetch(webAppUrl, {
@@ -412,79 +525,18 @@
         })
         .then(response => response.json())
         .then(data => {
-          document.querySelector(".saldo-label").textContent = "Saldo: R$ " + data.saldo.toFixed(2);
-          let widthPercent = Math.min(100, (data.saldo / 5000) * 100);
+          document.querySelector(".saldo-label").textContent = "Saldo: R$ " + (data.saldo || 0).toFixed(2);
+          let widthPercent = Math.min(100, ((data.saldo || 0) / 5000) * 100); // Base para a barra, ajustar conforme necessário
           document.querySelector(".saldo-bar").style.width = widthPercent + "%";
           document.querySelector(".totals-wrapper").innerHTML = 
-            "<span>Total de Receitas: R$ " + data.receitas.toFixed(2) + "</span>" +
-            "<span>Total de Despesas: R$ " + data.despesas.toFixed(2) + "</span>";
+            `<span>Total de Receitas: R$ ${Number(data.receitas || 0).toFixed(2)}</span>` +
+            `<span>Total de Despesas: R$ ${Number(data.despesas || 0).toFixed(2)}</span>`;
         })
         .catch(error => {
           console.error("Erro ao atualizar totais:", error);
-        });
-      }
-      
-      // COMPRAS
-      function atualizarCompras() {
-        const payload = { action: "getCompras" };
-        fetch(webAppUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-          const container = document.getElementById("listaCompras");
-          container.innerHTML = "";
-          data.forEach(item => {
-            const div = document.createElement("div");
-            div.innerHTML =
-              "Compra: " + item.nome + " - Valor: R$ " + Number(item.valor).toFixed(2) +
-              " <button onclick='deleteCompraFront(\"" + item.id + "\")'>X</button>" +
-              " <button onclick='editCompraFront(\"" + item.id + "\")'>Edit</button>";
-            container.appendChild(div);
-          });
-        })
-        .catch(error => {
-          console.error("Erro ao carregar compras:", error);
-        });
-      }
-      
-      function deleteCompraFront(recordId) {
-        const payload = { action: "deleteCompra", recordId: recordId };
-        fetch(webAppUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-          alert("Resposta: " + JSON.stringify(data));
-          atualizarCompras();
-          atualizarTotais();
-        })
-        .catch(error => {
-          alert("Erro: " + error.message);
-        });
-      }
-      
-      function editCompraFront(recordId) {
-        let novoNome = prompt("Digite o novo nome da compra:");
-        let novoValor = prompt("Digite o novo valor:");
-        const payload = { action: "updateCompra", recordId: recordId, data: { nome: novoNome, valor: novoValor } };
-        fetch(webAppUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-          alert("Resposta: " + JSON.stringify(data));
-          atualizarCompras();
-          atualizarTotais();
-        })
-        .catch(error => {
-          alert("Erro: " + error.message);
+          document.querySelector(".totals-wrapper").innerHTML = "<span>Erro ao carregar totais.</span>";
+          document.querySelector(".saldo-label").textContent = "Saldo: R$ 0.00";
+          document.querySelector(".saldo-bar").style.width = "0%";
         });
       }
       
@@ -498,23 +550,60 @@
         })
         .then(response => response.json())
         .then(data => {
-          const container = document.getElementById("listaContas");
-          container.innerHTML = "";
-          data.forEach(item => {
-            const div = document.createElement("div");
-            div.innerHTML =
-              "Conta: " + item.nome + " - Valor: R$ " + Number(item.valor).toFixed(2) +
-              " <button onclick='deleteContaFront(\"" + item.id + "\")'>X</button>" +
-              " <button onclick='editContaFront(\"" + item.id + "\")'>Edit</button>";
-            container.appendChild(div);
-          });
+          const listaContasFixas = document.getElementById("listaContasFixas");
+          const listaContasVariaveis = document.getElementById("listaContasVariaveis");
+          const totalContasFixasElem = document.getElementById("totalContasFixas");
+          const totalContasVariaveisElem = document.getElementById("totalContasVariaveis");
+
+          listaContasFixas.innerHTML = "";
+          listaContasVariaveis.innerHTML = "";
+
+          let totalFixas = 0;
+          let totalVariaveis = 0;
+
+          if (data && data.length > 0) {
+            data.forEach(item => {
+              const valorParcela = (parseFloat(item.valor || 0) / parseInt((item.parcelas || '1/1').split('/')[1] || 1));
+              const div = document.createElement("div");
+              div.classList.add("conta-item");
+              div.innerHTML = `
+                <div class="list-item-content">
+                  <span>${item.nome}: R$ ${valorParcela.toFixed(2)} | ${item.parcelas || '1/1'}</span>
+                  <input type="checkbox" class="checkbox-pago" ${item.pago === 'Sim' ? 'checked' : ''} onchange="markContaAsPaidFront('${item.id}', this.checked)">
+                  <div class="list-item-controls">
+                    <button onclick='editContaFront("${item.id}")'>Edit</button>
+                    <button onclick='deleteContaFront("${item.id}")'>X</button>
+                  </div>
+                </div>
+              `;
+              if (item.tipo === 'Fixa') {
+                listaContasFixas.appendChild(div);
+                if (item.pago !== 'Sim') { // Somar apenas se não estiver pago
+                  totalFixas += valorParcela;
+                }
+              } else { // Variável
+                listaContasVariaveis.appendChild(div);
+                if (item.pago !== 'Sim') { // Somar apenas se não estiver pago
+                  totalVariaveis += valorParcela;
+                }
+              }
+            });
+          } else {
+            listaContasFixas.innerHTML = "<p>Nenhuma conta fixa cadastrada.</p>";
+            listaContasVariaveis.innerHTML = "<p>Nenhuma conta variável cadastrada.</p>";
+          }
+          totalContasFixasElem.textContent = `Total: R$ ${totalFixas.toFixed(2)}`;
+          totalContasVariaveisElem.textContent = `Total: R$ ${totalVariaveis.toFixed(2)}`;
         })
         .catch(error => {
           console.error("Erro ao carregar contas:", error);
+          document.getElementById("listaContasFixas").innerHTML = "<p>Erro ao carregar contas.</p>";
+          document.getElementById("listaContasVariaveis").innerHTML = "";
         });
       }
       
       function deleteContaFront(recordId) {
+        if (!confirm("Tem certeza que deseja excluir esta conta?")) return;
         const payload = { action: "deleteConta", recordId: recordId };
         fetch(webAppUrl, {
           method: "POST",
@@ -523,19 +612,30 @@
         })
         .then(response => response.json())
         .then(data => {
-          alert("Resposta: " + JSON.stringify(data));
+          alert(data.message);
           atualizarContas();
           atualizarTotais();
         })
         .catch(error => {
-          alert("Erro: " + error.message);
+          alert("Erro ao excluir conta: " + error.message);
         });
       }
       
       function editContaFront(recordId) {
         let novoNome = prompt("Digite o novo nome da conta:");
-        let novoValor = prompt("Digite o novo valor:");
-        const payload = { action: "updateConta", recordId: recordId, data: { nome: novoNome, valor: novoValor } };
+        if (novoNome === null) return;
+        let novoValor = prompt("Digite o novo valor da conta:");
+        if (novoValor === null) return;
+        let novasParcelas = prompt("Digite as novas parcelas (ex: 2/3) da conta:");
+        if (novasParcelas === null) return;
+
+        novoValor = parseFloat(novoValor.replace(',', '.'));
+        if (isNaN(novoValor)) {
+          alert("Valor inválido. Digite um número.");
+          return;
+        }
+
+        const payload = { action: "updateConta", recordId: recordId, data: { nome: novoNome, valor: novoValor, parcelas: novasParcelas } };
         fetch(webAppUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -543,12 +643,170 @@
         })
         .then(response => response.json())
         .then(data => {
-          alert("Resposta: " + JSON.stringify(data));
+          alert(data.message);
           atualizarContas();
           atualizarTotais();
         })
         .catch(error => {
-          alert("Erro: " + error.message);
+          alert("Erro ao editar conta: " + error.message);
+        });
+      }
+
+      function markContaAsPaidFront(recordId, isChecked) {
+        const payload = { action: "markContaAsPaid", recordId: recordId, data: { 'pago': isChecked ? 'Sim' : 'Não' } };
+        fetch(webAppUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+          // alert(data.message); // Opcional: exibir alert de sucesso
+          atualizarContas(); // Recarrega a lista para refletir a mudança visualmente
+          atualizarTotais(); // Recalcula os totais
+        })
+        .catch(error => {
+          alert("Erro ao marcar conta como paga: " + error.message);
+          atualizarContas(); // Recarrega para reverter o checkbox se houver erro
+        });
+      }
+      
+      // COMPRAS (Cartões)
+      function atualizarCartoes() {
+        const payload = { action: "getComprasPorCartao" };
+        fetch(webAppUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+          const cartoes = ['Nubank', 'Santander', 'Mercado Pago', 'Amazon'];
+          cartoes.forEach(cartaoNome => {
+            const cardId = cartaoNome.toLowerCase().replace(/\s/g, '') + 'Card';
+            const cardBox = document.getElementById(cardId);
+            if (!cardBox) return; // Sai se o elemento não existir
+
+            const cardTotalElem = cardBox.querySelector(".cartao-total");
+            const cardListElem = cardBox.querySelector(".cartao-list");
+            
+            cardListElem.innerHTML = ""; // Limpa a lista existente
+            let totalCartao = 0;
+
+            const comprasDoCartao = data[cartaoNome] ? data[cartaoNome].compras : [];
+
+            if (comprasDoCartao.length > 0) {
+              comprasDoCartao.forEach(item => {
+                const div = document.createElement("div");
+                // Adiciona a classe do responsável para estilização
+                const responsavelClass = item.responsavel ? item.responsavel.toLowerCase().replace(/á/g, 'a').replace(/ /g, '') : '';
+                div.classList.add("compra", responsavelClass); 
+
+                div.innerHTML = `
+                  <div class="list-item-content">
+                    <span>${item.nome} | ${item.parcelaAtual}/${item.parcelasTotais} | R$ ${item.valor.toFixed(2)} (${item.responsavel})</span>
+                    <input type="checkbox" class="checkbox-pago" ${item.pago === 'Sim' ? 'checked' : ''} onchange="markCompraAsPaidFront('${item.id}', this.checked)">
+                    <div class="list-item-controls">
+                      <button onclick='editCompraFront("${item.id}")'>Edit</button>
+                      <button onclick='deleteCompraFront("${item.id}")'>X</button>
+                    </div>
+                  </div>
+                `;
+                cardListElem.appendChild(div);
+                if (item.pago !== 'Sim') { // Somar apenas se não estiver pago
+                  totalCartao += item.valor;
+                }
+              });
+            } else {
+              cardListElem.innerHTML = "<p>Nenhuma compra neste cartão.</p>";
+            }
+            cardTotalElem.textContent = `Total: R$ ${totalCartao.toFixed(2)}`;
+
+             // Lógica para o checkbox "Pago" do cartão (para o total do cartão)
+            const checkboxCardPago = cardBox.querySelector(".cartao-paid");
+            if (checkboxCardPago) {
+              const allPaid = comprasDoCartao.length > 0 && comprasDoCartao.every(item => item.pago === 'Sim');
+              checkboxCardPago.checked = allPaid;
+              // Você pode adicionar um evento de mudança aqui para marcar todas as compras do cartão como pagas no backend, se desejar
+              // checkboxCardPago.onchange = function() { markAllComprasOfCardAsPaid(cardNome, this.checked); };
+            }
+          });
+        })
+        .catch(error => {
+          console.error("Erro ao carregar compras por cartão:", error);
+          // Opcional: mostrar mensagem de erro nas seções dos cartões
+        });
+      }
+
+      function deleteCompraFront(recordId) {
+        if (!confirm("Tem certeza que deseja excluir esta compra?")) return;
+        const payload = { action: "deleteCompra", recordId: recordId };
+        fetch(webAppUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+          alert(data.message);
+          atualizarCartoes(); // Atualiza a lista de cartões
+          atualizarComprasPorResponsavel(); // Atualiza lista de responsáveis
+          atualizarTotais();
+        })
+        .catch(error => {
+          alert("Erro ao excluir compra: " + error.message);
+        });
+      }
+      
+      function editCompraFront(recordId) {
+        let novoNome = prompt("Digite o novo nome da compra:");
+        if (novoNome === null) return;
+        let novoValor = prompt("Digite o novo valor:");
+        if (novoValor === null) return;
+        let novasParcelas = prompt("Digite as novas parcelas (ex: 1/6):");
+        if (novasParcelas === null) return;
+        
+        novoValor = parseFloat(novoValor.replace(',', '.'));
+        if (isNaN(novoValor)) {
+          alert("Valor inválido. Digite um número.");
+          return;
+        }
+
+        const payload = { action: "updateCompra", recordId: recordId, data: { nome: novoNome, valor: novoValor, parcelas: novasParcelas } };
+        fetch(webAppUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+          alert(data.message);
+          atualizarCartoes(); // Atualiza a lista de cartões
+          atualizarComprasPorResponsavel(); // Atualiza lista de responsáveis
+          atualizarTotais();
+        })
+        .catch(error => {
+          alert("Erro ao editar compra: " + error.message);
+        });
+      }
+
+      function markCompraAsPaidFront(recordId, isChecked) {
+        const payload = { action: "markCompraAsPaid", recordId: recordId, data: { 'pago': isChecked ? 'Sim' : 'Não' } };
+        fetch(webAppUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+          // alert(data.message); // Opcional: exibir alert de sucesso
+          atualizarCartoes(); // Recarrega a lista para refletir a mudança visualmente
+          atualizarComprasPorResponsavel(); // Recarrega a lista de responsáveis
+          atualizarTotais(); // Recalcula os totais
+        })
+        .catch(error => {
+          alert("Erro ao marcar compra como paga: " + error.message);
+          atualizarCartoes(); // Recarrega para reverter o checkbox se houver erro
         });
       }
       
@@ -557,13 +815,23 @@
         var form = document.getElementById("formAdicionarCompra");
         var responsavel = document.getElementById("respCompra").value;
         var cartao = document.getElementById("cartaoCompra").value;
-        var nome = form.querySelector("input.nome-field").value;
-        var inputs = form.querySelectorAll("input");
-        var valor = inputs[1].value;
-        var parcelas = inputs[2].value;
+        var nome = form.querySelector("input[placeholder='Nome da Compra']").value;
+        var valor = form.querySelector("input[placeholder='Valor']").value;
+        var parcelas = form.querySelector("input[placeholder='Parcelas (ex: 2/6)']").value;
         
+        if (!nome || !valor || !parcelas) {
+            alert("Por favor, preencha todos os campos da compra.");
+            return;
+        }
+
+        valor = parseFloat(valor.replace(',', '.'));
+        if (isNaN(valor)) {
+            alert("Valor da compra inválido. Digite um número.");
+            return;
+        }
+
         var payload = {
-          action: "addCompraCartao",
+          action: "addCompraCartao", // Ação corrigida
           data: {
             nome: nome,
             valor: valor,
@@ -580,21 +848,37 @@
         })
         .then(response => response.json())
         .then(data => {
-          alert("Compra no Cartão: " + JSON.stringify(data));
-          atualizarCompras();
+          alert(data.message);
+          // Limpa os campos do formulário
+          form.querySelector("input[placeholder='Nome da Compra']").value = "";
+          form.querySelector("input[placeholder='Valor']").value = "";
+          form.querySelector("input[placeholder='Parcelas (ex: 2/6)']").value = "";
+
+          atualizarCartoes(); // Agora esta função é responsável por atualizar as compras nos cartões
+          atualizarComprasPorResponsavel(); // E esta pelos totais dos responsáveis
           atualizarTotais();
         })
-        .catch(error => { alert("Erro: " + error.message); });
+        .catch(error => { alert("Erro ao adicionar compra no cartão: " + error.message); });
       }
       
       function submitConta() {
         var form = document.getElementById("formAdicionarConta");
         var tipo = document.getElementById("tipoConta").value;
-        var nome = form.querySelector("input.nome-field").value;
-        var inputs = form.querySelectorAll("input");
-        var parcelas = inputs[1].value;
-        var valor = inputs[2].value;
+        var nome = form.querySelector("input[placeholder='Nome da Conta']").value;
+        var parcelas = form.querySelector("input[placeholder='Parcelas (ex: 2/3)']").value;
+        var valor = form.querySelector("input[placeholder='Valor']").value;
         
+        if (!nome || !valor || !parcelas) {
+            alert("Por favor, preencha todos os campos da conta.");
+            return;
+        }
+
+        valor = parseFloat(valor.replace(',', '.'));
+        if (isNaN(valor)) {
+            alert("Valor da conta inválido. Digite um número.");
+            return;
+        }
+
         var payload = {
           action: "addConta",
           data: {
@@ -612,18 +896,75 @@
         })
         .then(response => response.json())
         .then(data => {
-          alert("Conta: " + JSON.stringify(data));
+          alert(data.message);
+          // Limpa os campos do formulário
+          form.querySelector("input[placeholder='Nome da Conta']").value = "";
+          form.querySelector("input[placeholder='Parcelas (ex: 2/3)']").value = "";
+          form.querySelector("input[placeholder='Valor']").value = "";
+
           atualizarContas();
           atualizarTotais();
         })
-        .catch(error => { alert("Erro: " + error.message); });
+        .catch(error => { alert("Erro ao adicionar conta: " + error.message); });
       }
-      
+
+      // TOTAL DE COMPRAS POR RESPONSÁVEL
+      function atualizarComprasPorResponsavel() {
+        const payload = { action: "getComprasPorResponsavel" };
+        fetch(webAppUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+          const responsaveis = ['Liana', 'Stefany', 'Marília', 'Nosso ❤️'];
+          const container = document.querySelector(".responsaveis-container");
+          container.innerHTML = ""; // Limpa o conteúdo existente
+
+          responsaveis.forEach(responsavelNome => {
+            const responsavelKey = responsavelNome.toLowerCase().replace(/á/g, 'a').replace(/ /g, ''); // Para classes CSS
+            const totalData = data[responsavelNome] || { total: 0, compras: [] };
+
+            const box = document.createElement("div");
+            box.classList.add("responsavel-box");
+            box.innerHTML = `
+              <h3><span class="${responsavelKey}">${responsavelNome}</span></h3>
+              <p>Compras: R$ ${totalData.total.toFixed(2)}</p>
+              <p><strong>Total: R$ ${totalData.total.toFixed(2)}</strong></p>
+            `;
+            container.appendChild(box);
+          });
+        })
+        .catch(error => {
+          console.error("Erro ao carregar compras por responsável:", error);
+          document.querySelector(".responsaveis-container").innerHTML = "<p>Erro ao carregar totais por responsável.</p>";
+        });
+      }
+
       document.addEventListener("DOMContentLoaded", function(){
+        updateMonthDisplay(); // Define o mês e ano iniciais
         atualizarReceitas();
-        atualizarCompras();
-        atualizarContas();
-        atualizarTotais();
+        atualizarContas(); // Atualiza contas fixas e variáveis
+        atualizarCartoes(); // Atualiza a seção de cartões
+        atualizarComprasPorResponsavel(); // Atualiza a seção de totais por responsável
+        atualizarTotais(); // Atualiza os totais gerais
+
+        // Event listeners para navegação de mês
+        document.querySelector(".nav-buttons button:first-child").addEventListener("click", function(){
+          changeMonth(-1);
+        });
+        document.querySelector(".nav-buttons button:last-child").addEventListener("click", function(){
+          changeMonth(1);
+        });
+
+        // Event listener para o botão de "Salvar Receitas" (agora um prompt)
+        document.querySelector(".categoria-box.receitas button").addEventListener("click", function(e){
+            e.preventDefault(); // Evita o comportamento padrão do botão se estiver dentro de um form
+            submitReceita();
+        });
+
+        // Event listeners para os formulários de Compra e Conta
         document.querySelector("#formAdicionarCompra button").addEventListener("click", function(e){
           e.preventDefault();
           submitCompraCartao();
@@ -639,8 +980,7 @@
     <div class="container">
       <header>
         <h1>Painel Financeiro</h1>
-        <h2>Maio 2025</h2>
-        <div class="nav-buttons">
+        <h2>Maio 2025</h2> <div class="nav-buttons">
           <button>&laquo; Mês Anterior</button>
           <button>Mês Seguinte &raquo;</button>
         </div>
@@ -648,12 +988,12 @@
       
       <div class="totals-section">
         <div class="totals-wrapper">
-          <span>Total de Receitas: R$ 5000.00</span>
-          <span>Total de Despesas: R$ 3000.00</span>
+          <span>Total de Receitas: R$ 0.00</span>
+          <span>Total de Despesas: R$ 0.00</span>
         </div>
         <div class="saldo-bar-container">
           <div class="saldo-bar"></div>
-          <div class="saldo-label">Saldo: R$ 2000.00</div>
+          <div class="saldo-label">Saldo: R$ 0.00</div>
         </div>
       </div>
       
@@ -662,40 +1002,26 @@
         <div class="categorias-columns">
           <div class="categoria-box receitas">
             <h3>Receitas</h3>
-            <div class="categoria-list">
-              <div class="receita-item">
-                <input type="text" placeholder="Nome da Receita" value="Nome A" style="width:50%;" />
-                <input type="number" placeholder="Valor" value="1500.00" style="width:40%;" />
-              </div>
-              <div class="receita-item">
-                <input type="text" placeholder="Nome da Receita" value="Nome B" style="width:50%;" />
-                <input type="number" placeholder="Valor" value="2000.00" style="width:40%;" />
-              </div>
-              <div class="receita-item">
-                <input type="text" placeholder="Nome da Receita" value="Nome C" style="width:50%;" />
-                <input type="number" placeholder="Valor" value="1500.00" style="width:40%;" />
-              </div>
+            <div class="categoria-list" id="listaReceitas">
+              <p>Carregando receitas...</p>
             </div>
-            <button>Salvar Receitas</button>
-            <div id="listaReceitas"></div>
+            <button>Adicionar Receita</button>
           </div>
           
           <div class="categoria-box contas">
-            <h3>Contas Fixas <input type="checkbox" title="Pago"/></h3>
-            <div class="categoria-list">
-              <div class="conta-item">Conta 1: R$ 1000.00 | 2/3</div>
-              <div class="conta-item">Conta 2: R$ 500.00 | 1/1</div>
+            <h3>Contas Fixas</h3>
+            <div class="categoria-list" id="listaContasFixas">
+              <p>Carregando contas fixas...</p>
             </div>
-            <div class="conta-total">Total: R$ 1500.00</div>
+            <div class="conta-total" id="totalContasFixas">Total: R$ 0.00</div>
           </div>
           
           <div class="categoria-box contas">
-            <h3>Contas Variáveis <input type="checkbox" title="Pago"/></h3>
-            <div class="categoria-list">
-              <div class="conta-item">Conta A: R$ 800.00 | 1/2</div>
-              <div class="conta-item">Conta B: R$ 400.00 | 1/1</div>
+            <h3>Contas Variáveis</h3>
+            <div class="categoria-list" id="listaContasVariaveis">
+              <p>Carregando contas variáveis...</p>
             </div>
-            <div class="conta-total">Total: R$ 1200.00</div>
+            <div class="conta-total" id="totalContasVariaveis">Total: R$ 0.00</div>
           </div>
         </div>
       </div>
@@ -706,44 +1032,41 @@
           <div class="cartao-box" id="nubankCard">
             <h3>
               NUBANK
-              <input type="checkbox" class="cartao-paid" title="Pago"/>
+              <input type="checkbox" class="cartao-paid" title="Marcar todas como pagas"/>
             </h3>
-            <div class="cartao-total">Total: R$ 1000.00</div>
+            <div class="cartao-total">Total: R$ 0.00</div>
             <div class="cartao-list">
-              <div class="compra liana">Compra X | 1/2 | R$ 500.00</div>
-              <div class="compra liana">Compra Y | 2/2 | R$ 500.00</div>
+              <p>Carregando compras...</p>
             </div>
           </div>
           <div class="cartao-box" id="santanderCard">
             <h3>
               SANTANDER
-              <input type="checkbox" class="cartao-paid" title="Pago"/>
+              <input type="checkbox" class="cartao-paid" title="Marcar todas como pagas"/>
             </h3>
-            <div class="cartao-total">Total: R$ 800.00</div>
+            <div class="cartao-total">Total: R$ 0.00</div>
             <div class="cartao-list">
-              <div class="compra stefany">Compra A | 1/3 | R$ 300.00</div>
-              <div class="compra stefany">Compra B | 2/3 | R$ 300.00</div>
-              <div class="compra stefany">Compra C | 3/3 | R$ 200.00</div>
+              <p>Carregando compras...</p>
             </div>
           </div>
           <div class="cartao-box" id="mpagoCard">
             <h3>
               M.PAGO
-              <input type="checkbox" class="cartao-paid" title="Pago"/>
+              <input type="checkbox" class="cartao-paid" title="Marcar todas como pagas"/>
             </h3>
-            <div class="cartao-total">Total: R$ 600.00</div>
+            <div class="cartao-total">Total: R$ 0.00</div>
             <div class="cartao-list">
-              <div class="compra marilia">Compra Z | 1/1 | R$ 600.00</div>
+              <p>Carregando compras...</p>
             </div>
           </div>
           <div class="cartao-box" id="amazonCard">
             <h3>
               AMAZON
-              <input type="checkbox" class="cartao-paid" title="Pago"/>
+              <input type="checkbox" class="cartao-paid" title="Marcar todas como pagas"/>
             </h3>
-            <div class="cartao-total">Total: R$ 400.00</div>
+            <div class="cartao-total">Total: R$ 0.00</div>
             <div class="cartao-list">
-              <div class="compra nosso">Compra W | 1/1 | R$ 400.00</div>
+              <p>Carregando compras...</p>
             </div>
           </div>
         </div>
@@ -767,15 +1090,14 @@
             </select>
           </div>
           <div class="row">
-            <input type="text" class="nome-field" placeholder="Nome da Compra" />
+            <input type="text" placeholder="Nome da Compra" />
           </div>
           <div class="row">
             <input type="number" placeholder="Valor" />
             <input type="text" placeholder="Parcelas (ex: 2/6)" />
           </div>
           <button>Adicionar Compra no Cartão</button>
-          <div id="listaCompras"></div>
-        </div>
+          </div>
         
         <div class="form-section" id="formAdicionarConta">
           <h2>Adicionar Conta</h2>
@@ -783,49 +1105,17 @@
             <option value="Fixa">Fixa</option>
             <option value="Variável">Variável</option>
           </select>
-          <input type="text" class="nome-field" placeholder="Nome da Conta" />
+          <input type="text" placeholder="Nome da Conta" />
           <input type="text" placeholder="Parcelas (ex: 2/3)" />
           <input type="number" placeholder="Valor" />
           <button>Adicionar Conta</button>
-          <div id="listaContas"></div>
-        </div>
+          </div>
       </div>
       
       <div class="compras-responsaveis">
         <h2>Total de Compras por Responsável</h2>
         <div class="responsaveis-container">
-          <div class="responsavel-box">
-            <h3><span class="liana">Liana</span></h3>
-            <p>Nubank: R$100,00</p>
-            <p>Santander: R$250,00</p>
-            <p>M.PAGO: R$0,00</p>
-            <p>Amazon: R$150,00</p>
-            <p><strong>Total: R$500,00</strong></p>
-          </div>
-          <div class="responsavel-box">
-            <h3><span class="stefany">Stefany</span></h3>
-            <p>Nubank: R$200,00</p>
-            <p>Santander: R$300,00</p>
-            <p>M.PAGO: R$50,00</p>
-            <p>Amazon: R$100,00</p>
-            <p><strong>Total: R$650,00</strong></p>
-          </div>
-          <div class="responsavel-box">
-            <h3><span class="marilia">Marília</span></h3>
-            <p>Nubank: R$150,00</p>
-            <p>Santander: R$300,00</p>
-            <p>M.PAGO: R$2,00</p>
-            <p>Amazon: R$0,00</p>
-            <p><strong>Total: R$452,00</strong></p>
-          </div>
-          <div class="responsavel-box">
-            <h3><span class="nosso">Nosso ❤️</span></h3>
-            <p>Nubank: R$50,00</p>
-            <p>Santander: R$100,00</p>
-            <p>M.PAGO: R$0,00</p>
-            <p>Amazon: R$200,00</p>
-            <p><strong>Total: R$350,00</strong></p>
-          </div>
+          <p>Carregando totais por responsável...</p>
         </div>
       </div>
       
