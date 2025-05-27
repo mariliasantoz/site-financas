@@ -329,309 +329,336 @@
         font-weight: bold;
       }
     </style>
-    <script>
-      const webAppUrl = "https://script.google.com/macros/s/AKfycbwNGavL8fRrOTaSBr-OHvc07bm0jtHaKBdkPwoXKmycVi2Y7dMCpQcoMWyDIt1GNN56uA/exec";
-      
-      // RECEITAS
-      function atualizarReceitas() {
-        const payload = { action: "getReceitas" };
-        fetch(webAppUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-          const container = document.getElementById("listaReceitas");
-          container.innerHTML = "";
-          data.forEach(item => {
-            const div = document.createElement("div");
-            div.innerHTML =
-              "Nome: " + item.nome + " - Valor: R$ " + Number(item.valor).toFixed(2) +
-              " <button onclick='deleteReceitaFront(\"" + item.id + "\")'>X</button>" +
-              " <button onclick='editReceitaFront(\"" + item.id + "\")'>Edit</button>";
-            container.appendChild(div);
-          });
-        })
-        .catch(error => {
-          console.error("Erro ao carregar receitas:", error);
+
+<script>
+  const webAppUrl = "https://script.google.com/macros/s/AKfycbwNGavL8fRrOTaSBr-OHvc07bm0jtHaKBdkPwoXKmycVi2Y7dMCpQcoMWyDIt1GNN56uA/exec"; // VERIFIQUE ESTA URL!
+
+async function fetchData(action, data = {}) {
+    try {
+        const response = await fetch(webAppUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ action, ...data })
         });
-      }
-      
-      function deleteReceitaFront(recordId) {
-        const payload = { action: "deleteReceita", recordId: recordId };
-        fetch(webAppUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-          alert("Resposta: " + JSON.stringify(data));
-          atualizarReceitas();
-          atualizarTotais();
-        })
-        .catch(error => {
-          alert("Erro: " + error.message);
-        });
-      }
-      
-      function editReceitaFront(recordId) {
-        let novoNome = prompt("Digite o novo nome:");
-        let novoValor = prompt("Digite o novo valor:");
-        const payload = {
-          action: "updateReceita",
-          recordId: recordId,
-          data: { nome: novoNome, valor: novoValor }
-        };
-        fetch(webAppUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-          alert("Resposta: " + JSON.stringify(data));
-          atualizarReceitas();
-          atualizarTotais();
-        })
-        .catch(error => {
-          alert("Erro: " + error.message);
-        });
-      }
-      
-      // TOTAlIZAR
-      function atualizarTotais() {
-        const payload = { action: "getTotais" };
-        fetch(webAppUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-          document.querySelector(".saldo-label").textContent = "Saldo: R$ " + data.saldo.toFixed(2);
-          let widthPercent = Math.min(100, (data.saldo / 5000) * 100);
-          document.querySelector(".saldo-bar").style.width = widthPercent + "%";
-          document.querySelector(".totals-wrapper").innerHTML = 
-            "<span>Total de Receitas: R$ " + data.receitas.toFixed(2) + "</span>" +
-            "<span>Total de Despesas: R$ " + data.despesas.toFixed(2) + "</span>";
-        })
-        .catch(error => {
-          console.error("Erro ao atualizar totais:", error);
-        });
-      }
-      
-      // COMPRAS
-      function atualizarCompras() {
-        const payload = { action: "getCompras" };
-        fetch(webAppUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-          const container = document.getElementById("listaCompras");
-          container.innerHTML = "";
-          data.forEach(item => {
-            const div = document.createElement("div");
-            div.innerHTML =
-              "Compra: " + item.nome + " - Valor: R$ " + Number(item.valor).toFixed(2) +
-              " <button onclick='deleteCompraFront(\"" + item.id + "\")'>X</button>" +
-              " <button onclick='editCompraFront(\"" + item.id + "\")'>Edit</button>";
-            container.appendChild(div);
-          });
-        })
-        .catch(error => {
-          console.error("Erro ao carregar compras:", error);
-        });
-      }
-      
-      function deleteCompraFront(recordId) {
-        const payload = { action: "deleteCompra", recordId: recordId };
-        fetch(webAppUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-          alert("Resposta: " + JSON.stringify(data));
-          atualizarCompras();
-          atualizarTotais();
-        })
-        .catch(error => {
-          alert("Erro: " + error.message);
-        });
-      }
-      
-      function editCompraFront(recordId) {
-        let novoNome = prompt("Digite o novo nome da compra:");
-        let novoValor = prompt("Digite o novo valor:");
-        const payload = { action: "updateCompra", recordId: recordId, data: { nome: novoNome, valor: novoValor } };
-        fetch(webAppUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-          alert("Resposta: " + JSON.stringify(data));
-          atualizarCompras();
-          atualizarTotais();
-        })
-        .catch(error => {
-          alert("Erro: " + error.message);
-        });
-      }
-      
-      // CONTAS
-      function atualizarContas() {
-        const payload = { action: "getContas" };
-        fetch(webAppUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-          const container = document.getElementById("listaContas");
-          container.innerHTML = "";
-          data.forEach(item => {
-            const div = document.createElement("div");
-            div.innerHTML =
-              "Conta: " + item.nome + " - Valor: R$ " + Number(item.valor).toFixed(2) +
-              " <button onclick='deleteContaFront(\"" + item.id + "\")'>X</button>" +
-              " <button onclick='editContaFront(\"" + item.id + "\")'>Edit</button>";
-            container.appendChild(div);
-          });
-        })
-        .catch(error => {
-          console.error("Erro ao carregar contas:", error);
-        });
-      }
-      
-      function deleteContaFront(recordId) {
-        const payload = { action: "deleteConta", recordId: recordId };
-        fetch(webAppUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-          alert("Resposta: " + JSON.stringify(data));
-          atualizarContas();
-          atualizarTotais();
-        })
-        .catch(error => {
-          alert("Erro: " + error.message);
-        });
-      }
-      
-      function editContaFront(recordId) {
-        let novoNome = prompt("Digite o novo nome da conta:");
-        let novoValor = prompt("Digite o novo valor:");
-        const payload = { action: "updateConta", recordId: recordId, data: { nome: novoNome, valor: novoValor } };
-        fetch(webAppUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-          alert("Resposta: " + JSON.stringify(data));
-          atualizarContas();
-          atualizarTotais();
-        })
-        .catch(error => {
-          alert("Erro: " + error.message);
-        });
-      }
-      
-      // Envio dos formulários de Compra e Conta
-      function submitCompraCartao() {
-        var form = document.getElementById("formAdicionarCompra");
-        var responsavel = document.getElementById("respCompra").value;
-        var cartao = document.getElementById("cartaoCompra").value;
-        var nome = form.querySelector("input.nome-field").value;
-        var inputs = form.querySelectorAll("input");
-        var valor = inputs[1].value;
-        var parcelas = inputs[2].value;
-        
-        var payload = {
-          action: "addCompraCartao",
-          data: {
-            nome: nome,
-            valor: valor,
-            parcelas: parcelas,
-            responsavel: responsavel,
-            cartao: cartao
-          }
-        };
-        
-        fetch(webAppUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-          alert("Compra no Cartão: " + JSON.stringify(data));
-          atualizarCompras();
-          atualizarTotais();
-        })
-        .catch(error => { alert("Erro: " + error.message); });
-      }
-      
-      function submitConta() {
-        var form = document.getElementById("formAdicionarConta");
-        var tipo = document.getElementById("tipoConta").value;
-        var nome = form.querySelector("input.nome-field").value;
-        var inputs = form.querySelectorAll("input");
-        var parcelas = inputs[1].value;
-        var valor = inputs[2].value;
-        
-        var payload = {
-          action: "addConta",
-          data: {
-            tipo: tipo,
-            nome: nome,
-            parcelas: parcelas,
-            valor: valor
-          }
-        };
-        
-        fetch(webAppUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-          alert("Conta: " + JSON.stringify(data));
-          atualizarContas();
-          atualizarTotais();
-        })
-        .catch(error => { alert("Erro: " + error.message); });
-      }
-      
-      document.addEventListener("DOMContentLoaded", function(){
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Erro HTTP! Status: ${response.status}, Mensagem: ${errorText}`);
+        }
+
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.error('Erro ao buscar dados:', error);
+        throw error; // Re-lança o erro para que as funções chamadoras possam lidar com ele
+    }
+}
+
+// =========================================================
+// FUNÇÕES DE ATUALIZAÇÃO (GET)
+// =========================================================
+
+async function atualizarReceitas() {
+    const receitasTableBody = document.getElementById('receitasTableBody');
+    receitasTableBody.innerHTML = '';
+    try {
+        const receitas = await fetchData('getReceitas');
+        console.log('Receitas carregadas:', receitas);
+
+        if (Array.isArray(receitas)) {
+            receitas.forEach(receita => {
+                const row = receitasTableBody.insertRow();
+                row.insertCell(0).textContent = receita.id || '';
+                row.insertCell(1).textContent = receita.nome || '';
+                row.insertCell(2).textContent = receita.valor ? `R$ ${parseFloat(receita.valor).toFixed(2).replace('.', ',')}` : 'R$ 0,00';
+            });
+        } else {
+            console.error('Resposta de receitas não é um array:', receitas);
+        }
+    } catch (error) {
+        console.error('Erro ao carregar receitas:', error);
+    }
+}
+
+async function atualizarCompras() {
+    const container = document.getElementById("listaCompras");
+    container.innerHTML = "";
+    try {
+        const data = await fetchData('getCompras');
+        console.log('Compras carregadas:', data);
+
+        if (Array.isArray(data)) {
+            data.forEach(item => {
+                const div = document.createElement("div");
+                div.innerHTML =
+                    "Compra: " + (item.nome || '') + " - Valor: R$ " + (Number(item.valor) ? Number(item.valor).toFixed(2).replace('.', ',') : '0,00') +
+                    " <button onclick='deleteCompraFront(\"" + (item.id || '') + "\")'>X</button>" +
+                    " <button onclick='editCompraFront(\"" + (item.id || '') + "\")'>Edit</button>";
+                container.appendChild(div);
+            });
+        } else {
+            console.error('Resposta de compras não é um array:', data);
+        }
+    } catch (error) {
+        console.error('Erro ao carregar compras:', error);
+    }
+}
+
+async function atualizarContas() {
+    const contasTableBody = document.getElementById('contasTableBody');
+    contasTableBody.innerHTML = '';
+    try {
+        const contas = await fetchData('getContas');
+        console.log('Contas carregadas:', contas);
+
+        if (Array.isArray(contas)) {
+            contas.forEach(conta => {
+                const row = contasTableBody.insertRow();
+                row.insertCell(0).textContent = conta.id || '';
+                row.insertCell(1).textContent = conta.nome || '';
+                row.insertCell(2).textContent = conta.valor ? `R$ ${parseFloat(conta.valor).toFixed(2).replace('.', ',')}` : 'R$ 0,00';
+            });
+        } else {
+            console.error('Resposta de contas não é um array:', contas);
+        }
+    } catch (error) {
+        console.error('Erro ao carregar contas:', error);
+    }
+}
+
+async function atualizarTotais() {
+    try {
+        const totais = await fetchData('getTotais');
+        console.log('Totais carregados:', totais);
+
+        if (totais && typeof totais === 'object') {
+            document.getElementById('totalReceitas').textContent = totais.totalReceitas ? `R$ ${parseFloat(totais.totalReceitas).toFixed(2).replace('.', ',')}` : 'R$ 0,00';
+            document.getElementById('totalCompras').textContent = totais.totalCompras ? `R$ ${parseFloat(totais.totalCompras).toFixed(2).replace('.', ',')}` : 'R$ 0,00';
+            document.getElementById('saldoTotal').textContent = totais.saldoTotal ? `R$ ${parseFloat(totais.saldoTotal).toFixed(2).replace('.', ',')}` : 'R$ 0,00';
+        } else {
+            console.error('Resposta de totais não é um objeto válido:', totais);
+        }
+    } catch (error) {
+        console.error('Erro ao atualizar totais:', error);
+    }
+}
+
+
+// =========================================================
+// FUNÇÕES DE ADIÇÃO (POST)
+// =========================================================
+
+async function adicionarReceita() {
+    const nome = document.getElementById('novaReceitaNome').value;
+    const valor = document.getElementById('novaReceitaValor').value;
+    if (!nome || !valor) {
+        alert('Por favor, preencha nome e valor para a receita.');
+        return;
+    }
+    try {
+        const result = await fetchData('addReceita', { nome, valor });
+        console.log('Receita adicionada:', result);
+        alert(result.message);
+        document.getElementById('novaReceitaNome').value = '';
+        document.getElementById('novaReceitaValor').value = '';
         atualizarReceitas();
+        atualizarTotais();
+    } catch (error) {
+        console.error('Erro ao adicionar receita:', error);
+        alert('Erro ao adicionar receita. Verifique o console para detalhes.');
+    }
+}
+
+async function adicionarCompra() {
+    const nome = document.getElementById('novaCompraNome').value;
+    const valor = document.getElementById('novaCompraValor').value;
+    if (!nome || !valor) {
+        alert('Por favor, preencha nome e valor para a compra.');
+        return;
+    }
+    try {
+        const result = await fetchData('addCompra', { nome, valor });
+        console.log('Compra adicionada:', result);
+        alert(result.message);
+        document.getElementById('novaCompraNome').value = '';
+        document.getElementById('novaCompraValor').value = '';
         atualizarCompras();
+        atualizarTotais();
+    } catch (error) {
+        console.error('Erro ao adicionar compra:', error);
+        alert('Erro ao adicionar compra. Verifique o console para detalhes.');
+    }
+}
+
+async function adicionarConta() {
+    const nome = document.getElementById('novaContaNome').value;
+    const valor = document.getElementById('novaContaValor').value;
+    if (!nome || !valor) {
+        alert('Por favor, preencha nome e valor para a conta.');
+        return;
+    }
+    try {
+        const result = await fetchData('addConta', { nome, valor });
+        console.log('Conta adicionada:', result);
+        alert(result.message);
+        document.getElementById('novaContaNome').value = '';
+        document.getElementById('novaContaValor').value = '';
         atualizarContas();
         atualizarTotais();
-        document.querySelector("#formAdicionarCompra button").addEventListener("click", function(e){
-          e.preventDefault();
-          submitCompraCartao();
-        });
-        document.querySelector("#formAdicionarConta button").addEventListener("click", function(e){
-          e.preventDefault();
-          submitConta();
-        });
-      });
-    </script>
+    } catch (error) {
+        console.error('Erro ao adicionar conta:', error);
+        alert('Erro ao adicionar conta. Verifique o console para detalhes.');
+    }
+}
+
+// =========================================================
+// FUNÇÕES DE EXCLUSÃO (DELETE) - FRONT-END e BACKEND
+// =========================================================
+
+async function deleteReceitaFront(id) {
+    if (confirm('Tem certeza que deseja excluir esta receita?')) {
+        try {
+            const result = await fetchData('deleteReceita', { id });
+            console.log('Receita excluída:', result);
+            alert(result.message);
+            atualizarReceitas();
+            atualizarTotais();
+        } catch (error) {
+            console.error('Erro ao excluir receita:', error);
+            alert('Erro ao excluir receita. Verifique o console para detalhes.');
+        }
+    }
+}
+
+async function deleteCompraFront(id) {
+    if (confirm('Tem certeza que deseja excluir esta compra?')) {
+        try {
+            const result = await fetchData('deleteCompra', { id });
+            console.log('Compra excluída:', result);
+            alert(result.message);
+            atualizarCompras();
+            atualizarTotais();
+        } catch (error) {
+            console.error('Erro ao excluir compra:', error);
+            alert('Erro ao excluir compra. Verifique o console para detalhes.');
+        }
+    }
+}
+
+async function deleteContaFront(id) {
+    if (confirm('Tem certeza que deseja excluir esta conta?')) {
+        try {
+            const result = await fetchData('deleteConta', { id });
+            console.log('Conta excluída:', result);
+            alert(result.message);
+            atualizarContas();
+            atualizarTotais();
+        } catch (error) {
+            console.error('Erro ao excluir conta:', error);
+            alert('Erro ao excluir conta. Verifique o console para detalhes.');
+        }
+    }
+}
+
+
+// =========================================================
+// FUNÇÕES DE EDIÇÃO (EDIT) - FRONT-END e BACKEND
+// =========================================================
+
+async function editReceitaFront(id) {
+    const nome = prompt("Novo nome da receita (deixe em branco para não alterar):");
+    const valor = prompt("Novo valor da receita (deixe em branco para não alterar):");
+
+    if (!nome && !valor) {
+        alert("Nenhuma alteração informada.");
+        return;
+    }
+    try {
+        const dataToUpdate = { id };
+        if (nome) dataToUpdate.nome = nome;
+        if (valor) dataToUpdate.valor = valor;
+
+        const result = await fetchData('editReceita', dataToUpdate);
+        console.log('Receita editada:', result);
+        alert(result.message);
+        atualizarReceitas();
+        atualizarTotais();
+    } catch (error) {
+        console.error('Erro ao editar receita:', error);
+        alert('Erro ao editar receita. Verifique o console para detalhes.');
+    }
+}
+
+async function editCompraFront(id) {
+    const nome = prompt("Novo nome da compra (deixe em branco para não alterar):");
+    const valor = prompt("Novo valor da compra (deixe em branco para não alterar):");
+
+    if (!nome && !valor) {
+        alert("Nenhuma alteração informada.");
+        return;
+    }
+    try {
+        const dataToUpdate = { id };
+        if (nome) dataToUpdate.nome = nome;
+        if (valor) dataToUpdate.valor = valor;
+
+        const result = await fetchData('editCompra', dataToUpdate);
+        console.log('Compra editada:', result);
+        alert(result.message);
+        atualizarCompras();
+        atualizarTotais();
+    } catch (error) {
+        console.error('Erro ao editar compra:', error);
+        alert('Erro ao editar compra. Verifique o console para detalhes.');
+    }
+}
+
+async function editContaFront(id) {
+    const nome = prompt("Novo nome da conta (deixe em branco para não alterar):");
+    const valor = prompt("Novo valor da conta (deixe em branco para não alterar):");
+
+    if (!nome && !valor) {
+        alert("Nenhuma alteração informada.");
+        return;
+    }
+    try {
+        const dataToUpdate = { id };
+        if (nome) dataToUpdate.nome = nome;
+        if (valor) dataToUpdate.valor = valor;
+
+        const result = await fetchData('editConta', dataToUpdate);
+        console.log('Conta editada:', result);
+        alert(result.message);
+        atualizarContas();
+        atualizarTotais();
+    } catch (error) {
+        console.error('Erro ao editar conta:', error);
+        alert('Erro ao editar conta. Verifique o console para detalhes.');
+    }
+}
+
+
+// =========================================================
+// EVENT LISTENERS E INICIALIZAÇÃO
+// =========================================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Adicionando event listeners para os botões de adicionar
+    document.getElementById('adicionarReceitaBtn').addEventListener('click', adicionarReceita);
+    document.getElementById('adicionarCompraBtn').addEventListener('click', adicionarCompra);
+    document.getElementById('adicionarContaBtn').addEventListener('click', adicionarConta);
+
+    // Carrega os dados iniciais ao carregar a página
+    atualizarReceitas();
+    atualizarCompras();
+    atualizarContas();
+    atualizarTotais();
+});
+
+</script>
+    
   </head>
   <body>
     <div class="container">
