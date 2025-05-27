@@ -343,10 +343,16 @@
           display: flex;
           justify-content: space-between;
           align-items: center;
+          width: 100%; /* Para que o flexbox distribua bem o conteúdo */
       }
       .checkbox-pago {
         margin-left: 10px;
         transform: scale(1.2); /* Aumenta o tamanho do checkbox */
+      }
+      /* Ajuste para itens de lista para que o checkbox não quebre a linha */
+      .categoria-list .conta-item .list-item-content,
+      .cartao-list .compra .list-item-content {
+        flex-wrap: nowrap; /* Impede que os itens se quebrem em várias linhas */
       }
     </style>
     <script>
@@ -354,7 +360,9 @@
       const webAppUrl = "https://painel-financas-proxy.mariliaedua.workers.dev/";
       // ***************************************************************
       
-      let currentMonth = new Date().getMonth(); // 0-Janeiro, 1-Fevereiro, etc.
+      // Mês atual é 0-Janeiro, 1-Fevereiro, etc. para Date()
+      // Mas para o Apps Script, usamos 1-Janeiro, 2-Fevereiro, etc.
+      let currentMonthIndex = new Date().getMonth(); // 0-11 para Date()
       let currentYear = new Date().getFullYear();
 
       const monthNames = [
@@ -363,33 +371,48 @@
       ];
 
       function updateMonthDisplay() {
-        document.querySelector("header h2").textContent = `${monthNames[currentMonth]} ${currentYear}`;
+        document.querySelector("header h2").textContent = `${monthNames[currentMonthIndex]} ${currentYear}`;
       }
 
       function changeMonth(delta) {
-        currentMonth += delta;
-        if (currentMonth < 0) {
-          currentMonth = 11;
+        currentMonthIndex += delta;
+        if (currentMonthIndex < 0) {
+          currentMonthIndex = 11;
           currentYear--;
-        } else if (currentMonth > 11) {
-          currentMonth = 0;
+        } else if (currentMonthIndex > 11) {
+          currentMonthIndex = 0;
           currentYear++;
         }
         updateMonthDisplay();
-        // Recarrega todos os dados para o novo mês/ano (o Apps Script ainda não filtra por mês/ano, mas o ideal seria passar esses parâmetros)
-        // Por enquanto, as funções do Apps Script continuarão buscando o mês atual do servidor.
-        // Se quiser filtrar por mês/ano no backend, as funções como getReceitas, getCompras, etc. precisarão receber month e year como parâmetros.
-        atualizarReceitas();
-        atualizarCompras();
-        atualizarContas();
-        atualizarTotais();
-        atualizarCartoes(); // Chamar a nova função
-        atualizarComprasPorResponsavel(); // Chamar a nova função
+        // Recarregar todos os dados para o novo mês/ano
+        fetchAllDataForMonth();
+      }
+
+      function getPayload(action, data = {}, recordId = null) {
+          const payload = {
+              action: action,
+              month: currentMonthIndex + 1, // Apps Script usa 1-12
+              year: currentYear,
+              data: data
+          };
+          if (recordId) {
+              payload.recordId = recordId;
+          }
+          return payload;
+      }
+
+      // Função para buscar todos os dados após mudança de mês ou alteração
+      function fetchAllDataForMonth() {
+          atualizarReceitas();
+          atualizarContas();
+          atualizarCartoes();
+          atualizarComprasPorResponsavel();
+          atualizarTotais();
       }
 
       // RECEITAS
       function atualizarReceitas() {
-        const payload = { action: "getReceitas" };
+        const payload = getPayload("getReceitas");
         fetch(webAppUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -402,7 +425,7 @@
           if (data && data.length > 0) {
             data.forEach(item => {
               const div = document.createElement("div");
-              div.classList.add("receita-item"); // Adiciona classe para estilização
+              div.classList.add("receita-item");
               div.innerHTML = `
                 <div class="list-item-content">
                   <span>${item.nome} - R$ ${Number(item.valor).toFixed(2)}</span>
@@ -415,7 +438,7 @@
               container.appendChild(div);
             });
           } else {
-            container.innerHTML = "<p>Nenhuma receita cadastrada.</p>";
+            container.innerHTML = "<p>Nenhuma receita cadastrada para este mês.</p>";
           }
         })
         .catch(error => {
@@ -426,7 +449,7 @@
       
       function deleteReceitaFront(recordId) {
         if (!confirm("Tem certeza que deseja excluir esta receita?")) return;
-        const payload = { action: "deleteReceita", recordId: recordId };
+        const payload = getPayload("deleteReceita", {}, recordId);
         fetch(webAppUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -435,8 +458,7 @@
         .then(response => response.json())
         .then(data => {
           alert(data.message);
-          atualizarReceitas();
-          atualizarTotais();
+          fetchAllDataForMonth(); // Recarrega tudo
         })
         .catch(error => {
           alert("Erro ao excluir receita: " + error.message);
@@ -445,22 +467,17 @@
       
       function editReceitaFront(recordId) {
         let novoNome = prompt("Digite o novo nome da receita:");
-        if (novoNome === null) return; // Usuário cancelou
+        if (novoNome === null) return;
         let novoValor = prompt("Digite o novo valor da receita:");
-        if (novoValor === null) return; // Usuário cancelou
+        if (novoValor === null) return;
 
-        // Validação básica do valor
         novoValor = parseFloat(novoValor.replace(',', '.'));
         if (isNaN(novoValor)) {
           alert("Valor inválido. Digite um número.");
           return;
         }
 
-        const payload = {
-          action: "updateReceita",
-          recordId: recordId,
-          data: { nome: novoNome, valor: novoValor }
-        };
+        const payload = getPayload("updateReceita", { nome: novoNome, valor: novoValor }, recordId);
         fetch(webAppUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -469,8 +486,7 @@
         .then(response => response.json())
         .then(data => {
           alert(data.message);
-          atualizarReceitas();
-          atualizarTotais();
+          fetchAllDataForMonth(); // Recarrega tudo
         })
         .catch(error => {
           alert("Erro ao editar receita: " + error.message);
@@ -494,10 +510,7 @@
               return;
           }
 
-          const payload = {
-              action: "addReceita",
-              data: { nome: nome, valor: valorFloat }
-          };
+          const payload = getPayload("addReceita", { nome: nome, valor: valorFloat });
 
           fetch(webAppUrl, {
               method: "POST",
@@ -507,8 +520,7 @@
           .then(response => response.json())
           .then(data => {
               alert(data.message);
-              atualizarReceitas();
-              atualizarTotais();
+              fetchAllDataForMonth(); // Recarrega tudo
           })
           .catch(error => {
               alert("Erro ao adicionar receita: " + error.message);
@@ -517,7 +529,7 @@
       
       // TOTAIS (Resumo do Mês)
       function atualizarTotais() {
-        const payload = { action: "getTotais" };
+        const payload = getPayload("getTotais");
         fetch(webAppUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -526,7 +538,7 @@
         .then(response => response.json())
         .then(data => {
           document.querySelector(".saldo-label").textContent = "Saldo: R$ " + (data.saldo || 0).toFixed(2);
-          let widthPercent = Math.min(100, ((data.saldo || 0) / 5000) * 100); // Base para a barra, ajustar conforme necessário
+          let widthPercent = Math.min(100, Math.max(0, ((data.saldo || 0) / 5000) * 100)); // Base para a barra, ajustar conforme necessário, min 0 max 100
           document.querySelector(".saldo-bar").style.width = widthPercent + "%";
           document.querySelector(".totals-wrapper").innerHTML = 
             `<span>Total de Receitas: R$ ${Number(data.receitas || 0).toFixed(2)}</span>` +
@@ -540,9 +552,9 @@
         });
       }
       
-      // CONTAS
+      // CONTAS (Fixas e Variáveis)
       function atualizarContas() {
-        const payload = { action: "getContas" };
+        const payload = getPayload("getContas");
         fetch(webAppUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -563,7 +575,7 @@
 
           if (data && data.length > 0) {
             data.forEach(item => {
-              const valorParcela = (parseFloat(item.valor || 0) / parseInt((item.parcelas || '1/1').split('/')[1] || 1));
+              const valorParcela = parseFloat(item.valor || 0) / parseInt(String(item.parcelas || '1/1').split('/')[1] || 1);
               const div = document.createElement("div");
               div.classList.add("conta-item");
               div.innerHTML = `
@@ -581,7 +593,7 @@
                 if (item.pago !== 'Sim') { // Somar apenas se não estiver pago
                   totalFixas += valorParcela;
                 }
-              } else { // Variável
+              } else if (item.tipo === 'Variável') { // Assegura que é variável
                 listaContasVariaveis.appendChild(div);
                 if (item.pago !== 'Sim') { // Somar apenas se não estiver pago
                   totalVariaveis += valorParcela;
@@ -589,8 +601,8 @@
               }
             });
           } else {
-            listaContasFixas.innerHTML = "<p>Nenhuma conta fixa cadastrada.</p>";
-            listaContasVariaveis.innerHTML = "<p>Nenhuma conta variável cadastrada.</p>";
+            listaContasFixas.innerHTML = "<p>Nenhuma conta fixa cadastrada para este mês.</p>";
+            listaContasVariaveis.innerHTML = "<p>Nenhuma conta variável cadastrada para este mês.</p>";
           }
           totalContasFixasElem.textContent = `Total: R$ ${totalFixas.toFixed(2)}`;
           totalContasVariaveisElem.textContent = `Total: R$ ${totalVariaveis.toFixed(2)}`;
@@ -599,12 +611,14 @@
           console.error("Erro ao carregar contas:", error);
           document.getElementById("listaContasFixas").innerHTML = "<p>Erro ao carregar contas.</p>";
           document.getElementById("listaContasVariaveis").innerHTML = "";
+          totalContasFixasElem.textContent = `Total: R$ 0.00`;
+          totalContasVariaveisElem.textContent = `Total: R$ 0.00`;
         });
       }
       
       function deleteContaFront(recordId) {
         if (!confirm("Tem certeza que deseja excluir esta conta?")) return;
-        const payload = { action: "deleteConta", recordId: recordId };
+        const payload = getPayload("deleteConta", {}, recordId);
         fetch(webAppUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -613,8 +627,7 @@
         .then(response => response.json())
         .then(data => {
           alert(data.message);
-          atualizarContas();
-          atualizarTotais();
+          fetchAllDataForMonth(); // Recarrega tudo
         })
         .catch(error => {
           alert("Erro ao excluir conta: " + error.message);
@@ -635,7 +648,7 @@
           return;
         }
 
-        const payload = { action: "updateConta", recordId: recordId, data: { nome: novoNome, valor: novoValor, parcelas: novasParcelas } };
+        const payload = getPayload("updateConta", { nome: novoNome, valor: novoValor, parcelas: novasParcelas }, recordId);
         fetch(webAppUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -644,8 +657,7 @@
         .then(response => response.json())
         .then(data => {
           alert(data.message);
-          atualizarContas();
-          atualizarTotais();
+          fetchAllDataForMonth(); // Recarrega tudo
         })
         .catch(error => {
           alert("Erro ao editar conta: " + error.message);
@@ -653,7 +665,7 @@
       }
 
       function markContaAsPaidFront(recordId, isChecked) {
-        const payload = { action: "markContaAsPaid", recordId: recordId, data: { 'pago': isChecked ? 'Sim' : 'Não' } };
+        const payload = getPayload("markContaAsPaid", { 'pago': isChecked ? 'Sim' : 'Não' }, recordId);
         fetch(webAppUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -662,18 +674,17 @@
         .then(response => response.json())
         .then(data => {
           // alert(data.message); // Opcional: exibir alert de sucesso
-          atualizarContas(); // Recarrega a lista para refletir a mudança visualmente
-          atualizarTotais(); // Recalcula os totais
+          fetchAllDataForMonth(); // Recarrega tudo
         })
         .catch(error => {
           alert("Erro ao marcar conta como paga: " + error.message);
-          atualizarContas(); // Recarrega para reverter o checkbox se houver erro
+          fetchAllDataForMonth(); // Recarrega para reverter o checkbox se houver erro
         });
       }
       
       // COMPRAS (Cartões)
       function atualizarCartoes() {
-        const payload = { action: "getComprasPorCartao" };
+        const payload = getPayload("getComprasPorCartao");
         fetch(webAppUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -698,13 +709,12 @@
             if (comprasDoCartao.length > 0) {
               comprasDoCartao.forEach(item => {
                 const div = document.createElement("div");
-                // Adiciona a classe do responsável para estilização
                 const responsavelClass = item.responsavel ? item.responsavel.toLowerCase().replace(/á/g, 'a').replace(/ /g, '') : '';
                 div.classList.add("compra", responsavelClass); 
 
                 div.innerHTML = `
                   <div class="list-item-content">
-                    <span>${item.nome} | ${item.parcelaAtual}/${item.parcelasTotais} | R$ ${item.valor.toFixed(2)} (${item.responsavel})</span>
+                    <span>${item.nome} | ${item.parcelas} | R$ ${item.valor.toFixed(2)} (${item.responsavel})</span>
                     <input type="checkbox" class="checkbox-pago" ${item.pago === 'Sim' ? 'checked' : ''} onchange="markCompraAsPaidFront('${item.id}', this.checked)">
                     <div class="list-item-controls">
                       <button onclick='editCompraFront("${item.id}")'>Edit</button>
@@ -718,29 +728,29 @@
                 }
               });
             } else {
-              cardListElem.innerHTML = "<p>Nenhuma compra neste cartão.</p>";
+              cardListElem.innerHTML = "<p>Nenhuma compra neste cartão para este mês.</p>";
             }
             cardTotalElem.textContent = `Total: R$ ${totalCartao.toFixed(2)}`;
-
-             // Lógica para o checkbox "Pago" do cartão (para o total do cartão)
-            const checkboxCardPago = cardBox.querySelector(".cartao-paid");
-            if (checkboxCardPago) {
-              const allPaid = comprasDoCartao.length > 0 && comprasDoCartao.every(item => item.pago === 'Sim');
-              checkboxCardPago.checked = allPaid;
-              // Você pode adicionar um evento de mudança aqui para marcar todas as compras do cartão como pagas no backend, se desejar
-              // checkboxCardPago.onchange = function() { markAllComprasOfCardAsPaid(cardNome, this.checked); };
-            }
           });
         })
         .catch(error => {
           console.error("Erro ao carregar compras por cartão:", error);
           // Opcional: mostrar mensagem de erro nas seções dos cartões
+          const cartoes = ['Nubank', 'Santander', 'Mercado Pago', 'Amazon'];
+            cartoes.forEach(cartaoNome => {
+                const cardId = cartaoNome.toLowerCase().replace(/\s/g, '') + 'Card';
+                const cardBox = document.getElementById(cardId);
+                if (cardBox) {
+                    cardBox.querySelector(".cartao-list").innerHTML = "<p>Erro ao carregar compras.</p>";
+                    cardBox.querySelector(".cartao-total").textContent = "Total: R$ 0.00";
+                }
+            });
         });
       }
 
       function deleteCompraFront(recordId) {
         if (!confirm("Tem certeza que deseja excluir esta compra?")) return;
-        const payload = { action: "deleteCompra", recordId: recordId };
+        const payload = getPayload("deleteCompra", {}, recordId);
         fetch(webAppUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -749,9 +759,7 @@
         .then(response => response.json())
         .then(data => {
           alert(data.message);
-          atualizarCartoes(); // Atualiza a lista de cartões
-          atualizarComprasPorResponsavel(); // Atualiza lista de responsáveis
-          atualizarTotais();
+          fetchAllDataForMonth(); // Recarrega tudo
         })
         .catch(error => {
           alert("Erro ao excluir compra: " + error.message);
@@ -772,7 +780,7 @@
           return;
         }
 
-        const payload = { action: "updateCompra", recordId: recordId, data: { nome: novoNome, valor: novoValor, parcelas: novasParcelas } };
+        const payload = getPayload("updateCompra", { nome: novoNome, valor: novoValor, parcelas: novasParcelas }, recordId);
         fetch(webAppUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -781,9 +789,7 @@
         .then(response => response.json())
         .then(data => {
           alert(data.message);
-          atualizarCartoes(); // Atualiza a lista de cartões
-          atualizarComprasPorResponsavel(); // Atualiza lista de responsáveis
-          atualizarTotais();
+          fetchAllDataForMonth(); // Recarrega tudo
         })
         .catch(error => {
           alert("Erro ao editar compra: " + error.message);
@@ -791,7 +797,7 @@
       }
 
       function markCompraAsPaidFront(recordId, isChecked) {
-        const payload = { action: "markCompraAsPaid", recordId: recordId, data: { 'pago': isChecked ? 'Sim' : 'Não' } };
+        const payload = getPayload("markCompraAsPaid", { 'pago': isChecked ? 'Sim' : 'Não' }, recordId);
         fetch(webAppUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -800,13 +806,11 @@
         .then(response => response.json())
         .then(data => {
           // alert(data.message); // Opcional: exibir alert de sucesso
-          atualizarCartoes(); // Recarrega a lista para refletir a mudança visualmente
-          atualizarComprasPorResponsavel(); // Recarrega a lista de responsáveis
-          atualizarTotais(); // Recalcula os totais
+          fetchAllDataForMonth(); // Recarrega tudo
         })
         .catch(error => {
           alert("Erro ao marcar compra como paga: " + error.message);
-          atualizarCartoes(); // Recarrega para reverter o checkbox se houver erro
+          fetchAllDataForMonth(); // Recarrega para reverter o checkbox se houver erro
         });
       }
       
@@ -819,7 +823,7 @@
         var valor = form.querySelector("input[placeholder='Valor']").value;
         var parcelas = form.querySelector("input[placeholder='Parcelas (ex: 2/6)']").value;
         
-        if (!nome || !valor || !parcelas) {
+        if (!nome || !valor || !parcelas || !responsavel || !cartao) {
             alert("Por favor, preencha todos os campos da compra.");
             return;
         }
@@ -830,16 +834,13 @@
             return;
         }
 
-        var payload = {
-          action: "addCompraCartao", // Ação corrigida
-          data: {
+        var payload = getPayload("addCompraCartao", {
             nome: nome,
             valor: valor,
             parcelas: parcelas,
             responsavel: responsavel,
             cartao: cartao
-          }
-        };
+        });
         
         fetch(webAppUrl, {
           method: "POST",
@@ -854,9 +855,7 @@
           form.querySelector("input[placeholder='Valor']").value = "";
           form.querySelector("input[placeholder='Parcelas (ex: 2/6)']").value = "";
 
-          atualizarCartoes(); // Agora esta função é responsável por atualizar as compras nos cartões
-          atualizarComprasPorResponsavel(); // E esta pelos totais dos responsáveis
-          atualizarTotais();
+          fetchAllDataForMonth(); // Recarrega tudo
         })
         .catch(error => { alert("Erro ao adicionar compra no cartão: " + error.message); });
       }
@@ -868,7 +867,7 @@
         var parcelas = form.querySelector("input[placeholder='Parcelas (ex: 2/3)']").value;
         var valor = form.querySelector("input[placeholder='Valor']").value;
         
-        if (!nome || !valor || !parcelas) {
+        if (!nome || !valor || !parcelas || !tipo) {
             alert("Por favor, preencha todos os campos da conta.");
             return;
         }
@@ -879,15 +878,12 @@
             return;
         }
 
-        var payload = {
-          action: "addConta",
-          data: {
+        var payload = getPayload("addConta", {
             tipo: tipo,
             nome: nome,
             parcelas: parcelas,
             valor: valor
-          }
-        };
+        });
         
         fetch(webAppUrl, {
           method: "POST",
@@ -902,15 +898,14 @@
           form.querySelector("input[placeholder='Parcelas (ex: 2/3)']").value = "";
           form.querySelector("input[placeholder='Valor']").value = "";
 
-          atualizarContas();
-          atualizarTotais();
+          fetchAllDataForMonth(); // Recarrega tudo
         })
         .catch(error => { alert("Erro ao adicionar conta: " + error.message); });
       }
 
       // TOTAL DE COMPRAS POR RESPONSÁVEL
       function atualizarComprasPorResponsavel() {
-        const payload = { action: "getComprasPorResponsavel" };
+        const payload = getPayload("getComprasPorResponsavel");
         fetch(webAppUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -924,14 +919,17 @@
 
           responsaveis.forEach(responsavelNome => {
             const responsavelKey = responsavelNome.toLowerCase().replace(/á/g, 'a').replace(/ /g, ''); // Para classes CSS
+            // Tratamento especial para 'Nosso ❤️' para a classe CSS
+            const finalResponsavelKey = responsavelKey === 'nosso❤️' ? 'nosso' : responsavelKey;
+
             const totalData = data[responsavelNome] || { total: 0, compras: [] };
 
             const box = document.createElement("div");
             box.classList.add("responsavel-box");
             box.innerHTML = `
-              <h3><span class="${responsavelKey}">${responsavelNome}</span></h3>
+              <h3><span class="${finalResponsavelKey}">${responsavelNome}</span></h3>
               <p>Compras: R$ ${totalData.total.toFixed(2)}</p>
-              <p><strong>Total: R$ ${totalData.total.toFixed(2)}</strong></p>
+              <p><strong>Total a Pagar: R$ ${totalData.total.toFixed(2)}</strong></p>
             `;
             container.appendChild(box);
           });
@@ -944,11 +942,7 @@
 
       document.addEventListener("DOMContentLoaded", function(){
         updateMonthDisplay(); // Define o mês e ano iniciais
-        atualizarReceitas();
-        atualizarContas(); // Atualiza contas fixas e variáveis
-        atualizarCartoes(); // Atualiza a seção de cartões
-        atualizarComprasPorResponsavel(); // Atualiza a seção de totais por responsável
-        atualizarTotais(); // Atualiza os totais gerais
+        fetchAllDataForMonth(); // Carrega todos os dados iniciais para o mês atual
 
         // Event listeners para navegação de mês
         document.querySelector(".nav-buttons button:first-child").addEventListener("click", function(){
@@ -958,13 +952,11 @@
           changeMonth(1);
         });
 
-        // Event listener para o botão de "Salvar Receitas" (agora um prompt)
         document.querySelector(".categoria-box.receitas button").addEventListener("click", function(e){
-            e.preventDefault(); // Evita o comportamento padrão do botão se estiver dentro de um form
+            e.preventDefault();
             submitReceita();
         });
 
-        // Event listeners para os formulários de Compra e Conta
         document.querySelector("#formAdicionarCompra button").addEventListener("click", function(e){
           e.preventDefault();
           submitCompraCartao();
@@ -1032,8 +1024,7 @@
           <div class="cartao-box" id="nubankCard">
             <h3>
               NUBANK
-              <input type="checkbox" class="cartao-paid" title="Marcar todas como pagas"/>
-            </h3>
+              </h3>
             <div class="cartao-total">Total: R$ 0.00</div>
             <div class="cartao-list">
               <p>Carregando compras...</p>
@@ -1042,7 +1033,6 @@
           <div class="cartao-box" id="santanderCard">
             <h3>
               SANTANDER
-              <input type="checkbox" class="cartao-paid" title="Marcar todas como pagas"/>
             </h3>
             <div class="cartao-total">Total: R$ 0.00</div>
             <div class="cartao-list">
@@ -1052,7 +1042,6 @@
           <div class="cartao-box" id="mpagoCard">
             <h3>
               M.PAGO
-              <input type="checkbox" class="cartao-paid" title="Marcar todas como pagas"/>
             </h3>
             <div class="cartao-total">Total: R$ 0.00</div>
             <div class="cartao-list">
@@ -1062,7 +1051,6 @@
           <div class="cartao-box" id="amazonCard">
             <h3>
               AMAZON
-              <input type="checkbox" class="cartao-paid" title="Marcar todas como pagas"/>
             </h3>
             <div class="cartao-total">Total: R$ 0.00</div>
             <div class="cartao-list">
@@ -1097,7 +1085,7 @@
             <input type="text" placeholder="Parcelas (ex: 2/6)" />
           </div>
           <button>Adicionar Compra no Cartão</button>
-          </div>
+        </div>
         
         <div class="form-section" id="formAdicionarConta">
           <h2>Adicionar Conta</h2>
@@ -1109,7 +1097,7 @@
           <input type="text" placeholder="Parcelas (ex: 2/3)" />
           <input type="number" placeholder="Valor" />
           <button>Adicionar Conta</button>
-          </div>
+        </div>
       </div>
       
       <div class="compras-responsaveis">
