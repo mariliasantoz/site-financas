@@ -660,223 +660,165 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
     
   </head>
-  <body>
-    <div class="container">
-      <!-- CABEÇALHO E NAVEGAÇÃO -->
-      <header>
-        <h1>Painel Financeiro</h1>
-        <h2>Maio 2025</h2>
-        <div class="nav-buttons">
-          <button>&laquo; Mês Anterior</button>
-          <button>Mês Seguinte &raquo;</button>
-        </div>
-      </header>
-      
-      <!-- TOTAIS (Resumo do Mês) -->
-      <div class="totals-section">
-        <div class="totals-wrapper">
-          <span>Total de Receitas: R$ 5000.00</span>
-          <span>Total de Despesas: R$ 3000.00</span>
-        </div>
-        <div class="saldo-bar-container">
-          <div class="saldo-bar"></div>
-          <div class="saldo-label">Saldo: R$ 2000.00</div>
-        </div>
+  <body><body>
+  <div class="container">
+    <header>
+      <h1>Painel Financeiro</h1>
+      <h2>Maio 2025</h2>
+      <div class="nav-buttons">
+        <button>&laquo; Mês Anterior</button>
+        <button>Mês Seguinte &raquo;</button>
       </div>
-      
-      <!-- RESUMO DO MÊS – CATEGORIAS -->
-      <div class="categorias-section">
-        <h2>Resumo do Mês</h2>
-        <div class="categorias-columns">
-          <!-- CAIXA RECEITAS -->
-          <div class="categoria-box receitas">
-            <h3>Receitas</h3>
-            <div class="categoria-list">
-              <div class="receita-item">
-                <input type="text" placeholder="Nome da Receita" value="Nome A" style="width:50%;" />
-                <input type="number" placeholder="Valor" value="1500.00" style="width:40%;" />
-              </div>
-              <div class="receita-item">
-                <input type="text" placeholder="Nome da Receita" value="Nome B" style="width:50%;" />
-                <input type="number" placeholder="Valor" value="2000.00" style="width:40%;" />
-              </div>
-              <div class="receita-item">
-                <input type="text" placeholder="Nome da Receita" value="Nome C" style="width:50%;" />
-                <input type="number" placeholder="Valor" value="1500.00" style="width:40%;" />
-              </div>
-            </div>
-            <button>Salvar Receitas</button>
-            <!-- Lista dinâmica de receitas -->
-            <div id="listaReceitas"></div>
-          </div>
-          
-          <!-- CAIXA CONTAS FIXAS -->
-          <div class="categoria-box contas">
-            <h3>Contas Fixas <input type="checkbox" title="Pago"/></h3>
-            <div class="categoria-list">
-              <div class="conta-item">Conta 1: R$ 1000.00 | 2/3</div>
-              <div class="conta-item">Conta 2: R$ 500.00 | 1/1</div>
-            </div>
-            <div class="conta-total">Total: R$ 1500.00</div>
-          </div>
-          
-          <!-- CAIXA CONTAS VARIÁVEIS -->
-          <div class="categoria-box contas">
-            <h3>Contas Variáveis <input type="checkbox" title="Pago"/></h3>
-            <div class="categoria-list">
-              <div class="conta-item">Conta A: R$ 800.00 | 1/2</div>
-              <div class="conta-item">Conta B: R$ 400.00 | 1/1</div>
-            </div>
-            <div class="conta-total">Total: R$ 1200.00</div>
-          </div>
-        </div>
+    </header>
+
+    <div class="totals-section">
+      <div class="totals-wrapper">
+        <span>Total de Receitas: <span id="totalReceitas">R$ 0,00</span></span>
+        <span>Total de Despesas: <span id="totalCompras">R$ 0,00</span></span>
       </div>
-      
-      <!-- SEÇÃO DE CARTÕES -->
-      <div class="cartoes-section" id="cartoesSection">
-        <h2>Cartões</h2>
-        <div class="cartoes-columns">
-          <div class="cartao-box" id="nubankCard">
-            <h3>
-              NUBANK
-              <input type="checkbox" class="cartao-paid" title="Pago"/>
-            </h3>
-            <div class="cartao-total">Total: R$ 1000.00</div>
-            <div class="cartao-list">
-              <div class="compra liana">Compra X | 1/2 | R$ 500.00</div>
-              <div class="compra liana">Compra Y | 2/2 | R$ 500.00</div>
-            </div>
-          </div>
-          <div class="cartao-box" id="santanderCard">
-            <h3>
-              SANTANDER
-              <input type="checkbox" class="cartao-paid" title="Pago"/>
-            </h3>
-            <div class="cartao-total">Total: R$ 800.00</div>
-            <div class="cartao-list">
-              <div class="compra stefany">Compra A | 1/3 | R$ 300.00</div>
-              <div class="compra stefany">Compra B | 2/3 | R$ 300.00</div>
-              <div class="compra stefany">Compra C | 3/3 | R$ 200.00</div>
-            </div>
-          </div>
-          <div class="cartao-box" id="mpagoCard">
-            <h3>
-              M.PAGO
-              <input type="checkbox" class="cartao-paid" title="Pago"/>
-            </h3>
-            <div class="cartao-total">Total: R$ 600.00</div>
-            <div class="cartao-list">
-              <div class="compra marilia">Compra Z | 1/1 | R$ 600.00</div>
-            </div>
-          </div>
-          <div class="cartao-box" id="amazonCard">
-            <h3>
-              AMAZON
-              <input type="checkbox" class="cartao-paid" title="Pago"/>
-            </h3>
-            <div class="cartao-total">Total: R$ 400.00</div>
-            <div class="cartao-list">
-              <div class="compra nosso">Compra W | 1/1 | R$ 400.00</div>
-            </div>
-          </div>
-        </div>
+      <div class="saldo-bar-container">
+        <div class="saldo-bar"></div>
+        <div class="saldo-label">Saldo: <span id="saldoTotal">R$ 0,00</span></div>
       </div>
-      
-      <!-- CONTAINER DOS FORMULÁRIOS -->
-      <div class="forms-container">
-        <!-- FORMULÁRIO PARA ADICIONAR COMPRA NO CARTÃO -->
-        <div class="form-section" id="formAdicionarCompra">
-          <h2>Adicionar Compra no Cartão</h2>
-          <div class="row">
-            <select id="respCompra">
-              <option value="Liana">Liana</option>
-              <option value="Stefany">Stefany</option>
-              <option value="Marília">Marília</option>
-              <option value="Nosso ❤️">Nosso ❤️</option>
-            </select>
-            <select id="cartaoCompra">
-              <option value="Nubank">NUBANK</option>
-              <option value="Santander">SANTANDER</option>
-              <option value="Mercado Pago">M.PAGO</option>
-              <option value="Amazon">AMAZON</option>
-            </select>
-          </div>
-          <div class="row">
-            <input type="text" class="nome-field" placeholder="Nome da Compra" />
-          </div>
-          <div class="row">
-            <input type="number" placeholder="Valor" />
-            <input type="text" placeholder="Parcelas (ex: 2/6)" />
-          </div>
-          <button>Adicionar Compra no Cartão</button>
-          <!-- Lista dinâmica de Compras -->
-          <div id="listaCompras"></div>
-        </div>
-        
-        <!-- FORMULÁRIO PARA ADICIONAR CONTA -->
-        <div class="form-section" id="formAdicionarConta">
-          <h2>Adicionar Conta</h2>
-          <select id="tipoConta">
-            <option value="Fixa">Fixa</option>
-            <option value="Variável">Variável</option>
-          </select>
-          <input type="text" class="nome-field" placeholder="Nome da Conta" />
-          <input type="text" placeholder="Parcelas (ex: 2/3)" />
-          <input type="number" placeholder="Valor" />
-          <button>Adicionar Conta</button>
-          <!-- Lista dinâmica de Contas -->
-          <div id="listaContas"></div>
-        </div>
-      </div>
-      
-      <!-- TOTAL DE COMPRAS POR RESPONSÁVEL -->
-      <div class="compras-responsaveis">
-        <h2>Total de Compras por Responsável</h2>
-        <div class="responsaveis-container">
-          <div class="responsavel-box">
-            <h3><span class="liana">Liana</span></h3>
-            <p>Nubank: R$100,00</p>
-            <p>Santander: R$250,00</p>
-            <p>M.PAGO: R$0,00</p>
-            <p>Amazon: R$150,00</p>
-            <p><strong>Total: R$500,00</strong></p>
-          </div>
-          <div class="responsavel-box">
-            <h3><span class="stefany">Stefany</span></h3>
-            <p>Nubank: R$200,00</p>
-            <p>Santander: R$300,00</p>
-            <p>M.PAGO: R$50,00</p>
-            <p>Amazon: R$100,00</p>
-            <p><strong>Total: R$650,00</strong></p>
-          </div>
-          <div class="responsavel-box">
-            <h3><span class="marilia">Marília</span></h3>
-            <p>Nubank: R$150,00</p>
-            <p>Santander: R$300,00</p>
-            <p>M.PAGO: R$2,00</p>
-            <p>Amazon: R$0,00</p>
-            <p><strong>Total: R$452,00</strong></p>
-          </div>
-          <div class="responsavel-box">
-            <h3><span class="nosso">Nosso ❤️</span></h3>
-            <p>Nubank: R$50,00</p>
-            <p>Santander: R$100,00</p>
-            <p>M.PAGO: R$0,00</p>
-            <p>Amazon: R$200,00</p>
-            <p><strong>Total: R$350,00</strong></p>
-          </div>
-        </div>
-      </div>
-      
-      <!-- RODAPÉ -->
-      <footer>
-        <p>
-          <span class="liana">Liana</span>,
-          <span class="stefany">Stefany</span>,
-          <span class="marilia">Marília</span>,
-          <span class="nosso">Nosso ❤️</span>
-        </p>
-      </footer>
     </div>
+
+    <div class="categorias-section">
+      <h2>Resumo do Mês</h2>
+      <div class="categorias-columns">
+        <div class="categoria-box receitas">
+          <h3>Receitas</h3>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Valor</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="receitasTableBody">
+              </tbody>
+          </table>
+          <div class="add-item-form">
+            <input type="text" id="novaReceitaNome" placeholder="Nome da Receita" />
+            <input type="number" id="novaReceitaValor" placeholder="Valor" />
+            <button id="adicionarReceitaBtn">Adicionar Receita</button>
+          </div>
+        </div>
+
+        <div class="categoria-box contas">
+          <h3>Contas</h3>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Valor</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="contasTableBody">
+              </tbody>
+          </table>
+          <div class="add-item-form">
+            <input type="text" id="novaContaNome" placeholder="Nome da Conta" />
+            <input type="number" id="novaContaValor" placeholder="Valor" />
+            <button id="adicionarContaBtn">Adicionar Conta</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cartoes-section" id="cartoesSection">
+      <h2>Compras Detalhadas</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Valor</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="listaCompras">
+          </tbody>
+      </table>
+    </div>
+
+    <div class="forms-container">
+      <div class="form-section">
+        <h2>Adicionar Compra no Cartão</h2>
+        <div class="row">
+          <select id="respCompra">
+            <option value="Liana">Liana</option>
+            <option value="Stefany">Stefany</option>
+            <option value="Marília">Marília</option>
+            <option value="Nosso ❤️">Nosso ❤️</option>
+          </select>
+          <select id="cartaoCompra">
+            <option value="Nubank">NUBANK</option>
+            <option value="Santander">SANTANDER</option>
+            <option value="Mercado Pago">M.PAGO</option>
+            <option value="Amazon">AMAZON</option>
+          </select>
+        </div>
+        <div class="row">
+          <input type="text" id="novaCompraNome" class="nome-field" placeholder="Nome da Compra" />
+        </div>
+        <div class="row">
+          <input type="number" id="novaCompraValor" placeholder="Valor" />
+          <input type="text" id="novaCompraParcelas" placeholder="Parcelas (ex: 2/6)" />
+        </div>
+        <button id="adicionarCompraBtn">Adicionar Compra no Cartão</button>
+      </div>
+    </div>
+
+    <div class="compras-responsaveis">
+      <h2>Total de Compras por Responsável</h2>
+      <div class="responsaveis-container">
+        <div class="responsavel-box">
+          <h3><span class="liana">Liana</span></h3>
+          <p>Nubank: R$100,00</p>
+          <p>Santander: R$250,00</p>
+          <p>M.PAGO: R$0,00</p>
+          <p>Amazon: R$150,00</p>
+          <p><strong>Total: R$500,00</strong></p>
+        </div>
+        <div class="responsavel-box">
+          <h3><span class="stefany">Stefany</span></h3>
+          <p>Nubank: R$200,00</p>
+          <p>Santander: R$300,00</p>
+          <p>M.PAGO: R$50,00</p>
+          <p>Amazon: R$100,00</p>
+          <p><strong>Total: R$650,00</strong></p>
+        </div>
+        <div class="responsavel-box">
+          <h3><span class="marilia">Marília</span></h3>
+          <p>Nubank: R$150,00</p>
+          <p>Santander: R$300,00</p>
+          <p>M.PAGO: R$2,00</p>
+          <p>Amazon: R$0,00</p>
+          <p><strong>Total: R$452,00</strong></p>
+        </div>
+        <div class="responsavel-box">
+          <h3><span class="nosso">Nosso ❤️</span></h3>
+          <p>Nubank: R$50,00</p>
+          <p>Santander: R$100,00</p>
+          <p>M.PAGO: R$0,00</p>
+          <p>Amazon: R$200,00</p>
+          <p><strong>Total: R$350,00</strong></p>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>
+        <span class="liana">Liana</span>,
+        <span class="stefany">Stefany</span>,
+        <span class="marilia">Marília</span>,
+        <span class="nosso">Nosso ❤️</span>
+      </p>
+    </footer>
+  </div>
   </body>
 </html>
