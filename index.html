@@ -412,40 +412,43 @@
 
       // RECEITAS
       function atualizarReceitas() {
-        const payload = getPayload("getReceitas");
-        fetch(webAppUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-          const container = document.getElementById("listaReceitas");
-          container.innerHTML = "";
-          if (data && data.length > 0) {
-            data.forEach(item => {
-              const div = document.createElement("div");
-              div.classList.add("receita-item");
-              div.innerHTML = `
-                <div class="list-item-content">
-                  <span>${item.nome} - R$ ${Number(item.valor).toFixed(2)}</span>
-                  <div class="list-item-controls">
-                    <button onclick='editReceitaFront("${item.id}")'>Edit</button>
-                    <button onclick='deleteReceitaFront("${item.id}")'>X</button>
-                  </div>
-                </div>
-              `;
-              container.appendChild(div);
-            });
-          } else {
-            container.innerHTML = "<p>Nenhuma receita cadastrada para este mês.</p>";
-          }
-        })
-        .catch(error => {
-          console.error("Erro ao carregar receitas:", error);
-          document.getElementById("listaReceitas").innerHTML = "<p>Erro ao carregar receitas.</p>";
-        });
-      }
+  const payload = { action: "getReceitas", month: currentMonth + 1, year: currentYear }; // Passa o mês e ano
+  fetch(webAppUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+  .then(response => {
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  })
+  .then(data => {
+    const container = document.getElementById("listaReceitas");
+    container.innerHTML = "";
+    if (data && data.length > 0) {
+      data.forEach(item => {
+        const div = document.createElement("div");
+        div.classList.add("receita-item");
+        div.setAttribute("data-id", item.id); // Adiciona o ID para update/delete
+
+        div.innerHTML = `
+          <input type="text" value="${item.nome || ''}" class="input-nome" onchange="updateReceitaFront('${item.id}', 'nome', this.value)">
+          <input type="number" value="${item.valor || ''}" class="input-valor" onchange="updateReceitaFront('${item.id}', 'valor', this.value)">
+          <button onclick="deleteReceitaFront('${item.id}')">Excluir</button>
+        `;
+        container.appendChild(div);
+      });
+    } else {
+      container.innerHTML = "<p>Nenhuma receita cadastrada para este mês.</p>";
+    }
+  })
+  .catch(error => {
+    console.error("Erro ao carregar receitas:", error);
+    document.getElementById("listaReceitas").innerHTML = "<p>Erro ao carregar receitas.</p>";
+  });
+}
       
       function deleteReceitaFront(recordId) {
         if (!confirm("Tem certeza que deseja excluir esta receita?")) return;
