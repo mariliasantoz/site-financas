@@ -19,7 +19,6 @@
         background-color: #fff;
         padding: 20px;
         border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       }
       /* Caixas (exceto o container principal) */
       .totals-section,
@@ -29,259 +28,266 @@
       .compras-responsaveis,
       .categoria-box,
       .responsavel-box {
-        background-color: #e3f2fd; /* Azul claro */
-        border: 1px solid #90caf9; /* Azul um pouco mais escuro */
+        background-color: #e3f2fd;
+        border: 1px solid #90caf9;
         border-radius: 5px;
-        margin-bottom: 20px;
-        padding: 15px;
       }
       /* BOTÕES */
       button {
-        background-color: #4caf50; /* Verde */
+        background-color: #4caf50;
         color: #fff;
         border: none;
         border-radius: 5px;
-        padding: 10px 15px;
         cursor: pointer;
-        font-size: 1em;
-        margin-right: 5px; /* Espaço entre botões */
+        padding: 8px 12px;
       }
       button:hover {
-        background-color: #45a049;
+        background-color: #43a047;
       }
-      button:active {
-        background-color: #3e8e41;
+      /* Força inputs e selects a terem texto preto */
+      input, select {
+        color: black;
       }
-      /* Campos de Formulário */
-      input[type="text"],
-      input[type="number"],
-      select {
-        width: calc(100% - 22px); /* Ajuste para padding e border */
-        padding: 10px;
-        margin-bottom: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box; /* Inclui padding e border no width */
+      /* CENTRALIZAÇÃO DOS TÍTULOS */
+      h1, h2, h3 {
+        text-align: center;
       }
-
-      /* CABEÇALHO */
+      /* CABEÇALHO E NAVEGAÇÃO */
       header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
+        text-align: center;
+        margin-bottom: 10px;
       }
       header h1 {
-        color: #333;
         margin: 0;
+        font-size: 2.5em;
       }
       header h2 {
-        color: #555;
-        margin: 0;
+        margin: 5px 0 10px;
+        font-size: 2em;
+      }
+      .nav-buttons {
+        text-align: center;
+        margin-bottom: 20px;
       }
       .nav-buttons button {
-        background-color: #007bff; /* Azul padrão para navegação */
+        padding: 10px 15px;
+        margin: 0 10px;
       }
-      .nav-buttons button:hover {
-        background-color: #0056b3;
-      }
-
-      /* SEÇÃO DE TOTAIS */
+      /* TOTAIS – RESUMO DO MÊS */
       .totals-section {
-        padding: 20px;
-        text-align: center;
-        background-color: #f0f8ff; /* Azul muito claro */
+        margin-bottom: 20px;
+        padding: 15px;
       }
       .totals-wrapper {
         display: flex;
-        justify-content: space-around;
-        margin-bottom: 15px;
-        font-size: 1.1em;
-        font-weight: bold;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1.2em;
       }
       .saldo-bar-container {
-        width: 100%;
+        position: relative;
+        background-color: #ddd;
         height: 20px;
-        background-color: #e0e0e0;
         border-radius: 10px;
         overflow: hidden;
-        position: relative;
+        margin: 10px 0;
       }
       .saldo-bar {
         height: 100%;
-        background-color: #64dd17; /* Verde para saldo positivo */
-        width: 0%; /* Será preenchido por JS */
-        transition: width 0.5s ease-in-out;
-      }
-      .saldo-bar.negative {
-        background-color: #ff1744; /* Vermelho para saldo negativo */
+        width: 40%;
+        background-color: green;
+        transition: width 0.5s;
       }
       .saldo-label {
         position: absolute;
-        width: 100%;
-        text-align: center;
-        line-height: 20px;
-        color: #333;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
         font-weight: bold;
-        text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+        color: black;
       }
-
-      /* SEÇÃO DE CATEGORIAS (Receitas, Contas, Cartões) */
+      /* CATEGORIAS – Receitas, Contas Fixas, Contas Variáveis */
       .categorias-section {
-        display: flex;
-        flex-wrap: wrap; /* Permite quebrar em linhas menores */
-        gap: 20px;
-        margin-top: 20px;
+        margin-bottom: 20px;
+        padding: 15px;
+      }
+      .categorias-section h2 {
+        margin: 0 0 15px;
+        font-size: 1.8em;
       }
       .categorias-columns {
-          display: flex;
-          flex-wrap: wrap; /* Para responsividade */
-          gap: 20px;
-          width: 100%; /* Ocupa a largura total da seção */
-      }
-      .categoria-box {
-        flex: 1; /* Cresce para preencher espaço */
-        min-width: 280px; /* Largura mínima para evitar quebras ruins */
-      }
-      .categoria-box h3 {
-        text-align: center;
-        color: #333;
-        margin-top: 0;
-      }
-      .categoria-list {
-        background-color: #fff;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        padding: 10px;
-        min-height: 100px; /* Garante altura mínima para listas */
-        max-height: 300px;
-        overflow-y: auto;
-        margin-bottom: 10px;
-      }
-      .list-item {
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        padding: 8px 0;
-        border-bottom: 1px solid #eee;
+        gap: 15px;
       }
-      .list-item:last-child {
+      /* CAIXA RECEITAS */
+      .categoria-box.receitas {
+        width: 32%;
+        padding: 10px;
+      }
+      .categoria-box.receitas h3 {
+        margin: 0 0 10px;
+        font-size: 1.2em;
+        border-bottom: 1px solid #90caf9;
+        padding-bottom: 5px;
+        text-align: center;
+      }
+      .categoria-box.receitas .categoria-list .receita-item {
+        margin-bottom: 8px;
+        text-align: center;
+      }
+      .categoria-box.receitas .categoria-list .receita-item input {
+        padding: 5px;
+        margin: 5px;
+        box-sizing: border-box;
+      }
+      /* CAIXA CONTAS FIXAS */
+      .categoria-box.contas {
+        width: 32%;
+        padding: 10px;
+      }
+      .categoria-box.contas h3 {
+        margin: 0 0 10px;
+        font-size: 1.2em;
+        border-bottom: 1px solid #90caf9;
+        padding-bottom: 5px;
+      }
+      .categoria-box.contas .categoria-list .conta-item {
+        padding: 5px;
+        font-size: 0.9em;
+        border-bottom: 1px dashed #90caf9;
+        text-align: center;
+      }
+      .categoria-box.contas .categoria-list .conta-item:last-child {
         border-bottom: none;
       }
-      .list-item-content {
-          display: flex;
-          flex-grow: 1; /* Ocupa o máximo de espaço */
-          align-items: center;
-          gap: 8px; /* Espaço entre span, checkbox, e controles */
+      .categoria-box.contas .conta-total {
+        text-align: right;
+        font-weight: bold;
+        margin-top: 5px;
       }
-      .list-item-content span {
-          flex-grow: 1; /* Permite que o texto cresça */
+      .categoria-box.receitas button {
+        display: block;
+        margin: 10px auto 0;
       }
-      .list-item-controls button {
-          padding: 5px 8px;
-          font-size: 0.8em;
-          margin-left: 5px;
-          background-color: #f44336; /* Vermelho para X */
-      }
-      .list-item-controls button:first-child {
-          background-color: #ff9800; /* Laranja para Edit */
-      }
-      .list-item-controls button:hover {
-          opacity: 0.9;
-      }
-      .list-item-content .checkbox-pago {
-        width: auto; /* Não ocupa a largura total */
-        margin: 0;
-        cursor: pointer;
-      }
-      .list-item.pago span {
-        text-decoration: line-through;
-        color: #888;
-      }
-
-      /* Formulários */
+      /* FORMULÁRIOS */
       .form-section {
-        background-color: #e8f5e9; /* Verde claro para formulários */
-        border-color: #a5d6a7;
-        padding: 20px;
+        padding: 15px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
       .form-section h2 {
-        text-align: center;
-        color: #333;
-        margin-top: 0;
+        margin: 0 0 15px;
+        font-size: 1.8em;
       }
       .form-section .row {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 10px;
-      }
-      .form-section .row input {
-        flex: 1;
-        margin-bottom: 0; /* Remove margin-bottom extra */
-      }
-      .form-section button {
         width: 100%;
-        margin-top: 10px;
+        text-align: center;
+        margin: 10px 0;
       }
-
-      /* Seção de Cartões */
-      .cartoes-section {
+      .form-section select,
+      .form-section input {
+        width: 20%;
+        padding: 8px;
+        margin: 5px;
+        box-sizing: border-box;
+      }
+      .form-section .nome-field {
+        width: 40% !important;
+      }
+      .forms-container {
         display: flex;
-        flex-wrap: wrap;
         gap: 20px;
+        margin-bottom: 20px;
+      }
+      .forms-container > .form-section {
+        width: 50%;
+      }
+      /* CARTÕES */
+      .cartoes-section {
+        margin-bottom: 20px;
+        padding: 15px;
+      }
+      .cartoes-section h2 {
+        margin-top: 0;
+        font-size: 1.8em;
+      }
+      .cartoes-columns {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
       }
       .cartao-box {
-        background-color: #e0f2f7; /* Azul mais claro para cartões */
-        border: 1px solid #b3e5fc;
+        width: 23%;
+        padding: 10px;
+        text-align: center;
+        border: 1px solid #90caf9;
         border-radius: 5px;
-        padding: 15px;
-        flex: 1;
-        min-width: 250px;
       }
       .cartao-box h3 {
-        text-align: center;
-        margin-top: 0;
-        margin-bottom: 10px;
+        margin: 0 0 10px;
+        font-size: 1.2em;
+        border-bottom: 1px solid;
+        padding-bottom: 5px;
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 10px;
       }
       .cartao-total {
+        margin: 10px 0;
         font-weight: bold;
-        text-align: center;
-        margin-bottom: 10px;
+        color: black;
       }
-      .cartao-list {
-        background-color: #fff;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        padding: 10px;
-        min-height: 80px;
-        max-height: 250px;
-        overflow-y: auto;
+      .cartao-list div {
+        padding: 5px;
+        font-size: 0.9em;
+        border-bottom: 1px dashed;
+        color: black;
       }
-      .cartao-paid-checkbox {
-        width: auto;
-        margin-left: auto; /* Empurra para a direita */
-        cursor: pointer;
+      .cartao-list div:last-child {
+        border-bottom: none;
       }
-
-      /* Compras por Responsável */
+      /* Cartões Personalizados */
+      #nubankCard {
+        background: linear-gradient(to bottom, #e8ccf5, #d1a9ea, #ba86e0, #8605b8);
+        border: 1px solid #8605b8;
+      }
+      #santanderCard {
+        background: linear-gradient(to bottom, #ffe6e6, #ffcccc, #ffb3b3, #e50000);
+        border: 1px solid #e50000;
+      }
+      #mpagoCard {
+        background: linear-gradient(to bottom, #d1e0f0, #a3c1e1, #75a2d2, #1c3d91);
+        border: 1px solid #1c3d91;
+      }
+      #amazonCard {
+        background: linear-gradient(to bottom, #ff9700, #d47c00, #aa6100, #222e3d);
+        border: 1px solid #222e3d;
+      }
+      /* TOTAL DE COMPRAS POR RESPONSÁVEL - CENTRALIZADO */
       .compras-responsaveis {
-        margin-top: 20px;
+        margin-bottom: 20px;
+        padding: 15px;
         text-align: center;
+      }
+      .compras-responsaveis h2 {
+        margin-bottom: 15px;
+        font-size: 1.8em;
       }
       .responsaveis-container {
         display: flex;
+        justify-content: space-around;
+        gap: 15px;
         flex-wrap: wrap;
-        gap: 20px;
-        justify-content: center;
       }
       .responsavel-box {
-        flex: 1;
-        min-width: 200px;
-        max-width: 280px;
+        width: 22%;
+        padding: 10px;
+        background-color: #e3f2fd;
+        border: 1px solid #90caf9;
+        border-radius: 5px;
         text-align: center;
       }
       .responsavel-box h3 {
@@ -294,22 +300,22 @@
       }
       /* Cores para Responsáveis (background) */
       .liana {
-        background-color: #add8e6; /* Light Blue */
+        background-color: #add8e6;
         padding: 4px 8px;
         border-radius: 3px;
       }
       .stefany {
-        background-color: #ffb347; /* Orange */
+        background-color: #ffb347;
         padding: 4px 8px;
         border-radius: 3px;
       }
       .marilia {
-        background-color: #dda0dd; /* Plum */
+        background-color: #dda0dd;
         padding: 4px 8px;
         border-radius: 3px;
       }
-      .nosso { /* Para "Nosso ❤️" */
-        background-color: #ffc0cb; /* Pink */
+      .nosso {
+        background-color: #ffc0cb;
         padding: 4px 8px;
         border-radius: 3px;
       }
@@ -317,7 +323,6 @@
       footer {
         text-align: center;
         margin-top: 20px;
-        color: #666;
       }
       footer p span {
         margin: 0 5px;
@@ -325,15 +330,28 @@
       }
       .list-item-controls {
           display: flex;
-          justify-content: flex-end; /* Alinha botões à direita */
-          gap: 5px;
+          justify-content: flex-end; /* Alinha os botões à direita */
+          gap: 5px; /* Espaço entre os botões */
+          margin-left: auto; /* Empurra os botões para a direita */
       }
-
-      /* Estilização para o texto de "Carregando..." e "Nenhum item..." */
-      .categoria-list p, .cartao-list p, .responsaveis-container p {
-          text-align: center;
-          color: #777;
-          font-style: italic;
+      .list-item-content {
+          display: flex;
+          align-items: center;
+          justify-content: space-between; /* Distribui o espaço entre o texto e os controles */
+          width: 100%;
+      }
+      .receita-item, .conta-item, .compra {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px;
+        border-bottom: 1px dashed #90caf9;
+      }
+      .receita-item:last-child, .conta-item:last-child, .compra:last-child {
+        border-bottom: none;
+      }
+      .checkbox-pago {
+        margin-left: 10px; /* Adiciona um pouco de espaço à esquerda do checkbox */
       }
     </style>
   </head>
@@ -341,7 +359,7 @@
     <div class="container">
       <header>
         <h1>Painel Financeiro</h1>
-        <h2>Carregando Mês...</h2> 
+        <h2>Maio 2025</h2>
         <div class="nav-buttons">
           <button>&laquo; Mês Anterior</button>
           <button>Mês Seguinte &raquo;</button>
@@ -350,12 +368,12 @@
       
       <div class="totals-section">
         <div class="totals-wrapper">
-          <span id="totalReceitas">Total de Receitas: R$ 0.00</span>
-          <span id="totalDespesas">Total de Despesas: R$ 0.00</span>
+          <span>Total de Receitas: R$ 0.00</span>
+          <span>Total de Despesas: R$ 0.00</span>
         </div>
         <div class="saldo-bar-container">
-          <div class="saldo-bar" id="saldoBar"></div>
-          <div class="saldo-label" id="saldoLabel">Saldo: R$ 0.00</div>
+          <div class="saldo-bar"></div>
+          <div class="saldo-label">Saldo: R$ 0.00</div>
         </div>
       </div>
       
@@ -367,7 +385,7 @@
             <div class="categoria-list" id="listaReceitas">
               <p>Carregando receitas...</p>
             </div>
-            <button onclick="showAddReceitaForm()">Adicionar Receita</button>
+            <button>Adicionar Receita</button>
           </div>
           
           <div class="categoria-box contas">
@@ -375,64 +393,91 @@
             <div class="categoria-list" id="listaContasFixas">
               <p>Carregando contas fixas...</p>
             </div>
-            <div class="conta-fixa-controls">
-                <button onclick="showAddContaForm('Fixa')">Adicionar Conta Fixa</button>
-            </div>
+            <div class="conta-total" id="totalContasFixas">Total: R$ 0.00</div>
           </div>
-
+          
           <div class="categoria-box contas">
             <h3>Contas Variáveis</h3>
             <div class="categoria-list" id="listaContasVariaveis">
               <p>Carregando contas variáveis...</p>
             </div>
-            <div class="conta-variavel-controls">
-                <button onclick="showAddContaForm('Variável')">Adicionar Conta Variável</button>
-            </div>
+            <div class="conta-total" id="totalContasVariaveis">Total: R$ 0.00</div>
           </div>
-        </div>
-
-        <div class="cartoes-section">
-          <h2>Compras por Cartão</h2>
-          <div class="cartoes-container" id="cartoesContainer">
-            <p>Carregando compras por cartão...</p>
-            </div>
-          <button onclick="showAddCompraForm()">Adicionar Compra no Cartão</button>
         </div>
       </div>
       
-      <div class="forms-container" style="display: none;"> <div class="form-section" id="formAdicionarReceita">
-          <h2>Adicionar Nova Receita</h2>
-          <input type="text" id="receitaNome" placeholder="Nome da Receita" />
-          <input type="number" id="receitaValor" placeholder="Valor" />
-          <button onclick="submitReceita()">Adicionar Receita</button>
+      <div class="cartoes-section" id="cartoesSection">
+        <h2>Cartões</h2>
+        <div class="cartoes-columns">
+          <div class="cartao-box" id="nubankCard">
+            <h3>
+              NUBANK
+              <input type="checkbox" class="cartao-paid" title="Marcar todas como pagas"/>
+            </h3>
+            <div class="cartao-total">Total: R$ 0.00</div>
+            <div class="cartao-list">
+              <p>Carregando compras...</p>
+            </div>
+          </div>
+          <div class="cartao-box" id="santanderCard">
+            <h3>
+              SANTANDER
+              <input type="checkbox" class="cartao-paid" title="Marcar todas como pagas"/>
+            </h3>
+            <div class="cartao-total">Total: R$ 0.00</div>
+            <div class="cartao-list">
+              <p>Carregando compras...</p>
+            </div>
+          </div>
+          <div class="cartao-box" id="mpagoCard">
+            <h3>
+              M.PAGO
+              <input type="checkbox" class="cartao-paid" title="Marcar todas como pagas"/>
+            </h3>
+            <div class="cartao-total">Total: R$ 0.00</div>
+            <div class="cartao-list">
+              <p>Carregando compras...</p>
+            </div>
+          </div>
+          <div class="cartao-box" id="amazonCard">
+            <h3>
+              AMAZON
+              <input type="checkbox" class="cartao-paid" title="Marcar todas como pagas"/>
+            </h3>
+            <div class="cartao-total">Total: R$ 0.00</div>
+            <div class="cartao-list">
+              <p>Carregando compras...</p>
+            </div>
+          </div>
         </div>
-
+      </div>
+      
+      <div class="forms-container">
         <div class="form-section" id="formAdicionarCompra">
           <h2>Adicionar Compra no Cartão</h2>
           <div class="row">
-            <select id="compraCartao">
-              <option value="Credicard">Credicard</option>
-              <option value="Itaucard">Itaucard</option>
-              <option value="C6">C6</option>
-              <option value="NuConta">NuConta</option>
+            <select id="respCompra">
+              <option value="Liana">Liana</option>
+              <option value="Stefany">Stefany</option>
+              <option value="Marília">Marília</option>
+              <option value="Nosso ❤️">Nosso ❤️</option>
+            </select>
+            <select id="cartaoCompra">
+              <option value="Nubank">NUBANK</option>
+              <option value="Santander">SANTANDER</option>
+              <option value="Mercado Pago">M.PAGO</option>
               <option value="Amazon">AMAZON</option>
             </select>
-            <select id="compraResponsavel">
-                <option value="Liana">Liana</option>
-                <option value="Stefany">Stefany</option>
-                <option value="Marília">Marília</option>
-                <option value="Nosso ❤️">Nosso ❤️</option>
-            </select>
           </div>
           <div class="row">
-            <input type="text" id="compraNome" placeholder="Nome da Compra" />
+            <input type="text" placeholder="Nome da Compra" />
           </div>
           <div class="row">
-            <input type="number" id="compraValor" placeholder="Valor" />
-            <input type="text" id="compraParcelas" placeholder="Parcelas (ex: 2/6)" />
+            <input type="number" placeholder="Valor" />
+            <input type="text" placeholder="Parcelas (ex: 2/6)" />
           </div>
-          <button onclick="submitCompraCartao()">Adicionar Compra no Cartão</button>
-        </div>
+          <button>Adicionar Compra no Cartão</button>
+          </div>
         
         <div class="form-section" id="formAdicionarConta">
           <h2>Adicionar Conta</h2>
@@ -440,25 +485,25 @@
             <option value="Fixa">Fixa</option>
             <option value="Variável">Variável</option>
           </select>
-          <input type="text" id="contaNome" placeholder="Nome da Conta" />
-          <input type="text" id="contaParcelas" placeholder="Parcelas (ex: 2/3)" />
-          <input type="number" id="contaValor" placeholder="Valor" />
-          <button onclick="submitConta()">Adicionar Conta</button>
-        </div>
+          <input type="text" placeholder="Nome da Conta" />
+          <input type="text" placeholder="Parcelas (ex: 2/3)" />
+          <input type="number" placeholder="Valor" />
+          <button>Adicionar Conta</button>
+          </div>
       </div>
       
       <div class="compras-responsaveis">
         <h2>Total de Compras por Responsável</h2>
-        <div class="responsaveis-container" id="responsaveisContainer">
+        <div class="responsaveis-container">
           <p>Carregando totais por responsável...</p>
         </div>
       </div>
       
       <footer>
         <p>
-          Feito com <span class="liana">Liana</span>,
+          <span class="liana">Liana</span>,
           <span class="stefany">Stefany</span>,
-          <span class="marilia">Marília</span> e
+          <span class="marilia">Marília</span>,
           <span class="nosso">Nosso ❤️</span>
         </p>
       </footer>
@@ -466,619 +511,82 @@
 
     <script>
       // *** AQUI É ONDE A URL DO SEU CLOUDFLARE WORKER DEVE ENTRAR ***
-      const webAppUrl = "https://painel-financas-proxy.mariliaedua.workers.dev/"; 
+      const webAppUrl = "https://painel-financas-proxy.mariliaedua.workers.dev/"; [cite: 369]
       // ***************************************************************
       
-      let currentMonth = new Date().getMonth(); // 0-Janeiro, 1-Fevereiro, etc.
-      let currentYear = new Date().getFullYear();
+      let currentMonth = new Date().getMonth(); // 0-Janeiro, 1-Fevereiro, etc. [cite: 370]
+      let currentYear = new Date().getFullYear(); [cite: 371]
 
       const monthNames = [
         "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
         "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
-      ];
-
-      // Funções para mostrar/esconder formulários
-      function hideAllForms() {
-        document.querySelectorAll('.form-section').forEach(form => {
-          form.style.display = 'none';
-        });
-        document.querySelector('.forms-container').style.display = 'none';
-      }
-
-      function showAddReceitaForm() {
-        hideAllForms();
-        document.getElementById('formAdicionarReceita').style.display = 'block';
-        document.querySelector('.forms-container').style.display = 'block';
-      }
-
-      function showAddCompraForm() {
-        hideAllForms();
-        document.getElementById('formAdicionarCompra').style.display = 'block';
-        document.querySelector('.forms-container').style.display = 'block';
-      }
-
-      function showAddContaForm(tipo) {
-        hideAllForms();
-        document.getElementById('formAdicionarConta').style.display = 'block';
-        document.getElementById('tipoConta').value = tipo; // Define o tipo de conta
-        document.querySelector('.forms-container').style.display = 'block';
-      }
-
+      ]; [cite: 372]
 
       function updateMonthDisplay() {
-        document.querySelector("header h2").textContent = `${monthNames[currentMonth]} ${currentYear}`;
+        document.querySelector("header h2").textContent = `${monthNames[currentMonth]} ${currentYear}`; [cite: 373]
       }
 
       function changeMonth(delta) {
-        currentMonth += delta;
-        if (currentMonth < 0) {
-          currentMonth = 11;
-          currentYear--;
-        } else if (currentMonth > 11) {
-          currentMonth = 0;
-          currentYear++;
+        currentMonth += delta; [cite: 374]
+        if (currentMonth < 0) { [cite: 375]
+          currentMonth = 11; [cite: 375]
+          currentYear--; [cite: 375]
+        } else if (currentMonth > 11) { [cite: 376]
+          currentMonth = 0; [cite: 376]
+          currentYear++; [cite: 376]
         }
-        updateMonthDisplay();
-        // Recarrega todos os dados para o novo mês/ano
-        fetchAllData(); 
+        updateMonthDisplay(); [cite: 377]
+        // Recarrega todos os dados para o novo mês/ano (o Apps Script ainda não filtra por mês/ano, mas o ideal seria passar esses parâmetros)
+        // Por enquanto, as funções do Apps Script continuarão buscando o mês atual do servidor.
+        // Se quiser filtrar por mês/ano no backend, as funções como getReceitas, getCompras, etc. precisarão receber month e year como parâmetros. [cite: 378]
+        atualizarReceitas(); [cite: 379]
+        atualizarContas(); // Atualiza contas fixas e variáveis
+        atualizarCartoes(); // Atualiza a seção de cartões
+        atualizarComprasPorResponsavel(); // Atualiza a seção de totais por responsável
+        atualizarTotais(); // Atualiza os totais gerais
       }
 
-      // Função principal para carregar todos os dados
-      async function fetchAllData() {
-          // Limpa as listas enquanto carrega
-          document.getElementById("listaReceitas").innerHTML = "<p>Carregando receitas...</p>";
-          document.getElementById("listaContasFixas").innerHTML = "<p>Carregando contas fixas...</p>";
-          document.getElementById("listaContasVariaveis").innerHTML = "<p>Carregando contas variáveis...</p>";
-          document.getElementById("cartoesContainer").innerHTML = "<p>Carregando compras por cartão...</p>";
-          document.getElementById("responsaveisContainer").innerHTML = "<p>Carregando totais por responsável...</p>";
-          document.getElementById("totalReceitas").textContent = "Total de Receitas: R$ 0.00";
-          document.getElementById("totalDespesas").textContent = "Total de Despesas: R$ 0.00";
-          document.getElementById("saldoLabel").textContent = "Saldo: R$ 0.00";
-          document.getElementById("saldoBar").style.width = '0%';
-          document.getElementById("saldoBar").classList.remove('negative');
-
-
-          // Paraleliza as chamadas para otimizar o carregamento
-          await Promise.all([
-              atualizarReceitas(),
-              atualizarContas(), 
-              atualizarCartoes(), 
-              atualizarComprasPorResponsavel(), 
-              atualizarTotais() 
-          ]);
-      }
-
-      // -------------------------------------------------------------------
-      // Funções de atualização (GET data)
-      // -------------------------------------------------------------------
-      async function atualizarReceitas() {
-        const listaReceitasElem = document.getElementById("listaReceitas");
-        listaReceitasElem.innerHTML = "<p>Carregando receitas...</p>"; // Reset
-        try {
-          const payload = { action: "getReceitas", month: currentMonth + 1, year: currentYear };
-          const response = await fetch(webAppUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          });
-          const data = await response.json();
-
-          listaReceitasElem.innerHTML = ""; // Limpa antes de adicionar
-          if (data && data.length > 0) {
+      // RECEITAS
+      function atualizarReceitas() {
+        const payload = { action: "getReceitas" }; [cite: 380]
+        fetch(webAppUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+          const container = document.getElementById("listaReceitas"); [cite: 381]
+          container.innerHTML = "";
+          
+          if (data && data.length > 0) { [cite: 382]
             data.forEach(item => {
-              const div = document.createElement("div");
-              div.classList.add("list-item");
+              const div = document.createElement("div"); [cite: 382]
+              div.classList.add("receita-item"); // Adiciona classe para estilização [cite: 382]
               div.innerHTML = `
                 <div class="list-item-content">
-                  <span>${item.nome} | R$ ${parseFloat(item.valor).toFixed(2)}</span>
+                  <span>${item.nome} - R$ ${Number(item.valor).toFixed(2)}</span>
                   <div class="list-item-controls">
-                    <button onclick='editReceitaFront(\"${item.id}\", \"${item.nome}\", ${item.valor})'>Edit</button>
-                    <button onclick='deleteReceitaFront(\"${item.id}\")'>X</button>
+                    <button onclick='editReceitaFront("${item.id}")'>Edit</button>
+                    <button onclick='deleteReceitaFront("${item.id}")'>X</button>
                   </div>
                 </div>
-              `;
-              listaReceitasElem.appendChild(div);
+              `; [cite: 383, 384]
+              container.appendChild(div); [cite: 385]
             });
           } else {
-            listaReceitasElem.innerHTML = "<p>Nenhuma receita encontrada.</p>";
+            container.innerHTML = "<p>Nenhuma receita cadastrada.</p>"; [cite: 386]
           }
-        } catch (error) {
-          console.error("Erro ao carregar receitas:", error);
-          listaReceitasElem.innerHTML = "<p>Erro ao carregar receitas.</p>";
-        }
-      }
-
-      async function atualizarContas() {
-        const listaContasFixasElem = document.getElementById("listaContasFixas");
-        const listaContasVariaveisElem = document.getElementById("listaContasVariaveis");
-        listaContasFixasElem.innerHTML = "<p>Carregando contas fixas...</p>"; // Reset
-        listaContasVariaveisElem.innerHTML = "<p>Carregando contas variáveis...</p>"; // Reset
-        try {
-          const payload = { action: "getContas", month: currentMonth + 1, year: currentYear };
-          const response = await fetch(webAppUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          });
-          const data = await response.json();
-
-          listaContasFixasElem.innerHTML = "";
-          listaContasVariaveisElem.innerHTML = "";
-
-          if (data && data.length > 0) {
-            const contasFixas = data.filter(item => item.tipo === 'Fixa');
-            const contasVariaveis = data.filter(item => item.tipo === 'Variável');
-
-            if (contasFixas.length > 0) {
-                contasFixas.forEach(item => {
-                    const div = document.createElement("div");
-                    div.classList.add("list-item");
-                    if (item.pago === 'Sim') div.classList.add('pago');
-                    div.innerHTML = `
-                      <div class="list-item-content">
-                        <span>${item.nome} | ${item.parcelaAtual}/${item.parcelasTotais} | R$ ${parseFloat(item.valor).toFixed(2)}</span>
-                        <input type="checkbox" class="checkbox-pago" ${item.pago === 'Sim' ? 'checked' : ''} onchange="markContaAsPaidFront('${item.id}', this.checked)">
-                        <div class="list-item-controls">
-                          <button onclick='editContaFront(\"${item.id}\", \"${item.tipo}\", \"${item.nome}\", \"${item.parcelaAtual}/${item.parcelasTotais}\", ${item.valor})'>Edit</button>
-                          <button onclick='deleteContaFront(\"${item.id}\")'>X</button>
-                        </div>
-                      </div>
-                    `;
-                    listaContasFixasElem.appendChild(div);
-                });
-            } else {
-                listaContasFixasElem.innerHTML = "<p>Nenhuma conta fixa encontrada.</p>";
-            }
-
-            if (contasVariaveis.length > 0) {
-                contasVariaveis.forEach(item => {
-                    const div = document.createElement("div");
-                    div.classList.add("list-item");
-                    if (item.pago === 'Sim') div.classList.add('pago');
-                    div.innerHTML = `
-                      <div class="list-item-content">
-                        <span>${item.nome} | ${item.parcelaAtual}/${item.parcelasTotais} | R$ ${parseFloat(item.valor).toFixed(2)}</span>
-                        <input type="checkbox" class="checkbox-pago" ${item.pago === 'Sim' ? 'checked' : ''} onchange="markContaAsPaidFront('${item.id}', this.checked)">
-                        <div class="list-item-controls">
-                          <button onclick='editContaFront(\"${item.id}\", \"${item.tipo}\", \"${item.nome}\", \"${item.parcelaAtual}/${item.parcelasTotais}\", ${item.valor})'>Edit</button>
-                          <button onclick='deleteContaFront(\"${item.id}\")'>X</button>
-                        </div>
-                      </div>
-                    `;
-                    listaContasVariaveisElem.appendChild(div);
-                });
-            } else {
-                listaContasVariaveisElem.innerHTML = "<p>Nenhuma conta variável encontrada.</p>";
-            }
-
-          } else {
-            listaContasFixasElem.innerHTML = "<p>Nenhuma conta fixa encontrada.</p>";
-            listaContasVariaveisElem.innerHTML = "<p>Nenhuma conta variável encontrada.</p>";
-          }
-        } catch (error) {
-          console.error("Erro ao carregar contas:", error);
-          listaContasFixasElem.innerHTML = "<p>Erro ao carregar contas fixas.</p>";
-          listaContasVariaveisElem.innerHTML = "<p>Erro ao carregar contas variáveis.</p>";
-        }
-      }
-
-      async function atualizarCartoes() {
-        const cartoesContainer = document.getElementById("cartoesContainer");
-        cartoesContainer.innerHTML = "<p>Carregando compras por cartão...</p>"; // Reset
-        try {
-          const payload = { action: "getCompras", month: currentMonth + 1, year: currentYear };
-          const response = await fetch(webAppUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          });
-          const data = await response.json();
-
-          cartoesContainer.innerHTML = ""; // Limpa antes de adicionar
-
-          if (data && data.length > 0) {
-            // Agrupar compras por cartão
-            const comprasPorCartao = data.reduce((acc, item) => {
-              const cartaoNome = item.cartao || 'Outros';
-              if (!acc[cartaoNome]) {
-                acc[cartaoNome] = [];
-              }
-              acc[cartaoNome].push(item);
-              return acc;
-            }, {});
-
-            // Criar e popular as caixas de cartão
-            for (const cardNome in comprasPorCartao) {
-              const cardBox = document.createElement("div");
-              cardBox.classList.add("cartao-box");
-              
-              const cardListElem = document.createElement("div");
-              cardListElem.classList.add("cartao-list");
-              
-              let totalCartao = 0;
-              const comprasDoCartao = comprasPorCartao[cardNome];
-
-              // Verificar se todas as compras do cartão estão pagas
-              const allPaid = comprasDoCartao.length > 0 && comprasDoCartao.every(item => item.pago === 'Sim');
-              
-              // Adiciona cabeçalho com checkbox para "Marcar todas"
-              cardBox.innerHTML = `
-                <h3>
-                    ${cardNome} 
-                    <input type="checkbox" class="cartao-paid-checkbox" ${allPaid ? 'checked' : ''} onchange="markAllComprasOfCardAsPaidFront('${cardNome}', this.checked)">
-                </h3>
-                <div class="cartao-total" id="total-${cardNome.replace(/[^a-zA-Z0-9]/g, '')}">Total: R$ 0.00</div>
-              `;
-              cardBox.appendChild(cardListElem);
-
-              comprasDoCartao.forEach(item => {
-                const div = document.createElement("div");
-                div.classList.add("list-item");
-                // Adiciona a classe do responsável para estilização
-                const responsavelClass = item.responsavel ? item.responsavel.toLowerCase().replace(/á/g, 'a').replace(/ /g, '') : '';
-                div.classList.add(responsavelClass); 
-                if (item.pago === 'Sim') div.classList.add('pago'); // Aplica a classe 'pago' para riscados
-
-                div.innerHTML = `
-                  <div class="list-item-content">
-                    <span>${item.nome} | ${item.parcelaAtual}/${item.parcelasTotais} | R$ ${parseFloat(item.valor).toFixed(2)} (${item.responsavel})</span>
-                    <input type="checkbox" class="checkbox-pago" ${item.pago === 'Sim' ? 'checked' : ''} onchange="markCompraAsPaidFront('${item.id}', this.checked)">
-                    <div class="list-item-controls">
-                      <button onclick='editCompraFront(\"${item.id}\", \"${item.cartao}\", \"${item.responsavel}\", \"${item.nome}\", ${item.valor}, \"${item.parcelaAtual}/${item.parcelasTotais}\")'>Edit</button>
-                      <button onclick='deleteCompraFront(\"${item.id}\")'>X</button>
-                    </div>
-                  </div>
-                `;
-                cardListElem.appendChild(div);
-                if (item.pago !== 'Sim') { // Somar apenas se não estiver pago
-                  totalCartao += parseFloat(item.valor);
-                }
-              });
-              document.getElementById(`total-${cardNome.replace(/[^a-zA-Z0-9]/g, '')}`).textContent = `Total: R$ ${totalCartao.toFixed(2)}`;
-              cartoesContainer.appendChild(cardBox);
-            }
-          } else {
-            cartoesContainer.innerHTML = "<p>Nenhuma compra encontrada.</p>";
-          }
-        } catch (error) {
-          console.error("Erro ao carregar compras por cartão:", error);
-          cartoesContainer.innerHTML = "<p>Erro ao carregar compras por cartão.</p>";
-        }
-      }
-
-      async function atualizarTotais() {
-        const totalReceitasElem = document.getElementById("totalReceitas");
-        const totalDespesasElem = document.getElementById("totalDespesas");
-        const saldoLabelElem = document.getElementById("saldoLabel");
-        const saldoBarElem = document.getElementById("saldoBar");
-
-        totalReceitasElem.textContent = "Total de Receitas: R$ 0.00";
-        totalDespesasElem.textContent = "Total de Despesas: R$ 0.00";
-        saldoLabelElem.textContent = "Saldo: R$ 0.00";
-        saldoBarElem.style.width = '0%';
-        saldoBarElem.classList.remove('negative');
-
-        try {
-          const payload = { action: "getTotais", month: currentMonth + 1, year: currentYear };
-          const response = await fetch(webAppUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          });
-          const data = await response.json();
-
-          if (data) {
-            const totalReceitas = parseFloat(data.receitas || 0);
-            const totalDespesas = parseFloat(data.despesas || 0);
-            const saldo = parseFloat(data.saldo || 0);
-
-            totalReceitasElem.textContent = `Total de Receitas: R$ ${totalReceitas.toFixed(2)}`;
-            totalDespesasElem.textContent = `Total de Despesas: R$ ${totalDespesas.toFixed(2)}`;
-            saldoLabelElem.textContent = `Saldo: R$ ${saldo.toFixed(2)}`;
-
-            const maxTotal = Math.max(totalReceitas, totalDespesas, Math.abs(saldo));
-            if (maxTotal > 0) {
-                let saldoPercent = (saldo / maxTotal) * 100;
-                // Ajustar para que a barra não seja negativa e apenas mude de cor
-                if (saldo < 0) {
-                    saldoBarElem.classList.add('negative');
-                    saldoPercent = Math.abs(saldo / maxTotal) * 100; // Usa o valor absoluto para preencher a barra
-                } else {
-                    saldoBarElem.classList.remove('negative');
-                }
-                saldoBarElem.style.width = `${Math.min(100, Math.max(0, saldoPercent))}%`;
-            } else {
-                saldoBarElem.style.width = '0%';
-                saldoBarElem.classList.remove('negative');
-            }
-          }
-        } catch (error) {
-          console.error("Erro ao carregar totais:", error);
-          totalReceitasElem.textContent = "Erro ao carregar receitas.";
-          totalDespesasElem.textContent = "Erro ao carregar despesas.";
-          saldoLabelElem.textContent = "Erro ao carregar saldo.";
-        }
-      }
-
-      async function atualizarComprasPorResponsavel() {
-        const responsaveisContainer = document.getElementById("responsaveisContainer");
-        responsaveisContainer.innerHTML = "<p>Carregando totais por responsável...</p>"; // Reset
-        try {
-          const payload = { action: "getComprasPorResponsavel", month: currentMonth + 1, year: currentYear };
-          const response = await fetch(webAppUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          });
-          const data = await response.json();
-
-          responsaveisContainer.innerHTML = ""; // Limpa antes de adicionar
-
-          if (data) {
-            for (const responsavelNome in data) {
-              const info = data[responsavelNome];
-              const responsavelBox = document.createElement("div");
-              const className = responsavelNome.toLowerCase().replace(/[^a-zA-Z0-9]/g, ''); // Para cores CSS
-              responsavelBox.classList.add("responsavel-box", className);
-              
-              let comprasListHtml = "";
-              if (info.compras && info.compras.length > 0) {
-                info.compras.forEach(compra => {
-                  comprasListHtml += `<p>${compra.nome} (R$ ${parseFloat(compra.valor).toFixed(2)}) - ${compra.cartao}</p>`;
-                });
-              } else {
-                comprasListHtml += "<p>Nenhuma compra pendente.</p>";
-              }
-
-              responsavelBox.innerHTML = `
-                <h3>${responsavelNome}</h3>
-                <p>Total Pendente: R$ ${parseFloat(info.total).toFixed(2)}</p>
-                <div class="compras-detalhe">
-                    ${comprasListHtml}
-                </div>
-              `;
-              responsaveisContainer.appendChild(responsavelBox);
-            }
-          } else {
-            responsaveisContainer.innerHTML = "<p>Nenhum total por responsável encontrado.</p>";
-          }
-        } catch (error) {
-          console.error("Erro ao carregar compras por responsável:", error);
-          responsaveisContainer.innerHTML = "<p>Erro ao carregar totais por responsável.</p>";
-        }
-      }
-
-
-      // -------------------------------------------------------------------
-      // Funções de Submissão (ADD data)
-      // -------------------------------------------------------------------
-      async function submitReceita() {
-        const nome = document.getElementById("receitaNome").value;
-        const valor = document.getElementById("receitaValor").value;
-
-        if (!nome || !valor) {
-          alert("Por favor, preencha todos os campos da receita.");
-          return;
-        }
-
-        const payload = {
-          action: "addReceita",
-          data: { nome: nome, valor: valor }
-        };
-
-        try {
-          const response = await fetch(webAppUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          });
-          const data = await response.json();
-          alert(data.message);
-          document.getElementById("receitaNome").value = "";
-          document.getElementById("receitaValor").value = "";
-          hideAllForms(); // Esconde o formulário após a submissão
-          fetchAllData(); // Recarrega todos os dados
-        } catch (error) {
-          console.error("Erro ao adicionar receita:", error);
-          alert("Erro ao adicionar receita. Verifique o console para mais detalhes.");
-        }
-      }
-
-      async function submitCompraCartao() {
-        const cartao = document.getElementById("compraCartao").value;
-        const responsavel = document.getElementById("compraResponsavel").value;
-        const nome = document.getElementById("compraNome").value;
-        const valor = document.getElementById("compraValor").value;
-        const parcelas = document.getElementById("compraParcelas").value;
-
-        if (!cartao || !responsavel || !nome || !valor || !parcelas) {
-          alert("Por favor, preencha todos os campos da compra no cartão.");
-          return;
-        }
-        
-        // Validação simples de parcelas (ex: "1/6")
-        if (!/^\d+\/\d+$/.test(parcelas)) {
-            alert("Formato de parcelas inválido. Use 'parcelaAtual/totalDeParcelas' (ex: 1/6).");
-            return;
-        }
-
-        const payload = {
-          action: "addCompraCartao",
-          data: { 
-            cartao: cartao, 
-            responsavel: responsavel, 
-            nome: nome, 
-            valor: valor, 
-            parcelas: parcelas 
-          }
-        };
-
-        try {
-          const response = await fetch(webAppUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          });
-          const data = await response.json();
-          alert(data.message);
-          document.getElementById("compraCartao").value = "Credicard"; // Reset
-          document.getElementById("compraResponsavel").value = "Liana"; // Reset
-          document.getElementById("compraNome").value = "";
-          document.getElementById("compraValor").value = "";
-          document.getElementById("compraParcelas").value = "";
-          hideAllForms();
-          fetchAllData(); // Recarrega todos os dados
-        } catch (error) {
-          console.error("Erro ao adicionar compra no cartão:", error);
-          alert("Erro ao adicionar compra no cartão. Verifique o console para mais detalhes.");
-        }
-      }
-
-      async function submitConta() {
-        const tipo = document.getElementById("tipoConta").value;
-        const nome = document.getElementById("contaNome").value;
-        const parcelas = document.getElementById("contaParcelas").value;
-        const valor = document.getElementById("contaValor").value;
-
-        if (!tipo || !nome || !parcelas || !valor) {
-          alert("Por favor, preencha todos os campos da conta.");
-          return;
-        }
-
-        // Validação simples de parcelas (ex: "1/3")
-        if (!/^\d+\/\d+$/.test(parcelas)) {
-            alert("Formato de parcelas inválido. Use 'parcelaAtual/totalDeParcelas' (ex: 1/3).");
-            return;
-        }
-
-        const payload = {
-          action: "addConta",
-          data: { tipo: tipo, nome: nome, parcelas: parcelas, valor: valor }
-        };
-
-        try {
-          const response = await fetch(webAppUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          });
-          const data = await response.json();
-          alert(data.message);
-          document.getElementById("tipoConta").value = "Fixa"; // Reset
-          document.getElementById("contaNome").value = "";
-          document.getElementById("contaParcelas").value = "";
-          document.getElementById("contaValor").value = "";
-          hideAllForms();
-          fetchAllData(); // Recarrega todos os dados
-        } catch (error) {
-          console.error("Erro ao adicionar conta:", error);
-          alert("Erro ao adicionar conta. Verifique o console para mais detalhes.");
-        }
-      }
-
-      // -------------------------------------------------------------------
-      // Funções de Edição (UPDATE data) - Simplificadas para prompt
-      // -------------------------------------------------------------------
-      function editReceitaFront(recordId, currentNome, currentValor) {
-        const newNome = prompt("Editar nome da receita:", currentNome);
-        if (newNome === null) return; // Cancelado
-        const newValor = prompt("Editar valor da receita:", currentValor);
-        if (newValor === null || isNaN(newValor)) return; // Cancelado ou inválido
-
-        const payload = { 
-          action: "updateReceita", 
-          recordId: recordId, 
-          data: { nome: newNome, valor: parseFloat(newValor) } 
-        };
-        
-        fetch(webAppUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-          alert(data.message);
-          fetchAllData(); 
         })
         .catch(error => {
-          console.error("Erro ao editar receita:", error);
-          alert("Erro ao editar receita. Verifique o console.");
+          console.error("Erro ao carregar receitas:", error); [cite: 386]
+          document.getElementById("listaReceitas").innerHTML = "<p>Erro ao carregar receitas.</p>"; [cite: 386]
         });
       }
-
-      function editContaFront(recordId, currentTipo, currentNome, currentParcelas, currentValor) {
-        const newTipo = prompt("Editar tipo da conta (Fixa/Variável):", currentTipo);
-        if (newTipo === null) return;
-        const newNome = prompt("Editar nome da conta:", currentNome);
-        if (newNome === null) return;
-        const newParcelas = prompt("Editar parcelas (ex: 2/3):", currentParcelas);
-        if (newParcelas === null || !/^\d+\/\d+$/.test(newParcelas)) return;
-        const newValor = prompt("Editar valor da conta:", currentValor);
-        if (newValor === null || isNaN(newValor)) return;
-
-        const payload = { 
-          action: "updateConta", 
-          recordId: recordId, 
-          data: { tipo: newTipo, nome: newNome, parcelas: newParcelas, valor: parseFloat(newValor) } 
-        };
-        
-        fetch(webAppUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-          alert(data.message);
-          fetchAllData(); 
-        })
-        .catch(error => {
-          console.error("Erro ao editar conta:", error);
-          alert("Erro ao editar conta. Verifique o console.");
-        });
-      }
-
-      function editCompraFront(recordId, currentCartao, currentResponsavel, currentNome, currentValor, currentParcelas) {
-        const newCartao = prompt("Editar cartão:", currentCartao);
-        if (newCartao === null) return;
-        const newResponsavel = prompt("Editar responsável:", currentResponsavel);
-        if (newResponsavel === null) return;
-        const newNome = prompt("Editar nome da compra:", currentNome);
-        if (newNome === null) return;
-        const newValor = prompt("Editar valor da compra:", currentValor);
-        if (newValor === null || isNaN(newValor)) return;
-        const newParcelas = prompt("Editar parcelas (ex: 2/6):", currentParcelas);
-        if (newParcelas === null || !/^\d+\/\d+$/.test(newParcelas)) return;
-
-        const payload = { 
-          action: "updateCompra", 
-          recordId: recordId, 
-          data: { cartao: newCartao, responsavel: newResponsavel, nome: newNome, valor: parseFloat(newValor), parcelas: newParcelas } 
-        };
-        
-        fetch(webAppUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-          alert(data.message);
-          fetchAllData(); 
-        })
-        .catch(error => {
-          console.error("Erro ao editar compra:", error);
-          alert("Erro ao editar compra. Verifique o console.");
-        });
-      }
-
-      // -------------------------------------------------------------------
-      // Funções de Exclusão (DELETE data)
-      // -------------------------------------------------------------------
+      
       function deleteReceitaFront(recordId) {
-        if (!confirm("Tem certeza que deseja excluir esta receita?")) return;
-        const payload = { action: "deleteReceita", recordId: recordId };
+        if (!confirm("Tem certeza que deseja excluir esta receita?")) return; [cite: 387]
+        const payload = { action: "deleteReceita", recordId: recordId }; [cite: 388]
         fetch(webAppUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -1086,18 +594,177 @@
         })
         .then(response => response.json())
         .then(data => {
-          alert(data.message);
-          fetchAllData(); 
+          alert(data.message); [cite: 389]
+          atualizarReceitas(); [cite: 389]
+          atualizarTotais(); [cite: 389]
         })
         .catch(error => {
-          console.error("Erro ao excluir receita:", error);
-          alert("Erro ao excluir receita. Verifique o console.");
+          alert("Erro ao excluir receita: " + error.message); [cite: 389]
+        });
+      }
+      
+      function editReceitaFront(recordId) {
+        let novoNome = prompt("Digite o novo nome da receita:"); [cite: 390]
+        if (novoNome === null) return; // Usuário cancelou [cite: 391]
+        let novoValor = prompt("Digite o novo valor da receita:"); [cite: 391]
+        if (novoValor === null) return; // Usuário cancelou [cite: 392]
+
+        // Validação básica do valor
+        novoValor = parseFloat(novoValor.replace(',', '.')); [cite: 392]
+        if (isNaN(novoValor)) { [cite: 393]
+          alert("Valor inválido. Digite um número."); [cite: 393]
+          return; [cite: 393]
+        }
+
+        const payload = {
+          action: "updateReceita",
+          recordId: recordId,
+          data: { nome: novoNome, valor: novoValor }
+        }; [cite: 394]
+        fetch(webAppUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+          alert(data.message); [cite: 395]
+          atualizarReceitas(); [cite: 395]
+          atualizarTotais(); [cite: 396]
+        })
+        .catch(error => {
+          alert("Erro ao editar receita: " + error.message); [cite: 396]
+        });
+      }
+
+      function submitReceita() {
+          const nome = prompt("Nome da Receita:"); [cite: 397]
+          if (nome === null || nome.trim() === "") { [cite: 398]
+              alert("Nome da receita não pode ser vazio."); [cite: 398]
+              return; [cite: 399]
+          }
+          const valor = prompt("Valor da Receita:"); [cite: 399]
+          if (valor === null || valor.trim() === "") { [cite: 400]
+              alert("Valor da receita não pode ser vazio."); [cite: 400]
+              return; [cite: 401]
+          }
+          const valorFloat = parseFloat(valor.replace(',', '.')); [cite: 401]
+          if (isNaN(valorFloat)) { [cite: 402]
+              alert("Valor inválido. Digite um número."); [cite: 402]
+              return; [cite: 403]
+          }
+
+          const payload = {
+              action: "addReceita",
+              data: { nome: nome, valor: valorFloat }
+          }; [cite: 403]
+          fetch(webAppUrl, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload)
+          })
+          .then(response => response.json())
+          .then(data => {
+              alert(data.message); [cite: 404]
+              atualizarReceitas(); [cite: 405]
+              atualizarTotais(); [cite: 405]
+          })
+          .catch(error => {
+              alert("Erro ao adicionar receita: " + error.message); [cite: 405]
+          });
+      }
+      
+      // TOTAIS (Resumo do Mês)
+      function atualizarTotais() {
+        const payload = { action: "getTotais" }; [cite: 406]
+        fetch(webAppUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+          document.querySelector(".saldo-label").textContent = "Saldo: R$ " + (data.saldo || 0).toFixed(2); [cite: 407]
+          let widthPercent = Math.min(100, ((data.saldo || 0) / 5000) * 100); // Base para a barra, ajustar conforme necessário [cite: 407]
+          document.querySelector(".saldo-bar").style.width = widthPercent + "%"; [cite: 408]
+          document.querySelector(".totals-wrapper").innerHTML = 
+            `<span>Total de Receitas: R$ ${Number(data.receitas || 0).toFixed(2)}</span>` +
+            `<span>Total de Despesas: R$ ${Number(data.despesas || 0).toFixed(2)}</span>`; [cite: 408]
+        })
+        .catch(error => {
+          console.error("Erro ao atualizar totais:", error); [cite: 409]
+          document.querySelector(".totals-wrapper").innerHTML = "<span>Erro ao carregar totais.</span>"; [cite: 409]
+          document.querySelector(".saldo-label").textContent = "Saldo: R$ 0.00"; [cite: 410]
+          document.querySelector(".saldo-bar").style.width = "0%"; [cite: 410]
+        });
+      }
+      
+      // CONTAS
+      function atualizarContas() {
+        const payload = { action: "getContas" }; [cite: 411]
+        fetch(webAppUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+          const listaContasFixas = document.getElementById("listaContasFixas"); [cite: 411]
+          const listaContasVariaveis = document.getElementById("listaContasVariaveis"); [cite: 412]
+          const totalContasFixasElem = document.getElementById("totalContasFixas"); [cite: 412]
+          const totalContasVariaveisElem = document.getElementById("totalContasVariaveis"); [cite: 412]
+
+          listaContasFixas.innerHTML = "";
+          listaContasVariaveis.innerHTML = "";
+
+          let totalFixas = 0;
+          let totalVariaveis = 0;
+
+          if (data && data.length > 0) { [cite: 412]
+            data.forEach(item => {
+              // Calcular valor da parcela para exibição, mesmo se a conta for única (1/1)
+              const valorParcela = (parseFloat(item.valor || 0) / parseInt((item.parcelas || '1/1').split('/')[1] || 1)); [cite: 413]
+              const div = document.createElement("div"); [cite: 413]
+              div.classList.add("conta-item"); [cite: 413]
+              div.innerHTML = `
+                <div class="list-item-content">
+                  <span>${item.nome}: R$ ${valorParcela.toFixed(2)} | ${item.parcelas || '1/1'}</span>
+                  <input type="checkbox" class="checkbox-pago" ${item.pago === 'Sim' ? 'checked' : ''} onchange="markContaAsPaidFront('${item.id}', this.checked)">
+                  <div class="list-item-controls">
+                    <button onclick='editContaFront("${item.id}")'>Edit</button>
+                    <button onclick='deleteContaFront("${item.id}")'>X</button>
+                  </div>
+                </div>
+              `; [cite: 414, 415, 416, 417]
+              if (item.tipo === 'Fixa') { [cite: 418]
+                listaContasFixas.appendChild(div); [cite: 418]
+                if (item.pago !== 'Sim') { // Somar apenas se não estiver pago [cite: 419]
+                  totalFixas += valorParcela; [cite: 419]
+                }
+              } else { // Variável [cite: 420]
+                listaContasVariaveis.appendChild(div); [cite: 420]
+                if (item.pago !== 'Sim') { // Somar apenas se não estiver pago
+                  totalVariaveis += valorParcela;
+                }
+              }
+            });
+          } else {
+            listaContasFixas.innerHTML = "<p>Nenhuma conta fixa cadastrada.</p>"; [cite: 350]
+            listaContasVariaveis.innerHTML = "<p>Nenhuma conta variável cadastrada.</p>"; [cite: 350]
+          }
+          totalContasFixasElem.textContent = `Total: R$ ${totalFixas.toFixed(2)}`; [cite: 351]
+          totalContasVariaveisElem.textContent = `Total: R$ ${totalVariaveis.toFixed(2)}`; [cite: 351]
+        })
+        .catch(error => {
+          console.error("Erro ao carregar contas:", error); [cite: 352]
+          document.getElementById("listaContasFixas").innerHTML = "<p>Erro ao carregar contas.</p>"; [cite: 352]
+          document.getElementById("listaContasVariaveis").innerHTML = ""; [cite: 352]
         });
       }
 
       function deleteContaFront(recordId) {
-        if (!confirm("Tem certeza que deseja excluir esta conta?")) return;
-        const payload = { action: "deleteConta", recordId: recordId };
+        if (!confirm("Tem certeza que deseja excluir esta conta?")) return; [cite: 353]
+        const payload = { action: "deleteConta", recordId: recordId }; [cite: 354]
         fetch(webAppUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -1105,18 +772,245 @@
         })
         .then(response => response.json())
         .then(data => {
-          alert(data.message);
-          fetchAllData(); 
+          alert(data.message); [cite: 354]
+          atualizarContas(); [cite: 354]
+          atualizarTotais(); [cite: 354]
         })
         .catch(error => {
-          console.error("Erro ao excluir conta:", error);
-          alert("Erro ao excluir conta. Verifique o console.");
+          alert("Erro ao excluir conta: " + error.message); [cite: 355]
+        });
+      }
+
+      function editContaFront(recordId) {
+        let novoNome = prompt("Digite o novo nome da conta:"); [cite: 355]
+        if (novoNome === null) return;
+        let novoValor = prompt("Digite o novo valor da conta:"); [cite: 356]
+        if (novoValor === null) return;
+        let novasParcelas = prompt("Digite as novas parcelas (ex: 2/3) da conta:"); [cite: 357]
+        if (novasParcelas === null) return;
+        
+        novoValor = parseFloat(novoValor.replace(',', '.')); [cite: 357]
+        if (isNaN(novoValor)) { [cite: 358]
+          alert("Valor inválido. Digite um número."); [cite: 358]
+          return; [cite: 358]
+        }
+
+        const payload = { action: "updateConta", recordId: recordId, data: { nome: novoNome, valor: novoValor, parcelas: novasParcelas } }; [cite: 358]
+        fetch(webAppUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+          alert(data.message); [cite: 359]
+          atualizarContas(); [cite: 359]
+          atualizarTotais(); [cite: 359]
+        })
+        .catch(error => {
+          alert("Erro ao editar conta: " + error.message); [cite: 359]
+        });
+      }
+
+      function markContaAsPaidFront(recordId, isChecked) {
+        const payload = { action: "markContaAsPaid", recordId: recordId, data: { 'pago': isChecked ? 'Sim' : 'Não' } }; [cite: 360]
+        fetch(webAppUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+          // alert(data.message); // Opcional: exibir alert de sucesso [cite: 361]
+          atualizarContas(); // Recarrega a lista para refletir a mudança visualmente
+          atualizarTotais(); // Recalcula os totais
+        })
+        .catch(error => {
+          alert("Erro ao marcar conta como paga: " + error.message);
+          atualizarContas(); // Recarrega para reverter o checkbox se houver erro
+        });
+      }
+
+      // CARTÕES
+      function atualizarCartoes() {
+        const payload = { action: "getCompras" };
+        fetch(webAppUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Mapeamento dos IDs de cartão para os nomes das seções HTML
+          const cardSections = {
+            "Nubank": document.getElementById("nubankCard"),
+            "Santander": document.getElementById("santanderCard"),
+            "Mercado Pago": document.getElementById("mpagoCard"),
+            "Amazon": document.getElementById("amazonCard")
+          };
+
+          // Limpa as listas e totais existentes para cada cartão
+          for (const cardName in cardSections) {
+            const cardBox = cardSections[cardName];
+            if (cardBox) {
+              cardBox.querySelector(".cartao-list").innerHTML = "<p>Nenhuma compra neste cartão.</p>"; // Default message
+              cardBox.querySelector(".cartao-total").textContent = "Total: R$ 0.00";
+              const checkboxCardPago = cardBox.querySelector(".cartao-paid"); [cite: 274]
+              if (checkboxCardPago) {
+                checkboxCardPago.checked = false; // Desmarcar todos os checkboxes ao recarregar [cite: 276]
+                // Adiciona um evento de mudança que marca todas as compras daquele cartão como pagas
+                checkboxCardPago.onchange = function() { markAllComprasOfCardAsPaid(cardName, this.checked); };
+              }
+            }
+          }
+
+          if (data && data.length > 0) {
+            // Agrupar compras por cartão
+            const comprasPorCartao = data.reduce((acc, item) => {
+              if (!acc[item.cartao]) {
+                acc[item.cartao] = [];
+              }
+              acc[item.cartao].push(item);
+              return acc;
+            }, {});
+
+            // Iterar sobre os cartões e preencher as seções
+            for (const cardName in cardSections) {
+              const cardBox = cardSections[cardName];
+              if (!cardBox) continue; // Pula se a seção do cartão não existir
+
+              const cardListElem = cardBox.querySelector(".cartao-list");
+              const cardTotalElem = cardBox.querySelector(".cartao-total");
+              const comprasDoCartao = comprasPorCartao[cardName] || [];
+              let totalCartao = 0;
+
+              cardListElem.innerHTML = ""; // Limpa a mensagem de "carregando" ou "nenhuma compra"
+
+              if (comprasDoCartao.length > 0) {
+                comprasDoCartao.forEach(item => {
+                  const div = document.createElement("div");
+                  // Adiciona a classe do responsável para estilização
+                  const responsavelClass = item.responsavel ? item.responsavel.toLowerCase().replace(/á/g, 'a').replace(/ /g, '') : '';
+                  div.classList.add("compra", responsavelClass); 
+
+                  div.innerHTML = `
+                    <div class="list-item-content">
+                      <span>${item.nome} | ${item.parcelaAtual}/${item.parcelasTotais} | R$ ${item.valor.toFixed(2)} (${item.responsavel})</span>
+                      <input type="checkbox" class="checkbox-pago" ${item.pago === 'Sim' ? 'checked' : ''} onchange="markCompraAsPaidFront('${item.id}', this.checked)">
+                      <div class="list-item-controls">
+                        <button onclick='editCompraFront(\"${item.id}\")'>Edit</button>
+                        <button onclick='deleteCompraFront(\"${item.id}\")'>X</button>
+                      </div>
+                    </div>
+                  `;
+                  cardListElem.appendChild(div);
+                  if (item.pago !== 'Sim') { // Somar apenas se não estiver pago
+                    totalCartao += item.valor;
+                  }
+                });
+              } else {
+                cardListElem.innerHTML = "<p>Nenhuma compra neste cartão.</p>";
+              }
+              cardTotalElem.textContent = `Total: R$ ${totalCartao.toFixed(2)}`;
+
+              // Lógica para o checkbox "Pago" do cartão (para o total do cartão)
+              const checkboxCardPago = cardBox.querySelector(".cartao-paid"); [cite: 274]
+              if (checkboxCardPago) { [cite: 275]
+                const allPaid = comprasDoCartao.length > 0 && comprasDoCartao.every(item => item.pago === 'Sim'); [cite: 275]
+                checkboxCardPago.checked = allPaid; [cite: 276]
+                // A ação de marcar todas as compras de um cartão foi movida para o evento onchange do checkbox do cartão.
+              }
+            }
+          } else {
+            // Nenhuma compra retornada, garantir que todas as seções mostrem "Nenhuma compra"
+            for (const cardName in cardSections) {
+              const cardBox = cardSections[cardName];
+              if (cardBox) {
+                cardBox.querySelector(".cartao-list").innerHTML = "<p>Nenhuma compra neste cartão.</p>";
+              }
+            }
+          }
+        })
+        .catch(error => {
+          console.error("Erro ao carregar compras por cartão:", error); [cite: 278]
+          // Opcional: mostrar mensagem de erro nas seções dos cartões
         });
       }
 
       function deleteCompraFront(recordId) {
-        if (!confirm("Tem certeza que deseja excluir esta compra?")) return;
-        const payload = { action: "deleteCompra", recordId: recordId };
+        if (!confirm("Tem certeza que deseja excluir esta compra?")) return; [cite: 279]
+        const payload = { action: "deleteCompra", recordId: recordId }; [cite: 280]
+        fetch(webAppUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+          alert(data.message); [cite: 280]
+          atualizarCartoes(); // Atualiza a lista de cartões [cite: 281]
+          atualizarComprasPorResponsavel(); // Atualiza lista de responsáveis [cite: 281]
+          atualizarTotais(); [cite: 281]
+        })
+        .catch(error => {
+          alert("Erro ao excluir compra: " + error.message); [cite: 281]
+        });
+      }
+      
+      function editCompraFront(recordId) {
+        let novoNome = prompt("Digite o novo nome da compra:"); [cite: 282]
+        if (novoNome === null) return;
+        let novoValor = prompt("Digite o novo valor:"); [cite: 283]
+        if (novoValor === null) return;
+        let novasParcelas = prompt("Digite as novas parcelas (ex: 2/6):"); [cite: 284]
+        if (novasParcelas === null) return;
+        
+        novoValor = parseFloat(novoValor.replace(',', '.')); [cite: 284]
+        if (isNaN(novoValor)) { [cite: 285]
+          alert("Valor inválido. Digite um número."); [cite: 285]
+          return; [cite: 286]
+        }
+
+        const payload = { action: "updateCompra", recordId: recordId, data: { nome: novoNome, valor: novoValor, parcelas: novasParcelas } }; [cite: 286]
+        fetch(webAppUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+          alert(data.message); [cite: 287]
+          atualizarCartoes(); // Atualiza a lista de cartões [cite: 287]
+          atualizarComprasPorResponsavel(); // Atualiza lista de responsáveis [cite: 288]
+          atualizarTotais(); [cite: 288]
+        })
+        .catch(error => {
+          alert("Erro ao editar compra: " + error.message); [cite: 288]
+        });
+      }
+
+      function markCompraAsPaidFront(recordId, isChecked) {
+        const payload = { action: "markCompraAsPaid", recordId: recordId, data: { 'pago': isChecked ? 'Sim' : 'Não' } }; [cite: 289, 290]
+        fetch(webAppUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+          // alert(data.message); // Opcional: exibir alert de sucesso [cite: 290]
+          atualizarCartoes(); // Recarrega a lista para refletir a mudança visualmente [cite: 291]
+          atualizarComprasPorResponsavel(); // Recarrega a lista de responsáveis [cite: 291]
+          atualizarTotais(); // Recalcula os totais [cite: 291]
+        })
+        .catch(error => {
+          alert("Erro ao marcar compra como paga: " + error.message); [cite: 291]
+          atualizarCartoes(); // Recarrega para reverter o checkbox se houver erro [cite: 291]
+        });
+      }
+
+      function markAllComprasOfCardAsPaid(cardName, isChecked) {
+        const payload = { action: "markAllComprasOfCardAsPaid", data: { card: cardName, 'pago': isChecked ? 'Sim' : 'Não' } };
         fetch(webAppUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -1125,109 +1019,171 @@
         .then(response => response.json())
         .then(data => {
           alert(data.message);
-          fetchAllData(); 
+          atualizarCartoes();
+          atualizarComprasPorResponsavel();
+          atualizarTotais();
         })
         .catch(error => {
-          console.error("Erro ao excluir compra:", error);
-          alert("Erro ao excluir compra. Verifique o console.");
+          alert("Erro ao marcar todas as compras do cartão: " + error.message);
+          atualizarCartoes(); // Recarrega para reverter o checkbox se houver erro
+        });
+      }
+      
+      // Envio dos formulários de Compra e Conta
+      function submitCompraCartao() {
+        var form = document.getElementById("formAdicionarCompra"); [cite: 292]
+        var responsavel = document.getElementById("respCompra").value; [cite: 293]
+        var cartao = document.getElementById("cartaoCompra").value; [cite: 293]
+        var nome = form.querySelector("input[placeholder='Nome da Compra']").value; [cite: 293]
+        var valor = form.querySelector("input[placeholder='Valor']").value; [cite: 293]
+        var parcelas = form.querySelector("input[placeholder='Parcelas (ex: 2/6)']").value; [cite: 294]
+        
+        if (!nome || !valor || !parcelas) { [cite: 294]
+            alert("Por favor, preencha todos os campos da compra."); [cite: 294]
+            return; [cite: 295]
+        }
+
+        valor = parseFloat(valor.replace(',', '.')); [cite: 295]
+        if (isNaN(valor)) { [cite: 296]
+            alert("Valor da compra inválido. Digite um número."); [cite: 296]
+            return; [cite: 297]
+        }
+
+        var payload = {
+          action: "addCompraCartao", // Ação corrigida [cite: 297]
+          data: {
+            nome: nome,
+            valor: valor,
+            parcelas: parcelas,
+            responsavel: responsavel,
+            cartao: cartao
+          }
+        }; [cite: 298]
+        fetch(webAppUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+          alert(data.message); [cite: 299]
+          // Limpa os campos do formulário
+          form.querySelector("input[placeholder='Nome da Compra']").value = ""; [cite: 300]
+          form.querySelector("input[placeholder='Valor']").value = ""; [cite: 300]
+          form.querySelector("input[placeholder='Parcelas (ex: 2/6)']").value = ""; [cite: 300]
+
+          atualizarCartoes(); // Agora esta função é responsável por atualizar as compras nos cartões [cite: 300]
+          atualizarComprasPorResponsavel(); // E esta pelos totais dos responsáveis [cite: 300]
+          atualizarTotais(); [cite: 300]
+        })
+        .catch(error => { alert("Erro ao adicionar compra no cartão: " + error.message); }); [cite: 301]
+      }
+      
+      function submitConta() {
+        var form = document.getElementById("formAdicionarConta"); [cite: 301]
+        var tipo = document.getElementById("tipoConta").value; [cite: 302]
+        var nome = form.querySelector("input[placeholder='Nome da Conta']").value; [cite: 302]
+        var parcelas = form.querySelector("input[placeholder='Parcelas (ex: 2/3)']").value; [cite: 302]
+        var valor = form.querySelector("input[placeholder='Valor']").value; [cite: 302]
+        if (!nome || !valor || !parcelas) { [cite: 303]
+            alert("Por favor, preencha todos os campos da conta."); [cite: 303]
+            return; [cite: 304]
+        }
+
+        valor = parseFloat(valor.replace(',', '.')); [cite: 304]
+        if (isNaN(valor)) { [cite: 305]
+            alert("Valor da conta inválido. Digite um número."); [cite: 305]
+            return; [cite: 306]
+        }
+
+        var payload = {
+          action: "addConta",
+          data: { tipo: tipo, nome: nome, parcelas: parcelas, valor: valor }
+        }; [cite: 306]
+        fetch(webAppUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+          alert(data.message); [cite: 307]
+          // Limpa os campos do formulário
+          form.querySelector("input[placeholder='Nome da Conta']").value = ""; [cite: 308]
+          form.querySelector("input[placeholder='Parcelas (ex: 2/3)']").value = ""; [cite: 308]
+          form.querySelector("input[placeholder='Valor']").value = ""; [cite: 308]
+
+          atualizarContas(); [cite: 308]
+          atualizarTotais(); [cite: 309]
+        })
+        .catch(error => { alert("Erro ao adicionar conta: " + error.message); }); [cite: 309]
+      }
+      
+      // TOTAL DE COMPRAS POR RESPONSÁVEL
+      function atualizarComprasPorResponsavel() {
+        const payload = { action: "getComprasPorResponsavel" }; [cite: 310]
+        fetch(webAppUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+          const responsaveis = ['Liana', 'Stefany', 'Marília', 'Nosso ❤️']; [cite: 310]
+          const container = document.querySelector(".responsaveis-container"); [cite: 311]
+          container.innerHTML = ""; // Limpa o conteúdo existente [cite: 311]
+          responsaveis.forEach(responsavelNome => { [cite: 311]
+            const responsavelKey = responsavelNome.toLowerCase().replace(/á/g, 'a').replace(/ /g, ''); // Para classes CSS [cite: 312]
+            const totalData = data[responsavelNome] || { total: 0, compras: [] }; [cite: 312]
+            const box = document.createElement("div"); [cite: 312]
+            box.classList.add("responsavel-box"); [cite: 313]
+            box.innerHTML = `
+              <h3><span class="${responsavelKey}">${responsavelNome}</span></h3>
+              <p>Total: R$ ${totalData.total.toFixed(2)}</p>
+              <div class="lista-compras-responsavel">
+                ${totalData.compras.length > 0 ? totalData.compras.map(compra => `<p>${compra.nome} | R$ ${compra.valor.toFixed(2)} (${compra.cartao})</p>`).join('') : '<p>Nenhuma compra.</p>'}
+              </div>
+            `; [cite: 313, 314, 315]
+            container.appendChild(box); [cite: 315]
+          });
+        })
+        .catch(error => {
+          console.error("Erro ao carregar totais por responsável:", error);
+          document.querySelector(".responsaveis-container").innerHTML = "<p>Erro ao carregar totais por responsável.</p>";
         });
       }
 
-      // -------------------------------------------------------------------
-      // Funções de Marcação como PAGO
-      // -------------------------------------------------------------------
-      function markContaAsPaidFront(recordId, isChecked) {
-          const pagoStatus = isChecked ? 'Sim' : 'Não';
-          const payload = {
-              action: "markContaAsPaid",
-              recordId: recordId,
-              data: { pago: pagoStatus }
-          };
-
-          fetch(webAppUrl, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload)
-          })
-          .then(response => response.json())
-          .then(data => {
-              // alert(data.message); // Opcional: feedback para cada marcação
-              fetchAllData(); // Recarrega para atualizar totais e estados
-          })
-          .catch(error => {
-              console.error("Erro ao marcar conta como paga/não paga:", error);
-              alert("Erro ao atualizar status da conta. Verifique o console.");
-          });
-      }
-
-      function markCompraAsPaidFront(recordId, isChecked) {
-          const pagoStatus = isChecked ? 'Sim' : 'Não';
-          const payload = {
-              action: "markCompraAsPaid",
-              recordId: recordId,
-              data: { pago: pagoStatus }
-          };
-
-          fetch(webAppUrl, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload)
-          })
-          .then(response => response.json())
-          .then(data => {
-              // alert(data.message); // Opcional: feedback para cada marcação
-              fetchAllData(); // Recarrega para atualizar totais e estados
-          })
-          .catch(error => {
-              console.error("Erro ao marcar compra como paga/não paga:", error);
-              alert("Erro ao atualizar status da compra. Verifique o console.");
-          });
-      }
-
-      async function markAllComprasOfCardAsPaidFront(cardName, isChecked) {
-          if (!confirm(`Tem certeza que deseja marcar TODAS as compras do cartão "${cardName}" como ${isChecked ? 'PAGAS' : 'NÃO PAGAS'} neste mês?`)) {
-              // Reverter o estado do checkbox se o usuário cancelar
-              document.querySelector(`#total-${cardName.replace(/[^a-zA-Z0-9]/g, '')}`).parentNode.querySelector('.cartao-paid-checkbox').checked = !isChecked;
-              return;
-          }
-
-          const pagoStatus = isChecked ? 'Sim' : 'Não';
-          const payload = {
-              action: "markAllComprasOfCardAsPaid",
-              data: { card: cardName, pago: pagoStatus },
-              month: currentMonth + 1, // Envia o mês e ano para o backend filtrar
-              year: currentYear
-          };
-
-          try {
-              const response = await fetch(webAppUrl, {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify(payload)
-              });
-              const data = await response.json();
-              alert(data.message);
-              fetchAllData(); // Recarrega todos os dados para refletir as mudanças
-          } catch (error) {
-              console.error("Erro ao marcar todas as compras do cartão:", error);
-              alert("Erro ao marcar todas as compras do cartão. Verifique o console.");
-          }
-      }
-
-
-      // -------------------------------------------------------------------
-      // Event Listeners e Inicialização
-      // -------------------------------------------------------------------
-      document.addEventListener("DOMContentLoaded", function() {
-        updateMonthDisplay(); // Define o mês e ano iniciais
-        fetchAllData(); // Carrega todos os dados ao iniciar
+      // Inicialização
+      document.addEventListener("DOMContentLoaded", function(){
+        updateMonthDisplay(); // Define o mês e ano iniciais [cite: 274]
+        atualizarReceitas(); [cite: 274]
+        atualizarContas(); // Atualiza contas fixas e variáveis [cite: 274]
+        atualizarCartoes(); // Atualiza a seção de cartões [cite: 274]
+        atualizarComprasPorResponsavel(); // Atualiza a seção de totais por responsável [cite: 274]
+        atualizarTotais(); // Atualiza os totais gerais [cite: 274]
 
         // Event listeners para navegação de mês
-        document.querySelector(".nav-buttons button:first-child").addEventListener("click", function(){
-          changeMonth(-1);
+        document.querySelector(".nav-buttons button:first-child").addEventListener("click", function(){ [cite: 274]
+          changeMonth(-1); [cite: 275]
         });
-        document.querySelector(".nav-buttons button:last-child").addEventListener("click", function(){
-          changeMonth(1);
+        document.querySelector(".nav-buttons button:last-child").addEventListener("click", function(){ [cite: 276]
+          changeMonth(1); [cite: 276]
+        });
+
+        // Event listener para o botão de "Salvar Receitas" (agora um prompt)
+        document.querySelector(".categoria-box.receitas button").addEventListener("click", function(e){ [cite: 277]
+            e.preventDefault(); // Evita o comportamento padrão do botão se estiver dentro de um form [cite: 277]
+            submitReceita(); [cite: 277]
+        });
+
+        // Event listeners para os formulários de Compra e Conta
+        document.querySelector("#formAdicionarCompra button").addEventListener("click", function(e){ [cite: 278]
+          e.preventDefault(); [cite: 278]
+          submitCompraCartao(); [cite: 279]
+        });
+        document.querySelector("#formAdicionarConta button").addEventListener("click", function(e){ [cite: 279]
+          e.preventDefault(); [cite: 279]
+          submitConta(); [cite: 279]
         });
       });
     </script>
