@@ -677,7 +677,10 @@
                 const div = document.createElement("div");
                 div.classList.add("list-item");
 
-                const parcelasInfo = item.parcelaAtual && item.parcelasTotais ? `${item.parcelaAtual}/${item.parcelasTotais}` : '1/1';
+                // Garante que parcelaAtual e parcelasTotais são números
+                const parcelaAtual = parseInt(item.parcelaAtual) || 1;
+                const parcelasTotais = parseInt(item.parcelasTotais) || 1;
+                const parcelasInfo = `${parcelaAtual}/${parcelasTotais}`;
 
                 div.innerHTML = `
                   <span>${item.nome} | ${parcelasInfo} | R$ ${parseFloat(item.valor).toFixed(2)}</span>
@@ -764,7 +767,8 @@
                   if (novoTipo === null) return;
                   const novoNome = prompt("Novo nome da Conta:", conta.nome);
                   if (novoNome === null) return;
-                  const novasParcelas = prompt("Novas parcelas (ex: 2/6):", conta.parcelaAtual + '/' + conta.parcelasTotais);
+                  // Garante que parcelas seja uma string no formato X/Y
+                  const novasParcelas = prompt("Novas parcelas (ex: 2/6):", `${conta.parcelaAtual}/${conta.parcelasTotais}`);
                   if (novasParcelas === null) return;
                   const novoValor = prompt("Novo valor da Conta:", conta.valor);
                   if (novoValor === null || isNaN(parseFloat(novoValor))) {
@@ -835,8 +839,9 @@
 
                 sortedCardNames.forEach(cardNome => {
                     const comprasDoCartao = data.data[cardNome];
-                    let totalCartao = 0;
+                    let totalCartao = 0; // Este total deve ser para itens não pagos
                     let allComprasPaid = true;
+                    let hasCompras = false; // Flag para verificar se há alguma compra
 
                     const cardBox = document.createElement("div");
                     cardBox.classList.add("cartao-box");
@@ -844,16 +849,18 @@
                     const cardListElem = document.createElement("div");
                     cardListElem.classList.add("cartao-list");
 
-                    // Verifica se há compras para o cartão e se todas estão pagas para o checkbox principal
                     if (comprasDoCartao && comprasDoCartao.length > 0) {
+                        hasCompras = true;
                         comprasDoCartao.forEach(item => {
                             const div = document.createElement("div");
-                            const responsavelClass = item.responsavel ? responsavelColors[item.responsavel] || '' : '';
+                            // Garante que a classe do responsável seja aplicada corretamente
+                            const responsavelClass = responsavelColors[item.responsavel] || '';
                             div.classList.add("compra", responsavelClass);
 
                             // Ajusta a exibição das parcelas
-                            const parcelaDisplay = (item.parcelaAtual && item.parcelasTotais) ?
-                                `${item.parcelaAtual}/${item.parcelasTotais}` : '1/1';
+                            const parcelaAtual = parseInt(item.parcelaAtual) || 1;
+                            const parcelasTotais = parseInt(item.parcelasTotais) || 1;
+                            const parcelaDisplay = `${parcelaAtual}/${parcelasTotais}`;
 
                             div.innerHTML = `
                                 <div class="list-item-content">
@@ -866,7 +873,7 @@
                             `;
                             cardListElem.appendChild(div);
 
-                            if (item.pago !== 'Sim') {
+                            if (item.pago !== 'Sim') { // Somar apenas se não estiver pago
                                 totalCartao += parseFloat(item.valor);
                                 allComprasPaid = false;
                             }
@@ -881,7 +888,7 @@
                         ${cardListElem.outerHTML}
                         <div class="total-cartao">
                             <span>Total: R$ ${totalCartao.toFixed(2)}</span>
-                            <input type="checkbox" class="checkbox-pago-total" ${allComprasPaid && comprasDoCartao.length > 0 ? 'checked' : ''} onchange="markAllComprasOfCardAsPaid('${cardNome}', this.checked)">
+                            <input type="checkbox" class="checkbox-pago-total" ${allComprasPaid && hasCompras ? 'checked' : ''} onchange="markAllComprasOfCardAsPaid('${cardNome}', this.checked)">
                         </div>
                     `;
                     cartoesGrid.appendChild(cardBox);
@@ -949,7 +956,8 @@
                       alert("Valor inválido.");
                       return;
                   }
-                  const novasParcelas = prompt("Novas parcelas (ex: 2/6):", compra.parcelaAtual + '/' + compra.parcelasTotais);
+                  // Garante que parcelas seja uma string no formato X/Y
+                  const novasParcelas = prompt("Novas parcelas (ex: 2/6):", `${compra.parcelaAtual}/${compra.parcelasTotais}`);
                   if (novasParcelas === null) return;
                   const novoResponsavel = prompt("Novo Responsável:", compra.responsavel);
                   if (novoResponsavel === null) return;
@@ -1043,7 +1051,9 @@
 
       async function atualizarTotais() {
         try {
+          // As Receitas não são filtradas por mês/ano.
           const receitasData = await fetchBackend("getReceitas", {}, null);
+          // Contas e Compras já são filtradas pelo backend usando o mês/ano atual do frontend
           const contasData = await fetchBackend("getContasFiltradas", {}, null);
           const comprasData = await fetchBackend("getComprasFiltradas", {}, null);
 
@@ -1075,21 +1085,27 @@
 
           // Ajusta a barra de saldo
           if (saldo > 0) {
-              const maxRange = Math.max(totalReceitas, totalDespesas); // Define a escala com base no maior valor
-              let percentage = (saldo / maxRange) * 100;
+              // Quando o saldo é positivo, a barra verde representa o % do saldo em relação ao total de receitas.
+              // Se a despesa for 0, o saldo é igual à receita, e a barra deve ser 100%.
+              // Se a despesa aumenta, o saldo diminui, e a barra verde encolhe.
+              // Para evitar 100% se saldo for maior que total de receitas (o que não deve acontecer com o cálculo atual, mas por segurança)
+              let percentage = (saldo / totalReceitas) * 100;
+              if (totalReceitas === 0) percentage = 0; // Evita divisão por zero
               if (percentage > 100) percentage = 100; // Limita a 100%
               saldoBar.style.width = `${percentage}%`;
               saldoBar.style.backgroundColor = 'green';
           } else if (saldo < 0) {
-              const maxRange = Math.max(totalReceitas, Math.abs(totalDespesas));
-              let percentage = (Math.abs(saldo) / maxRange) * 100;
+              // Quando o saldo é negativo, a barra vermelha representa o % do saldo negativo em relação ao total de despesas.
+              // Se o saldo for -100 e a despesa for 100, a barra deve ser 100% vermelha.
+              let percentage = (Math.abs(saldo) / totalDespesas) * 100;
+              if (totalDespesas === 0) percentage = 0; // Evita divisão por zero
               if (percentage > 100) percentage = 100;
               saldoBar.style.width = `${percentage}%`;
               saldoBar.style.backgroundColor = 'red';
               saldoBar.classList.add("negative");
-          } else {
+          } else { // Saldo é zero
               saldoBar.style.width = '0%';
-              saldoBar.style.backgroundColor = 'grey'; // Ou qualquer cor para saldo zero
+              saldoBar.style.backgroundColor = 'grey'; // Cor para saldo zero
           }
 
         } catch (error) {
