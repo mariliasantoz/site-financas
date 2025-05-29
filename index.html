@@ -349,629 +349,631 @@
         transform: scale(1.2); /* Aumenta o tamanho do checkbox */
       }
     </style>
-    <script>
+<script>
 
-  const webAppUrl = 'https://painel-financas-proxy.mariliaedua.workers.dev/'; // <--- SUBSTITUA AQUI PELA URL DO SEU CLOUDFLARE WORKER
-  let currentMonth = new Date().getMonth(); // Mês (0-11)
-  let currentYear = new Date().getFullYear();
+  // <script> tag starts here (substitua TODO o conteúdo DENTRO desta tag)
 
-  document.addEventListener('DOMContentLoaded', () => {
-    // Definir o mês e ano iniciais no cabeçalho
-    updateHeaderMonthYear();
+const webAppUrl = 'https://painel-financas-proxy.mariliaedua.workers.dev/'; // <--- SUBSTITUA AQUI PELA URL DO SEU CLOUDFLARE WORKER
+let currentMonth = new Date().getMonth(); // Mês (0-11)
+let currentYear = new Date().getFullYear();
 
-    // Carregar todos os dados iniciais para o mês atual
-    fetchAndDisplayAllData();
+document.addEventListener('DOMContentLoaded', () => {
+  // Definir o mês e ano iniciais no cabeçalho
+  updateHeaderMonthYear();
 
-    // Event listeners para os botões de navegação
-    document.querySelector('.nav-buttons button:first-child').addEventListener('click', () => {
-      changeMonth(-1);
-    });
-    document.querySelector('.nav-buttons button:last-child').addEventListener('click', () => {
-      changeMonth(1);
-    });
+  // Carregar todos os dados iniciais para o mês atual
+  fetchAndDisplayAllData();
 
-    // Event listener para o botão "Adicionar Receita"
-    document.querySelector('.receitas button').addEventListener('click', adicionarReceita);
-
-    // Event listeners para o botão "Adicionar Compra no Cartão"
-    document.querySelector('#formAdicionarCompra button').addEventListener('click', adicionarCompraCartao);
-
-    // Event listeners para o botão "Adicionar Conta"
-    document.querySelector('#formAdicionarConta button').addEventListener('click', adicionarConta);
-
-    // Adiciona event listeners para os checkboxes "Marcar todas como pagas" dos cartões
-    document.querySelectorAll('.cartao-paid').forEach(checkbox => {
-        checkbox.addEventListener('change', async (event) => {
-            const cardBox = event.target.closest('.cartao-box');
-            const cardNameElement = cardBox.querySelector('h3').textContent.trim();
-            const cardName = convertCardNameToSheetName(cardNameElement); // Converte para o nome usado na sheet
-
-            const isChecked = event.target.checked;
-            const statusPago = isChecked ? 'Sim' : 'Não'; // Define o status para o backend
-
-            const confirmAction = isChecked 
-                ? confirm(`Tem certeza que deseja marcar TODAS as compras do cartão ${cardName} como PAGAS para ${getMonthName(currentMonth + 1)}/${currentYear}?`)
-                : confirm(`Tem certeza que deseja marcar TODAS as compras do cartão ${cardName} como NÃO PAGAS para ${getMonthName(currentMonth + 1)}/${currentYear}?`);
-
-            if (confirmAction) {
-                // Obter as compras para este cartão e este mês/ano
-                const compras = await getComprasDoCartaoParaMes(cardName, currentMonth + 1, currentYear);
-                
-                let successCount = 0;
-                for (const compra of compras) {
-                    const payload = {
-                        action: 'markCompraAsPaid',
-                        recordId: compra.id,
-                        data: { pago: statusPago } // Envia o status atualizado
-                    };
-                    try {
-                        const response = await fetch(webAppUrl, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        });
-                        const result = await response.json();
-                        if (result.status === 'success') {
-                            successCount++;
-                        } else {
-                            console.error('Erro ao atualizar compra:', result.message);
-                        }
-                    } catch (error) {
-                        console.error('Erro na requisição de marcar compra:', error);
-                    }
-                }
-                if (successCount === compras.length && compras.length > 0) {
-                    alert(`Todas as ${successCount} compras do cartão ${cardName} marcadas como ${statusPago} com sucesso!`);
-                } else if (compras.length > 0) {
-                     alert(`Algumas compras do cartão ${cardName} foram atualizadas como ${statusPago}. ${successCount} de ${compras.length} sucessos.`);
-                } else {
-                    alert(`Nenhuma compra encontrada para o cartão ${cardName} em ${getMonthName(currentMonth + 1)}/${currentYear}.`);
-                }
-                fetchAndDisplayAllData(); // Recarrega os dados após a atualização em massa
-            } else {
-                // Se o usuário cancelar, reverter o estado do checkbox
-                event.target.checked = !isChecked;
-            }
-        });
-    });
+  // Event listeners para os botões de navegação
+  document.querySelector('.nav-buttons button:first-child').addEventListener('click', () => {
+    changeMonth(-1);
+  });
+  document.querySelector('.nav-buttons button:last-child').addEventListener('click', () => {
+    changeMonth(1);
   });
 
-  // Função auxiliar para obter compras de um cartão específico para um mês/ano
-  async function getComprasDoCartaoParaMes(cardName, month, year) {
-      const payload = {
-          action: 'getComprasPorCartao', // Ação que já retorna compras filtradas por cartão e mês
-          month: month,
-          year: year
-      };
-      try {
-          const response = await fetch(webAppUrl, {
+  // Event listener para o botão "Adicionar Receita"
+  document.querySelector('.receitas button').addEventListener('click', adicionarReceita);
+
+  // Event listeners para o botão "Adicionar Compra no Cartão"
+  document.querySelector('#formAdicionarCompra button').addEventListener('click', adicionarCompraCartao);
+
+  // Event listeners para o botão "Adicionar Conta"
+  document.querySelector('#formAdicionarConta button').addEventListener('click', adicionarConta);
+
+  // Adiciona event listeners para os checkboxes "Marcar todas como pagas" dos cartões
+  document.querySelectorAll('.cartao-paid').forEach(checkbox => {
+    checkbox.addEventListener('change', async (event) => {
+      const cardBox = event.target.closest('.cartao-box');
+      const cardNameElement = cardBox.querySelector('h3').textContent.trim();
+      const cardName = convertCardNameToSheetName(cardNameElement); // Converte para o nome usado na sheet
+
+      const isChecked = event.target.checked;
+      const statusPago = isChecked ? 'Sim' : 'Não'; // Define o status para o backend
+
+      const confirmAction = isChecked
+        ? confirm(`Tem certeza que deseja marcar TODAS as compras do cartão ${cardName} como PAGAS para ${getMonthName(currentMonth + 1)}/${currentYear}?`)
+        : confirm(`Tem certeza que deseja marcar TODAS as compras do cartão ${cardName} como NÃO PAGAS para ${getMonthName(currentMonth + 1)}/${currentYear}?`);
+
+      if (confirmAction) {
+        // Obter as compras para este cartão e este mês/ano
+        const compras = await getComprasDoCartaoParaMes(cardName, currentMonth + 1, currentYear);
+
+        let successCount = 0;
+        for (const compra of compras) {
+          const payload = {
+            action: 'markCompraAsPaid',
+            recordId: compra.originalId, // Use originalId aqui para update/delete
+            data: { pago: statusPago } // Envia o status atualizado
+          };
+          try {
+            const response = await fetch(webAppUrl, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(payload)
-          });
-          const result = await response.json();
-          if (result.status === 'success' || (typeof result === 'object' && result[cardName])) {
-              return result[cardName].compras; // Retorna a lista de compras para o cartão específico
-          } else {
-              console.error('Erro ao buscar compras por cartão:', result.message || result);
-              return [];
-          }
-      } catch (error) {
-          console.error('Erro na requisição para buscar compras por cartão:', error);
-          return [];
-      }
-  }
-
-  // Função para converter o nome do cartão exibido para o nome na planilha
-  function convertCardNameToSheetName(displayCardName) {
-      switch (displayCardName.toUpperCase()) {
-          case 'NUBANK': return 'Nubank';
-          case 'SANTANDER': return 'Santander';
-          case 'M.PAGO': return 'Mercado Pago';
-          case 'AMAZON': return 'Amazon';
-          default: return displayCardName;
-      }
-  }
-
-
-  function updateHeaderMonthYear() {
-    const monthYearHeader = document.querySelector('header h2');
-    if (monthYearHeader) {
-      monthYearHeader.textContent = `${getMonthName(currentMonth + 1)} ${currentYear}`;
-    }
-  }
-
-  function changeMonth(delta) {
-    currentMonth += delta;
-    if (currentMonth < 0) {
-      currentMonth = 11;
-      currentYear--;
-    } else if (currentMonth > 11) {
-      currentMonth = 0;
-      currentYear++;
-    }
-    updateHeaderMonthYear();
-    fetchAndDisplayAllData(); // Recarrega todos os dados para o novo mês/ano
-  }
-
-  async function fetchAndDisplayAllData() {
-    await Promise.all([
-      atualizarReceitas(),
-      atualizarCompras(),
-      atualizarContas(),
-      atualizarTotais(),
-      atualizarCartoes(),
-      atualizarComprasPorResponsavel()
-    ]);
-  }
-
-  async function sendRequest(action, data = {}, recordId = null) {
-    const payload = {
-      action: action,
-      data: data,
-      recordId: recordId,
-      month: currentMonth + 1, // Envia o mês atual (1-12)
-      year: currentYear        // Envia o ano atual
-    };
-
-    try {
-      const response = await fetch(webAppUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      return await response.json();
-    } catch (error) {
-      console.error('Erro na requisição:', error);
-      alert('Erro ao comunicar com o servidor: ' + error.message);
-      return { status: 'error', message: 'Erro de rede.' };
-    }
-  }
-
-  async function atualizarReceitas() {
-    const result = await sendRequest('getReceitas');
-    const lista = document.getElementById('listaReceitas');
-    lista.innerHTML = '';
-    if (result.status === 'error') {
-      lista.innerHTML = `<p>${result.message}</p>`;
-      return;
-    }
-    if (result.length === 0) {
-      lista.innerHTML = '<p>Nenhuma receita cadastrada.</p>';
-      return;
-    }
-    result.forEach(item => {
-      const p = document.createElement('p');
-      p.innerHTML = `${item.nome}: R$ ${parseFloat(item.valor).toFixed(2).replace('.', ',')} 
-                     <span class="edit-btn" onclick="editarReceita('${item.id}', '${item.nome}', '${item.valor}')">✏️</span>
-                     <span class="delete-btn" onclick="deletarReceita('${item.id}')">🗑️</span>`;
-      lista.appendChild(p);
-    });
-  }
-
-  async function adicionarReceita() {
-    const nome = prompt('Nome da Receita:');
-    if (!nome) return;
-    const valor = parseFloat(prompt('Valor da Receita:'));
-    if (isNaN(valor) || valor <= 0) {
-      alert('Valor inválido.');
-      return;
-    }
-    const result = await sendRequest('addReceita', { nome: nome, valor: valor });
-    if (result.status === 'success') {
-      alert(result.message);
-      fetchAndDisplayAllData();
-    } else {
-      alert('Erro: ' + result.message);
-    }
-  }
-
-  async function editarReceita(id, nomeAtual, valorAtual) {
-    const novoNome = prompt('Novo nome da Receita:', nomeAtual);
-    if (!novoNome) return;
-    const novoValor = parseFloat(prompt('Novo valor da Receita:', valorAtual));
-    if (isNaN(novoValor) || novoValor <= 0) {
-      alert('Valor inválido.');
-      return;
-    }
-    const result = await sendRequest('updateReceita', { nome: novoNome, valor: novoValor }, id);
-    if (result.status === 'success') {
-      alert(result.message);
-      fetchAndDisplayAllData();
-    } else {
-      alert('Erro: ' + result.message);
-    }
-  }
-
-  async function deletarReceita(id) {
-    if (!confirm('Tem certeza que deseja deletar esta receita?')) return;
-    const result = await sendRequest('deleteReceita', {}, id);
-    if (result.status === 'success') {
-      alert(result.message);
-      fetchAndDisplayAllData();
-    } else {
-      alert('Erro: ' + result.message);
-    }
-  }
-
-  async function atualizarCompras() {
-    const result = await sendRequest('getCompras');
-    const listaContasVariaveis = document.getElementById('listaContasVariaveis'); // Contas variáveis e compras de cartão podem se misturar aqui
-    listaContasVariaveis.innerHTML = ''; // Limpa antes de preencher
-
-    if (result.status === 'error') {
-        listaContasVariaveis.innerHTML = `<p>${result.message}</p>`;
-        return;
-    }
-    if (result.length === 0) {
-        listaContasVariaveis.innerHTML = '<p>Nenhuma compra cadastrada.</p>';
-        return;
-    }
-
-    result.forEach(item => {
-        const valorParcela = (parseFloat(item.valor || 0) / parseInt((item.parcelas || '1/1').split('/')[1] || 1)).toFixed(2).replace('.', ',');
-        const p = document.createElement('p');
-        p.className = item.pago === 'Sim' ? 'item-pago' : ''; // Adiciona classe para itens pagos
-        p.innerHTML = `${item.nome} (${item.parcelas}) - R$ ${valorParcela} (${item.cartao}) 
-                       <span class="edit-btn" onclick="editarCompra('${item.id}', '${item.nome}', '${item.valor}', '${item.parcelas}', '${item.responsavel}', '${item.cartao}')">✏️</span>
-                       <span class="delete-btn" onclick="deletarCompra('${item.id}')">🗑️</span>
-                       <input type="checkbox" class="item-paid-checkbox" data-id="${item.id}" data-type="compra" ${item.pago === 'Sim' ? 'checked' : ''} title="Marcar como pago"/>`;
-        listaContasVariaveis.appendChild(p);
-    });
-    addCheckboxListeners(); // Adiciona listeners aos novos checkboxes
-  }
-
-  async function adicionarCompraCartao() {
-    const respCompra = document.querySelector('#respCompra').value;
-    const cartaoCompra = document.querySelector('#cartaoCompra').value;
-    const nomeCompra = document.querySelector('#formAdicionarCompra input[placeholder="Nome da Compra"]').value;
-    const valorCompra = parseFloat(document.querySelector('#formAdicionarCompra input[placeholder="Valor"]').value);
-    const parcelasCompra = document.querySelector('#formAdicionarCompra input[placeholder="Parcelas (ex: 2/6)"]').value;
-
-    if (!nomeCompra || isNaN(valorCompra) || valorCompra <= 0 || !parcelasCompra) {
-      alert('Por favor, preencha todos os campos corretamente.');
-      return;
-    }
-
-    const data = {
-      responsavel: respCompra,
-      cartao: cartaoCompra,
-      nome: nomeCompra,
-      valor: valorCompra,
-      parcelas: parcelasCompra
-    };
-
-    const result = await sendRequest('addCompraCartao', data);
-    if (result.status === 'success') {
-      alert(result.message);
-      // Limpar formulário
-      document.querySelector('#formAdicionarCompra input[placeholder="Nome da Compra"]').value = '';
-      document.querySelector('#formAdicionarCompra input[placeholder="Valor"]').value = '';
-      document.querySelector('#formAdicionarCompra input[placeholder="Parcelas (ex: 2/6)"]').value = '';
-      fetchAndDisplayAllData();
-    } else {
-      alert('Erro: ' + result.message);
-    }
-  }
-
-  async function editarCompra(id, nomeAtual, valorAtual, parcelasAtual, responsavelAtual, cartaoAtual) {
-    const novoNome = prompt('Novo nome da Compra:', nomeAtual);
-    if (!novoNome) return;
-    const novoValor = parseFloat(prompt('Novo valor da Compra:', valorAtual));
-    if (isNaN(novoValor) || novoValor <= 0) {
-      alert('Valor inválido.');
-      return;
-    }
-    const novasParcelas = prompt('Novas Parcelas (ex: 2/6):', parcelasAtual);
-    if (!novasParcelas) return;
-    const novoResponsavel = prompt('Novo Responsável:', responsavelAtual);
-    if (!novoResponsavel) return;
-    const novoCartao = prompt('Novo Cartão:', cartaoAtual);
-    if (!novoCartao) return;
-
-    const data = {
-      nome: novoNome,
-      valor: novoValor,
-      parcelas: novasParcelas,
-      responsavel: novoResponsavel,
-      cartao: novoCartao
-    };
-    const result = await sendRequest('updateCompra', data, id);
-    if (result.status === 'success') {
-      alert(result.message);
-      fetchAndDisplayAllData();
-    } else {
-      alert('Erro: ' + result.message);
-    }
-  }
-
-  async function deletarCompra(id) {
-    if (!confirm('Tem certeza que deseja deletar esta compra?')) return;
-    const result = await sendRequest('deleteCompra', {}, id);
-    if (result.status === 'success') {
-      alert(result.message);
-      fetchAndDisplayAllData();
-    } else {
-      alert('Erro: ' + result.message);
-    }
-  }
-
-  async function atualizarContas() {
-    const result = await sendRequest('getContas');
-    const listaFixas = document.getElementById('listaContasFixas');
-    const listaVariaveis = document.getElementById('listaContasVariaveis');
-    listaFixas.innerHTML = '';
-    // A lista de variáveis será preenchida pelas compras, então não limpe aqui se ela deve conter ambos
-    // listaVariaveis.innerHTML = ''; 
-
-    if (result.status === 'error') {
-      listaFixas.innerHTML = `<p>${result.message}</p>`;
-      // listaVariaveis.innerHTML = `<p>${result.message}</p>`; // Mostrar erro em ambos se for o caso
-      return;
-    }
-
-    let totalFixas = 0;
-    let totalVariaveis = 0;
-
-    if (result.length === 0) {
-      listaFixas.innerHTML = '<p>Nenhuma conta cadastrada.</p>';
-      // listaVariaveis.innerHTML += '<p>Nenhuma conta variável cadastrada.</p>'; // Adicionar ao que já tem
-      return;
-    }
-
-    result.forEach(item => {
-      const valorParcela = (parseFloat(item.valor || 0) / parseInt((item.parcelas || '1/1').split('/')[1] || 1)).toFixed(2).replace('.', ',');
-      const p = document.createElement('p');
-      p.className = item.pago === 'Sim' ? 'item-pago' : ''; // Adiciona classe para itens pagos
-      p.innerHTML = `${item.nome} (${item.parcelas}) - R$ ${valorParcela} 
-                     <span class="edit-btn" onclick="editarConta('${item.id}', '${item.tipo}', '${item.nome}', '${item.valor}', '${item.parcelas}')">✏️</span>
-                     <span class="delete-btn" onclick="deletarConta('${item.id}')">🗑️</span>
-                     <input type="checkbox" class="item-paid-checkbox" data-id="${item.id}" data-type="conta" ${item.pago === 'Sim' ? 'checked' : ''} title="Marcar como pago"/>`;
-
-      if (item.tipo === 'Fixa') {
-        listaFixas.appendChild(p);
-        totalFixas += parseFloat(valorParcela.replace(',', '.'));
-      } else if (item.tipo === 'Variável') {
-        // As contas variáveis agora são adicionadas à lista de contas variáveis junto com as compras
-        listaVariaveis.appendChild(p); 
-        totalVariaveis += parseFloat(valorParcela.replace(',', '.'));
-      }
-    });
-
-    document.getElementById('totalContasFixas').textContent = `Total: R$ ${totalFixas.toFixed(2).replace('.', ',')}`;
-    // O total das contas variáveis é somado ao total de compras no atualizarTotais
-    // document.getElementById('totalContasVariaveis').textContent = `Total: R$ ${totalVariaveis.toFixed(2).replace('.', ',')}`;
-    addCheckboxListeners(); // Adiciona listeners aos novos checkboxes
-  }
-
-  async function adicionarConta() {
-    const tipoConta = document.querySelector('#tipoConta').value;
-    const nomeConta = document.querySelector('#formAdicionarConta input[placeholder="Nome da Conta"]').value;
-    const parcelasConta = document.querySelector('#formAdicionarConta input[placeholder="Parcelas (ex: 2/3)"]').value;
-    const valorConta = parseFloat(document.querySelector('#formAdicionarConta input[placeholder="Valor"]').value);
-
-    if (!nomeConta || isNaN(valorConta) || valorConta <= 0 || !parcelasConta) {
-      alert('Por favor, preencha todos os campos corretamente.');
-      return;
-    }
-
-    const data = {
-      tipo: tipoConta,
-      nome: nomeConta,
-      parcelas: parcelasConta,
-      valor: valorConta
-    };
-
-    const result = await sendRequest('addConta', data);
-    if (result.status === 'success') {
-      alert(result.message);
-      // Limpar formulário
-      document.querySelector('#formAdicionarConta input[placeholder="Nome da Conta"]').value = '';
-      document.querySelector('#formAdicionarConta input[placeholder="Parcelas (ex: 2/3)"]').value = '';
-      document.querySelector('#formAdicionarConta input[placeholder="Valor"]').value = '';
-      fetchAndDisplayAllData();
-    } else {
-      alert('Erro: ' + result.message);
-    }
-  }
-
-  async function editarConta(id, tipoAtual, nomeAtual, valorAtual, parcelasAtual) {
-    const novoTipo = prompt('Novo tipo de Conta (Fixa/Variável):', tipoAtual);
-    if (!novoTipo) return;
-    const novoNome = prompt('Novo nome da Conta:', nomeAtual);
-    if (!novoNome) return;
-    const novoValor = parseFloat(prompt('Novo valor da Conta:', valorAtual));
-    if (isNaN(novoValor) || novoValor <= 0) {
-      alert('Valor inválido.');
-      return;
-    }
-    const novasParcelas = prompt('Novas Parcelas (ex: 2/3):', parcelasAtual);
-    if (!novasParcelas) return;
-
-    const data = {
-      tipo: novoTipo,
-      nome: novoNome,
-      valor: novoValor,
-      parcelas: novasParcelas
-    };
-    const result = await sendRequest('updateConta', data, id);
-    if (result.status === 'success') {
-      alert(result.message);
-      fetchAndDisplayAllData();
-    } else {
-      alert('Erro: ' + result.message);
-    }
-  }
-
-  async function deletarConta(id) {
-    if (!confirm('Tem certeza que deseja deletar esta conta?')) return;
-    const result = await sendRequest('deleteConta', {}, id);
-    if (result.status === 'success') {
-      alert(result.message);
-      fetchAndDisplayAllData();
-    } else {
-      alert('Erro: ' + result.message);
-    }
-  }
-
-  async function atualizarTotais() {
-    const result = await sendRequest('getTotais');
-    if (result.status === 'error') {
-      document.querySelector('.totals-section .totals-wrapper span:first-child').textContent = `Total de Receitas: Erro`;
-      document.querySelector('.totals-section .totals-wrapper span:last-child').textContent = `Total de Despesas: Erro`;
-      document.querySelector('.saldo-label').textContent = `Saldo: Erro`;
-      document.querySelector('.saldo-bar').style.width = '0%';
-      document.querySelector('.saldo-bar').style.backgroundColor = 'gray';
-      return;
-    }
-
-    const totalReceitas = result.receitas || 0;
-    const totalDespesas = result.despesas || 0;
-    const saldo = result.saldo || 0;
-
-    document.querySelector('.totals-section .totals-wrapper span:first-child').textContent = `Total de Receitas: R$ ${totalReceitas.toFixed(2).replace('.', ',')}`;
-    document.querySelector('.totals-section .totals-wrapper span:last-child').textContent = `Total de Despesas: R$ ${totalDespesas.toFixed(2).replace('.', ',')}`;
-    document.querySelector('.saldo-label').textContent = `Saldo: R$ ${saldo.toFixed(2).replace('.', ',')}`;
-
-    // Atualiza a barra de saldo
-    const saldoBar = document.querySelector('.saldo-bar');
-    if (totalReceitas > 0) {
-      let percentage = (saldo / totalReceitas) * 100;
-      percentage = Math.max(0, Math.min(100, percentage)); // Garante que a porcentagem esteja entre 0 e 100
-      saldoBar.style.width = `${percentage}%`;
-      if (saldo > 0) {
-        saldoBar.style.backgroundColor = '#28a745'; // Verde
-      } else {
-        saldoBar.style.backgroundColor = '#dc3545'; // Vermelho
-      }
-    } else {
-      saldoBar.style.width = '0%';
-      saldoBar.style.backgroundColor = 'gray';
-    }
-  }
-
-  async function atualizarCartoes() {
-    const result = await sendRequest('getComprasPorCartao');
-    if (result.status === 'error') {
-        document.getElementById('nubankCard').querySelector('.cartao-list').innerHTML = `<p>${result.message}</p>`;
-        document.getElementById('santanderCard').querySelector('.cartao-list').innerHTML = `<p>${result.message}</p>`;
-        document.getElementById('mpagoCard').querySelector('.cartao-list').innerHTML = `<p>${result.message}</p>`;
-        document.getElementById('amazonCard').querySelector('.cartao-list').innerHTML = `<p>${result.message}</p>`;
-        return;
-    }
-
-    const cartoes = {
-        'Nubank': 'nubankCard',
-        'Santander': 'santanderCard',
-        'Mercado Pago': 'mpagoCard',
-        'Amazon': 'amazonCard'
-    };
-
-    for (const cartaoNome in cartoes) {
-        const elementId = cartoes[cartaoNome];
-        const cardBox = document.getElementById(elementId);
-        if (cardBox) {
-            const listElement = cardBox.querySelector('.cartao-list');
-            const totalElement = cardBox.querySelector('.cartao-total');
-            listElement.innerHTML = ''; // Limpa a lista antes de preencher
-
-            const data = result[cartaoNome];
-            if (data && data.compras.length > 0) {
-                let currentCardTotal = 0;
-                data.compras.forEach(compra => {
-                    const p = document.createElement('p');
-                    p.className = compra.pago === 'Sim' ? 'item-pago' : ''; // Adiciona classe para itens pagos
-                    p.innerHTML = `${compra.nome} (${compra.parcelaAtual}/${compra.parcelasTotais}) - R$ ${parseFloat(compra.valor).toFixed(2).replace('.', ',')} 
-                                   <input type="checkbox" class="item-paid-checkbox" data-id="${compra.id}" data-type="compra" ${compra.pago === 'Sim' ? 'checked' : ''} title="Marcar como pago"/>`;
-                    listElement.appendChild(p);
-                    currentCardTotal += parseFloat(compra.valor);
-                });
-                totalElement.textContent = `Total: R$ ${currentCardTotal.toFixed(2).replace('.', ',')}`;
+            });
+            const result = await response.json();
+            if (result.status === 'success') {
+              successCount++;
             } else {
-                listElement.innerHTML = '<p>Nenhuma compra neste cartão.</p>';
-                totalElement.textContent = `Total: R$ 0,00`;
+              console.error('Erro ao atualizar compra:', result.message);
             }
+          } catch (error) {
+            console.error('Erro na requisição de marcar compra:', error);
+          }
         }
-    }
-    addCheckboxListeners(); // Adiciona listeners aos novos checkboxes
-  }
-
-  async function atualizarComprasPorResponsavel() {
-    const result = await sendRequest('getComprasPorResponsavel');
-    const responsaveisContainer = document.querySelector('.responsaveis-container');
-    responsaveisContainer.innerHTML = ''; // Limpa antes de preencher
-
-    if (result.status === 'error') {
-      responsaveisContainer.innerHTML = `<p>${result.message}</p>`;
-      return;
-    }
-
-    const responsaveis = ['Liana', 'Stefany', 'Marília', 'Nosso ❤️'];
-
-    responsaveis.forEach(responsavel => {
-      const div = document.createElement('div');
-      div.className = 'responsavel-item';
-      
-      const total = result[responsavel] ? parseFloat(result[responsavel].total).toFixed(2).replace('.', ',') : '0,00';
-      div.innerHTML = `<h3>${responsavel}</h3><p>Total: R$ ${total}</p>`;
-
-      const ul = document.createElement('ul');
-      if (result[responsavel] && result[responsavel].compras.length > 0) {
-        result[responsavel].compras.forEach(compra => {
-          const li = document.createElement('li');
-          li.className = compra.pago === 'Sim' ? 'item-pago' : ''; // Adiciona classe para itens pagos
-          li.innerHTML = `${compra.nome} (${compra.parcelaAtual}/${compra.parcelasTotais}) - R$ ${parseFloat(compra.valor).toFixed(2).replace('.', ',')} (${compra.cartao})
-                          <input type="checkbox" class="item-paid-checkbox" data-id="${compra.id}" data-type="compra" ${compra.pago === 'Sim' ? 'checked' : ''} title="Marcar como pago"/>`;
-          ul.appendChild(li);
-        });
+        if (successCount === compras.length && compras.length > 0) {
+          alert(`Todas as ${successCount} compras do cartão ${cardName} marcadas como ${statusPago} com sucesso!`);
+        } else if (compras.length > 0) {
+          alert(`Algumas compras do cartão ${cardName} foram atualizadas como ${statusPago}. ${successCount} de ${compras.length} sucessos.`);
+        } else {
+          alert(`Nenhuma compra encontrada para o cartão ${cardName} em ${getMonthName(currentMonth + 1)}/${currentYear}.`);
+        }
+        fetchAndDisplayAllData(); // Recarrega os dados após a atualização em massa
       } else {
-        const li = document.createElement('li');
-        li.textContent = 'Nenhuma compra.';
-        ul.appendChild(li);
+        // Se o usuário cancelar, reverter o estado do checkbox
+        event.target.checked = !isChecked;
       }
-      div.appendChild(ul);
-      responsaveisContainer.appendChild(div);
     });
-    addCheckboxListeners(); // Adiciona listeners aos novos checkboxes
+  });
+});
+
+// Função auxiliar para obter compras de um cartão específico para um mês/ano
+async function getComprasDoCartaoParaMes(cardName, month, year) {
+  const payload = {
+    action: 'getComprasPorCartao', // Ação que já retorna compras filtradas por cartão e mês
+    month: month,
+    year: year
+  };
+  try {
+    const response = await fetch(webAppUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const result = await response.json();
+    if (result.status === 'success' || (typeof result === 'object' && result[cardName])) {
+      return result[cardName].compras; // Retorna a lista de compras para o cartão específico
+    } else {
+      console.error('Erro ao buscar compras por cartão:', result.message || result);
+      return [];
+    }
+  } catch (error) {
+    console.error('Erro na requisição para buscar compras por cartão:', error);
+    return [];
+  }
+}
+
+// Função para converter o nome do cartão exibido para o nome na planilha
+function convertCardNameToSheetName(displayCardName) {
+  switch (displayCardName.toUpperCase()) {
+    case 'NUBANK': return 'Nubank';
+    case 'SANTANDER': return 'Santander';
+    case 'M.PAGO': return 'Mercado Pago';
+    case 'AMAZON': return 'Amazon';
+    default: return displayCardName;
+  }
+}
+
+
+function updateHeaderMonthYear() {
+  const monthYearHeader = document.querySelector('header h2');
+  if (monthYearHeader) {
+    monthYearHeader.textContent = `${getMonthName(currentMonth + 1)} ${currentYear}`;
+  }
+}
+
+function changeMonth(delta) {
+  currentMonth += delta;
+  if (currentMonth < 0) {
+    currentMonth = 11;
+    currentYear--;
+  } else if (currentMonth > 11) {
+    currentMonth = 0;
+    currentYear++;
+  }
+  updateHeaderMonthYear();
+  fetchAndDisplayAllData(); // Recarrega todos os dados para o novo mês/ano
+}
+
+async function fetchAndDisplayAllData() {
+  await Promise.all([
+    atualizarReceitas(),
+    atualizarCompras(),
+    atualizarContas(),
+    atualizarTotais(),
+    atualizarCartoes(),
+    atualizarComprasPorResponsavel()
+  ]);
+}
+
+async function sendRequest(action, data = {}, recordId = null) {
+  const payload = {
+    action: action,
+    data: data,
+    recordId: recordId,
+    month: currentMonth + 1, // Envia o mês atual (1-12)
+    year: currentYear        // Envia o ano atual
+  };
+
+  try {
+    const response = await fetch(webAppUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    return await response.json();
+  } catch (error) {
+    console.error('Erro na requisição:', error);
+    alert('Erro ao comunicar com o servidor: ' + error.message);
+    return { status: 'error', message: 'Erro de rede.' };
+  }
+}
+
+async function atualizarReceitas() {
+  const result = await sendRequest('getReceitas');
+  const lista = document.getElementById('listaReceitas');
+  lista.innerHTML = '';
+  if (result.status === 'error') {
+    lista.innerHTML = `<p>${result.message}</p>`;
+    return;
+  }
+  if (result.length === 0) {
+    lista.innerHTML = '<p>Nenhuma receita cadastrada.</p>';
+    return;
+  }
+  result.forEach(item => {
+    const p = document.createElement('p');
+    p.innerHTML = `${item.nome}: R$ ${parseFloat(item.valor).toFixed(2).replace('.', ',')}
+                    <span class="edit-btn" onclick="editarReceita('${item.id}', '${item.nome}', '${item.valor}')">✏️</span>
+                    <span class="delete-btn" onclick="deletarReceita('${item.id}')">🗑️</span>`;
+    lista.appendChild(p);
+  });
+}
+
+async function adicionarReceita() {
+  const nome = prompt('Nome da Receita:');
+  if (!nome) return;
+  const valor = parseFloat(prompt('Valor da Receita:'));
+  if (isNaN(valor) || valor <= 0) {
+    alert('Valor inválido.');
+    return;
+  }
+  const result = await sendRequest('addReceita', { nome: nome, valor: valor });
+  if (result.status === 'success') {
+    alert(result.message);
+    fetchAndDisplayAllData();
+  } else {
+    alert('Erro: ' + result.message);
+  }
+}
+
+async function editarReceita(id, nomeAtual, valorAtual) {
+  const novoNome = prompt('Novo nome da Receita:', nomeAtual);
+  if (!novoNome) return;
+  const novoValor = parseFloat(prompt('Novo valor da Receita:', valorAtual));
+  if (isNaN(novoValor) || novoValor <= 0) {
+    alert('Valor inválido.');
+    return;
+  }
+  const result = await sendRequest('updateReceita', { nome: novoNome, valor: novoValor }, id);
+  if (result.status === 'success') {
+    alert(result.message);
+    fetchAndDisplayAllData();
+  } else {
+    alert('Erro: ' + result.message);
+  }
+}
+
+async function deletarReceita(id) {
+  if (!confirm('Tem certeza que deseja deletar esta receita?')) return;
+  const result = await sendRequest('deleteReceita', {}, id);
+  if (result.status === 'success') {
+    alert(result.message);
+    fetchAndDisplayAllData();
+  } else {
+    alert('Erro: ' + result.message);
+  }
+}
+
+async function atualizarCompras() {
+  const result = await sendRequest('getCompras');
+  const listaContasVariaveis = document.getElementById('listaContasVariaveis');
+  listaContasVariaveis.innerHTML = ''; // Limpa antes de preencher, para receber APENAS compras de cartão.
+
+  if (result.status === 'error') {
+    listaContasVariaveis.innerHTML = `<p>${result.message}</p>`;
+    return;
+  }
+  if (result.length === 0) {
+    listaContasVariaveis.innerHTML = '<p>Nenhuma compra cadastrada.</p>';
+    return;
   }
 
-  // Função para adicionar listeners aos checkboxes individuais de pago
-  function addCheckboxListeners() {
-      document.querySelectorAll('.item-paid-checkbox').forEach(checkbox => {
-          checkbox.removeEventListener('change', handleItemPaidCheckboxChange); // Remove para evitar duplicidade
-          checkbox.addEventListener('change', handleItemPaidCheckboxChange);
-      });
+  result.forEach(item => {
+    // item.valor já é o valor da parcela, e item.parcelas já é "X/Y" do Apps Script
+    const valorParcela = parseFloat(item.valor || 0).toFixed(2).replace('.', ',');
+    const p = document.createElement('p');
+    p.className = item.pago === 'Sim' ? 'item-pago' : '';
+    p.innerHTML = `${item.nome} (${item.parcelas}) - R$ ${valorParcela} (${item.cartao})
+                    <span class="edit-btn" onclick="editarCompra('${item.originalId}', '${item.nome}', '${item.valor}', '${item.parcelas}', '${item.responsavel}', '${item.cartao}')">✏️</span>
+                    <span class="delete-btn" onclick="deletarCompra('${item.originalId}')">🗑️</span>
+                    <input type="checkbox" class="item-paid-checkbox" data-id="${item.originalId}" data-type="compra" ${item.pago === 'Sim' ? 'checked' : ''} title="Marcar como pago"/>`;
+    listaContasVariaveis.appendChild(p);
+  });
+  addCheckboxListeners();
+}
+
+async function adicionarCompraCartao() {
+  const respCompra = document.querySelector('#respCompra').value;
+  const cartaoCompra = document.querySelector('#cartaoCompra').value;
+  const nomeCompra = document.querySelector('#formAdicionarCompra input[placeholder="Nome da Compra"]').value;
+  const valorCompra = parseFloat(document.querySelector('#formAdicionarCompra input[placeholder="Valor"]').value);
+  const parcelasCompra = document.querySelector('#formAdicionarCompra input[placeholder="Parcelas (ex: 2/6)"]').value;
+
+  if (!nomeCompra || isNaN(valorCompra) || valorCompra <= 0 || !parcelasCompra) {
+    alert('Por favor, preencha todos os campos corretamente.');
+    return;
   }
 
-  async function handleItemPaidCheckboxChange(event) {
-      const checkbox = event.target;
-      const itemId = checkbox.dataset.id;
-      const itemType = checkbox.dataset.type; // 'compra' ou 'conta'
-      const isChecked = checkbox.checked;
-      const statusPago = isChecked ? 'Sim' : 'Não';
+  const data = {
+    responsavel: respCompra,
+    cartao: cartaoCompra,
+    nome: nomeCompra,
+    valor: valorCompra,
+    parcelas: parcelasCompra
+  };
 
-      const action = itemType === 'compra' ? 'markCompraAsPaid' : 'markContaAsPaid';
+  const result = await sendRequest('addCompraCartao', data);
+  if (result.status === 'success') {
+    alert(result.message);
+    document.querySelector('#formAdicionarCompra input[placeholder="Nome da Compra"]').value = '';
+    document.querySelector('#formAdicionarCompra input[placeholder="Valor"]').value = '';
+    document.querySelector('#formAdicionarCompra input[placeholder="Parcelas (ex: 2/6)"]').value = '';
+    fetchAndDisplayAllData();
+  } else {
+    alert('Erro: ' + result.message);
+  }
+}
 
-      if (!confirm(`Tem certeza que deseja marcar este item como ${statusPago}?`)) {
-          checkbox.checked = !isChecked; // Reverter o estado se o usuário cancelar
-          return;
-      }
+async function editarCompra(id, nomeAtual, valorAtual, parcelasAtual, responsavelAtual, cartaoAtual) {
+  const novoNome = prompt('Novo nome da Compra:', nomeAtual);
+  if (!novoNome) return;
+  const novoValor = parseFloat(prompt('Novo valor da Compra:', valorAtual));
+  if (isNaN(novoValor) || novoValor <= 0) {
+    alert('Valor inválido.');
+    return;
+  }
+  const novasParcelas = prompt('Novas Parcelas (ex: 2/6):', parcelasAtual);
+  if (!novasParcelas) return;
+  const novoResponsavel = prompt('Novo Responsável:', responsavelAtual);
+  if (!novoResponsavel) return;
+  const novoCartao = prompt('Novo Cartão:', cartaoAtual);
+  if (!novoCartao) return;
 
-      const result = await sendRequest(action, { pago: statusPago }, itemId);
-      if (result.status === 'success') {
-          alert(`Item marcado como ${statusPago} com sucesso!`);
-          fetchAndDisplayAllData(); // Recarrega os dados para atualizar os totais e a exibição
+  const data = {
+    nome: novoNome,
+    valor: novoValor,
+    parcelas: novasParcelas,
+    responsavel: novoResponsavel,
+    cartao: novoCartao
+  };
+  const result = await sendRequest('updateCompra', data, id);
+  if (result.status === 'success') {
+    alert(result.message);
+    fetchAndDisplayAllData();
+  } else {
+    alert('Erro: ' + result.message);
+  }
+}
+
+async function deletarCompra(id) {
+  if (!confirm('Tem certeza que deseja deletar esta compra?')) return;
+  const result = await sendRequest('deleteCompra', {}, id);
+  if (result.status === 'success') {
+    alert(result.message);
+    fetchAndDisplayAllData();
+  } else {
+    alert('Erro: ' + result.message);
+  }
+}
+
+async function atualizarContas() {
+  const result = await sendRequest('getContas');
+  const listaFixas = document.getElementById('listaContasFixas');
+  const listaVariaveis = document.getElementById('listaContasVariaveis'); // Esta lista agora receberá APENAS contas variáveis
+
+  listaFixas.innerHTML = '';
+  listaVariaveis.innerHTML = ''; // Limpa esta lista para preencher com contas variáveis
+
+  if (result.status === 'error') {
+    listaFixas.innerHTML = `<p>${result.message}</p>`;
+    listaVariaveis.innerHTML = `<p>${result.message}</p>`; // Mostrar erro em ambos
+    return;
+  }
+
+  let totalFixas = 0;
+  let totalVariaveis = 0;
+
+  if (result.length === 0) {
+    listaFixas.innerHTML = '<p>Nenhuma conta cadastrada.</p>';
+    listaVariaveis.innerHTML += '<p>Nenhuma conta variável cadastrada.</p>';
+    return;
+  }
+
+  result.forEach(item => {
+    // item.valor já é o valor da parcela, e item.parcelas já é "X/Y" do Apps Script
+    const valorParcela = parseFloat(item.valor || 0).toFixed(2).replace('.', ',');
+    const p = document.createElement('p');
+    p.className = item.pago === 'Sim' ? 'item-pago' : '';
+    p.innerHTML = `${item.nome} (${item.parcelas}) - R$ ${valorParcela}
+                    <span class="edit-btn" onclick="editarConta('${item.originalId}', '${item.tipo}', '${item.nome}', '${item.valor}', '${item.parcelas}')">✏️</span>
+                    <span class="delete-btn" onclick="deletarConta('${item.originalId}')">🗑️</span>
+                    <input type="checkbox" class="item-paid-checkbox" data-id="${item.originalId}" data-type="conta" ${item.pago === 'Sim' ? 'checked' : ''} title="Marcar como pago"/>`;
+
+    if (item.tipo === 'Fixa') {
+      listaFixas.appendChild(p);
+      totalFixas += parseFloat(valorParcela.replace(',', '.'));
+    } else if (item.tipo === 'Variável') {
+      listaVariaveis.appendChild(p);
+      totalVariaveis += parseFloat(valorParcela.replace(',', '.'));
+    }
+  });
+
+  document.getElementById('totalContasFixas').textContent = `Total: R$ ${totalFixas.toFixed(2).replace('.', ',')}`;
+  // O total das contas variáveis será somado ao total de compras no atualizarTotais
+  // document.getElementById('totalContasVariaveis').textContent = `Total: R$ ${totalVariaveis.toFixed(2).replace('.', ',')}`; // Não exibe aqui para evitar confusão com compras.
+  addCheckboxListeners();
+}
+
+async function adicionarConta() {
+  const tipoConta = document.querySelector('#tipoConta').value;
+  const nomeConta = document.querySelector('#formAdicionarConta input[placeholder="Nome da Conta"]').value;
+  const parcelasConta = document.querySelector('#formAdicionarConta input[placeholder="Parcelas (ex: 2/3)"]').value;
+  const valorConta = parseFloat(document.querySelector('#formAdicionarConta input[placeholder="Valor"]').value);
+
+  if (!nomeConta || isNaN(valorConta) || valorConta <= 0 || !parcelasConta) {
+    alert('Por favor, preencha todos os campos corretamente.');
+    return;
+  }
+
+  const data = {
+    tipo: tipoConta,
+    nome: nomeConta,
+    parcelas: parcelasConta,
+    valor: valorConta
+  };
+
+  const result = await sendRequest('addConta', data);
+  if (result.status === 'success') {
+    alert(result.message);
+    document.querySelector('#formAdicionarConta input[placeholder="Nome da Conta"]').value = '';
+    document.querySelector('#formAdicionarConta input[placeholder="Parcelas (ex: 2/3)"]').value = '';
+    document.querySelector('#formAdicionarConta input[placeholder="Valor"]').value = '';
+    fetchAndDisplayAllData();
+  } else {
+    alert('Erro: ' + result.message);
+  }
+}
+
+async function editarConta(id, tipoAtual, nomeAtual, valorAtual, parcelasAtual) {
+  const novoTipo = prompt('Novo tipo de Conta (Fixa/Variável):', tipoAtual);
+  if (!novoTipo) return;
+  const novoNome = prompt('Novo nome da Conta:', nomeAtual);
+  if (!novoNome) return;
+  const novoValor = parseFloat(prompt('Novo valor da Conta:', valorAtual));
+  if (isNaN(novoValor) || novoValor <= 0) {
+    alert('Valor inválido.');
+    return;
+  }
+  const novasParcelas = prompt('Novas Parcelas (ex: 2/3):', parcelasAtual);
+  if (!novasParcelas) return;
+
+  const data = {
+    tipo: novoTipo,
+    nome: novoNome,
+    valor: novoValor,
+    parcelas: novasParcelas
+  };
+  const result = await sendRequest('updateConta', data, id);
+  if (result.status === 'success') {
+    alert(result.message);
+    fetchAndDisplayAllData();
+  } else {
+    alert('Erro: ' + result.message);
+  }
+}
+
+async function deletarConta(id) {
+  if (!confirm('Tem certeza que deseja deletar esta conta?')) return;
+  const result = await sendRequest('deleteConta', {}, id);
+  if (result.status === 'success') {
+    alert(result.message);
+    fetchAndDisplayAllData();
+  } else {
+    alert('Erro: ' + result.message);
+  }
+}
+
+async function atualizarTotais() {
+  const result = await sendRequest('getTotais');
+  if (result.status === 'error') {
+    document.querySelector('.totals-section .totals-wrapper span:first-child').textContent = `Total de Receitas: Erro`;
+    document.querySelector('.totals-section .totals-wrapper span:last-child').textContent = `Total de Despesas: Erro`;
+    document.querySelector('.saldo-label').textContent = `Saldo: Erro`;
+    document.querySelector('.saldo-bar').style.width = '0%';
+    document.querySelector('.saldo-bar').style.backgroundColor = 'gray';
+    return;
+  }
+
+  const totalReceitas = result.receitas || 0;
+  const totalDespesas = result.despesas || 0;
+  const saldo = result.saldo || 0;
+
+  document.querySelector('.totals-section .totals-wrapper span:first-child').textContent = `Total de Receitas: R$ ${totalReceitas.toFixed(2).replace('.', ',')}`;
+  document.querySelector('.totals-section .totals-wrapper span:last-child').textContent = `Total de Despesas: R$ ${totalDespesas.toFixed(2).replace('.', ',')}`;
+  document.querySelector('.saldo-label').textContent = `Saldo: R$ ${saldo.toFixed(2).replace('.', ',')}`;
+
+  // Atualiza a barra de saldo
+  const saldoBar = document.querySelector('.saldo-bar');
+  if (totalReceitas > 0) {
+    let percentage = (saldo / totalReceitas) * 100;
+    percentage = Math.max(0, Math.min(100, percentage));
+    saldoBar.style.width = `${percentage}%`;
+    if (saldo > 0) {
+      saldoBar.style.backgroundColor = '#28a745'; // Verde
+    } else {
+      saldoBar.style.backgroundColor = '#dc3545'; // Vermelho
+    }
+  } else {
+    saldoBar.style.width = '0%';
+    saldoBar.style.backgroundColor = 'gray';
+  }
+}
+
+async function atualizarCartoes() {
+  const result = await sendRequest('getComprasPorCartao');
+  if (result.status === 'error') {
+    document.getElementById('nubankCard').querySelector('.cartao-list').innerHTML = `<p>${result.message}</p>`;
+    document.getElementById('santanderCard').querySelector('.cartao-list').innerHTML = `<p>${result.message}</p>`;
+    document.getElementById('mpagoCard').querySelector('.cartao-list').innerHTML = `<p>${result.message}</p>`;
+    document.getElementById('amazonCard').querySelector('.cartao-list').innerHTML = `<p>${result.message}</p>`;
+    return;
+  }
+
+  const cartoes = {
+    'Nubank': 'nubankCard',
+    'Santander': 'santanderCard',
+    'Mercado Pago': 'mpagoCard',
+    'Amazon': 'amazonCard'
+  };
+
+  for (const cartaoNome in cartoes) {
+    const elementId = cartoes[cartaoNome];
+    const cardBox = document.getElementById(elementId);
+    if (cardBox) {
+      const listElement = cardBox.querySelector('.cartao-list');
+      const totalElement = cardBox.querySelector('.cartao-total');
+      listElement.innerHTML = '';
+
+      const data = result[cartaoNome];
+      if (data && data.compras.length > 0) {
+        let currentCardTotal = 0;
+        data.compras.forEach(compra => {
+          const p = document.createElement('p');
+          p.className = compra.pago === 'Sim' ? 'item-pago' : '';
+          // Usando compra.parcelas que já deve estar no formato "X/Y" do Apps Script
+          p.innerHTML = `${compra.nome} (${compra.parcelas}) - R$ ${parseFloat(compra.valor).toFixed(2).replace('.', ',')}
+                            <input type="checkbox" class="item-paid-checkbox" data-id="${compra.originalId}" data-type="compra" ${compra.pago === 'Sim' ? 'checked' : ''} title="Marcar como pago"/>`;
+          listElement.appendChild(p);
+          currentCardTotal += parseFloat(compra.valor);
+        });
+        totalElement.textContent = `Total: R$ ${currentCardTotal.toFixed(2).replace('.', ',')}`;
       } else {
-          alert('Erro ao atualizar item: ' + result.message);
-          checkbox.checked = !isChecked; // Reverter o estado em caso de erro
+        listElement.innerHTML = '<p>Nenhuma compra neste cartão.</p>';
+        totalElement.textContent = `Total: R$ 0,00`;
       }
+    }
+  }
+  addCheckboxListeners();
+}
+
+async function atualizarComprasPorResponsavel() {
+  const result = await sendRequest('getComprasPorResponsavel');
+  const responsaveisContainer = document.querySelector('.responsaveis-container');
+  responsaveisContainer.innerHTML = '';
+
+  if (result.status === 'error') {
+    responsaveisContainer.innerHTML = `<p>${result.message}</p>`;
+    return;
   }
 
-  function getMonthName(monthNumber) { // monthNumber is 1-12
-    const date = new Date();
-    date.setMonth(monthNumber - 1);
-    return date.toLocaleString('pt-BR', { month: 'long' }).charAt(0).toUpperCase() + date.toLocaleString('pt-BR', { month: 'long' }).slice(1);
+  const responsaveis = ['Liana', 'Stefany', 'Marília', 'Nosso ❤️'];
+
+  responsaveis.forEach(responsavel => {
+    const div = document.createElement('div');
+    div.className = 'responsavel-item';
+
+    const total = result[responsavel] ? parseFloat(result[responsavel].total).toFixed(2).replace('.', ',') : '0,00';
+    div.innerHTML = `<h3>${responsavel}</h3><p>Total: R$ ${total}</p>`;
+
+    const ul = document.createElement('ul');
+    if (result[responsavel] && result[responsavel].compras.length > 0) {
+      result[responsavel].compras.forEach(compra => {
+        const li = document.createElement('li');
+        li.className = compra.pago === 'Sim' ? 'item-pago' : '';
+        // Usando compra.parcelas que já deve estar no formato "X/Y" do Apps Script
+        li.innerHTML = `${compra.nome} (${compra.parcelas}) - R$ ${parseFloat(compra.valor).toFixed(2).replace('.', ',')} (${compra.cartao})
+                            <input type="checkbox" class="item-paid-checkbox" data-id="${compra.originalId}" data-type="compra" ${compra.pago === 'Sim' ? 'checked' : ''} title="Marcar como pago"/>`;
+        ul.appendChild(li);
+      });
+    } else {
+      const li = document.createElement('li');
+      li.textContent = 'Nenhuma compra.';
+      ul.appendChild(li);
+    }
+    div.appendChild(ul);
+    responsaveisContainer.appendChild(div);
+  });
+  addCheckboxListeners();
+}
+
+function addCheckboxListeners() {
+  document.querySelectorAll('.item-paid-checkbox').forEach(checkbox => {
+    checkbox.removeEventListener('change', handleItemPaidCheckboxChange);
+    checkbox.addEventListener('change', handleItemPaidCheckboxChange);
+  });
+}
+
+async function handleItemPaidCheckboxChange(event) {
+  const checkbox = event.target;
+  const itemId = checkbox.dataset.id;
+  const itemType = checkbox.dataset.type;
+  const isChecked = checkbox.checked;
+  const statusPago = isChecked ? 'Sim' : 'Não';
+
+  const action = itemType === 'compra' ? 'markCompraAsPaid' : 'markContaAsPaid';
+
+  if (!confirm(`Tem certeza que deseja marcar este item como ${statusPago}?`)) {
+    checkbox.checked = !isChecked;
+    return;
   }
+
+  const result = await sendRequest(action, { pago: statusPago }, itemId);
+  if (result.status === 'success') {
+    alert(`Item marcado como ${statusPago} com sucesso!`);
+    fetchAndDisplayAllData();
+  } else {
+    alert('Erro ao atualizar item: ' + result.message);
+    checkbox.checked = !isChecked;
+  }
+}
+
+function getMonthName(monthNumber) {
+  const date = new Date();
+  date.setMonth(monthNumber - 1);
+  return date.toLocaleString('pt-BR', { month: 'long' }).charAt(0).toUpperCase() + date.toLocaleString('pt-BR', { month: 'long' }).slice(1);
+}
 </script>
   </head>
   <body>
