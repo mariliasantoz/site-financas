@@ -42,107 +42,92 @@
         cursor: pointer;
         font-size: 0.9em;
         transition: background-color 0.3s ease;
+        margin-top: 10px;
       }
       button:hover {
         background-color: #45a049;
       }
-      button.delete-button {
+      button.delete {
         background-color: #f44336;
-        margin-left: 5px;
       }
-      button.delete-button:hover {
+      button.delete:hover {
         background-color: #da190b;
       }
-      button.edit-button {
-        background-color: #ff9800;
-        margin-left: 5px;
+      button.edit {
+        background-color: #008cba;
       }
-      button.edit-button:hover {
-        background-color: #e68a00;
+      button.edit:hover {
+        background-color: #007bb5;
       }
-
-      /* CABEÇALHO */
+      /* HEADER */
       header {
-        text-align: center;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         margin-bottom: 20px;
-        position: relative;
       }
       header h1 {
         color: #333;
-        margin-bottom: 10px;
+        margin: 0;
       }
       header h2 {
         color: #555;
-        margin-top: 0;
-      }
-      .nav-buttons {
-          position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
-          width: 100%;
-          display: flex;
-          justify-content: space-between;
-          padding: 0 20px;
-          box-sizing: border-box;
+        margin: 0;
       }
       .nav-buttons button {
-          background-color: #007bff;
-          color: white;
-          padding: 5px 10px;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          font-size: 1em;
+        background-color: #007bff;
+        margin: 0 5px;
       }
       .nav-buttons button:hover {
-          background-color: #0056b3;
+        background-color: #0056b3;
       }
-
       /* SEÇÃO DE TOTAIS */
       .totals-section {
         padding: 15px;
         margin-bottom: 20px;
+        text-align: center;
       }
       .totals-wrapper {
         display: flex;
         justify-content: space-around;
         margin-bottom: 15px;
-        font-weight: bold;
-        color: #333;
       }
+      .totals-wrapper span {
+        font-size: 1.1em;
+        font-weight: bold;
+      }
+      /* Termômetro de Saldo */
       .saldo-bar-container {
+        width: 100%;
         background-color: #ddd;
         border-radius: 5px;
         height: 25px;
-        margin-top: 10px;
-        overflow: hidden; /* Garante que a barra não vaze */
+        overflow: hidden;
         position: relative;
+        margin-top: 10px;
       }
       .saldo-bar {
         height: 100%;
-        width: 50%; /* Largura inicial, será ajustada via JS */
-        background-color: green; /* Cor para saldo positivo */
+        width: 0%; /* Será preenchido por JS */
+        background-color: green; /* Cor padrão */
         border-radius: 5px;
         transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out;
       }
+      .saldo-bar.positive {
+        background-color: #28a745; /* Verde para saldo positivo */
+      }
       .saldo-bar.negative {
-        background-color: red; /* Cor para saldo negativo */
+        background-color: #dc3545; /* Vermelho para saldo negativo */
       }
       .saldo-label {
         position: absolute;
-        top: 0;
-        left: 0;
         width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
+        text-align: center;
+        line-height: 25px;
+        color: #333;
         font-weight: bold;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
       }
-
-      /* SEÇÃO DE CATEGORIAS (Receitas, Contas Fixas, Variáveis) */
+      /* SEÇÃO DE CATEGORIAS (Receitas, Contas Fixas, Contas Variáveis) */
       .categorias-section {
         padding: 15px;
         margin-bottom: 20px;
@@ -154,65 +139,58 @@
       }
       .categoria-box {
         padding: 15px;
-        text-align: center;
         display: flex;
         flex-direction: column;
+        justify-content: space-between; /* Empurra o botão para baixo */
       }
       .categoria-box h3 {
         margin-top: 0;
         color: #333;
       }
       .categoria-list {
-        text-align: left;
-        margin-bottom: 10px;
-        flex-grow: 1; /* Permite que a lista ocupe o espaço disponível */
+        margin-top: 10px;
+        flex-grow: 1; /* Permite que a lista cresça e ocupe o espaço */
       }
       .categoria-list p {
         margin: 5px 0;
-        color: #555;
       }
       .list-item {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 5px 0;
-        border-bottom: 1px dashed #c0c0c0;
+        border-bottom: 1px solid #eee;
       }
       .list-item:last-child {
         border-bottom: none;
       }
-      .list-item span {
+      .list-item-content {
+        display: flex;
+        align-items: center;
         flex-grow: 1;
-        text-align: left;
       }
-      .list-item-controls {
-          display: flex;
-          justify-content: flex-end;
-          align-items: center;
+      .list-item-content span {
+        flex-grow: 1;
       }
-      .list-item-controls button {
-          margin-left: 5px;
-          padding: 4px 8px;
-          font-size: 0.8em;
+      .checkbox-pago {
+        margin-left: 10px;
+        margin-right: 10px;
+        transform: scale(1.2); /* Aumenta o tamanho do checkbox */
       }
-      .categoria-box .total-categoria {
-        font-weight: bold;
-        margin-top: 10px;
-        padding-top: 10px;
-        border-top: 1px solid #c0c0c0;
+      .total-pago-box {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid #90caf9;
       }
-
-      /* Checkbox de pago para o total da categoria */
-      .total-categoria .checkbox-pago-total {
-          margin-left: 10px;
-          width: 20px; /* Ajuste o tamanho conforme necessário */
-          height: 20px;
-          cursor: pointer;
+      .total-pago-box span {
+        font-weight: bold;
       }
-
+      .total-pago-box input[type="checkbox"] {
+        transform: scale(1.3);
+      }
       /* SEÇÃO DE CARTÕES */
       .cartoes-section {
         padding: 15px;
@@ -225,68 +203,53 @@
       }
       .cartao-box {
         background-color: #f0f8ff;
-        border: 1px solid #a7d9f7;
+        border: 1px solid #a7d9ff;
         border-radius: 5px;
         padding: 15px;
-        text-align: center;
         display: flex;
         flex-direction: column;
       }
       .cartao-box h3 {
         margin-top: 0;
         color: #333;
-      }
-      .cartao-list {
-        text-align: left;
-        margin-bottom: 10px;
-        flex-grow: 1;
-      }
-      .cartao-list p {
-        margin: 5px 0;
-        color: #555;
-      }
-      .cartao-box .total-cartao {
-        font-weight: bold;
-        margin-top: 10px;
-        padding-top: 10px;
-        border-top: 1px solid #a7d9f7;
         display: flex;
         justify-content: space-between;
         align-items: center;
       }
-      .cartao-box .total-cartao .checkbox-pago-total {
-          margin-left: 10px;
-          width: 20px;
-          height: 20px;
-          cursor: pointer;
+      .cartao-box ul {
+        list-style: none;
+        padding: 0;
+        margin: 10px 0;
+        flex-grow: 1;
+      }
+      .cartao-box ul li {
+        margin-bottom: 5px;
+      }
+      .cartao-box p {
+        font-weight: bold;
+        margin-top: 10px;
+        border-top: 1px solid #a7d9ff;
+        padding-top: 10px;
       }
       .compra {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 5px 0;
-        border-bottom: 1px dashed #c0c0c0;
+        border-bottom: 1px solid #eee;
       }
       .compra:last-child {
         border-bottom: none;
       }
-      .compra .list-item-content {
-          flex-grow: 1;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-      }
-      .compra .list-item-content span {
-          flex-grow: 1;
-          text-align: left;
-      }
-
-
       /* SEÇÃO DE FORMULÁRIOS */
+      .forms-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+      }
       .form-section {
         padding: 15px;
-        margin-bottom: 20px;
-        text-align: center;
       }
       .form-section h2 {
         margin-top: 0;
@@ -300,7 +263,6 @@
         margin-bottom: 10px;
         border: 1px solid #ccc;
         border-radius: 4px;
-        box-sizing: border-box;
       }
       .form-section .row {
         display: flex;
@@ -308,27 +270,22 @@
         margin-bottom: 10px;
       }
       .form-section .row input {
-        flex-grow: 1;
+        flex: 1;
       }
-
       /* SEÇÃO DE COMPRAS POR RESPONSÁVEL */
       .compras-responsaveis {
         padding: 15px;
         margin-bottom: 20px;
-        text-align: center;
-      }
-      .compras-responsaveis h2 {
-        margin-top: 0;
-        color: #333;
       }
       .responsaveis-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 20px;
-        margin-top: 15px;
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        gap: 15px;
       }
       .responsavel-box {
-        padding: 15px;
+        padding: 10px;
+        min-width: 150px;
         text-align: center;
       }
       .responsavel-box h3 {
@@ -372,9 +329,9 @@
       .list-item-controls {
           display: flex;
           justify-content: flex-end;
-          align-items: center;
+          gap: 5px;
+          margin-left: 10px;
       }
-
     </style>
   </head>
   <body>
@@ -414,9 +371,12 @@
             <div class="categoria-list" id="listaContasFixas">
               <p>Carregando contas fixas...</p>
             </div>
-            <div class="total-categoria">
-              <span>Total Fixas: R$ 0.00</span>
-              <input type="checkbox" class="checkbox-pago-total" onchange="markAllContasAsPaidFront('Fixa', this.checked)">
+            <div class="total-pago-box">
+                <span id="totalContasFixas">Total: R$ 0.00</span>
+                <div>
+                    <label for="pagoContasFixas">Tudo Pago:</label>
+                    <input type="checkbox" id="pagoContasFixas" class="checkbox-pago" onchange="markAllContasAsPaidFront('Fixa', this.checked)">
+                </div>
             </div>
           </div>
 
@@ -425,41 +385,41 @@
             <div class="categoria-list" id="listaContasVariaveis">
               <p>Carregando contas variáveis...</p>
             </div>
-            <div class="total-categoria">
-              <span>Total Variáveis: R$ 0.00</span>
-              <input type="checkbox" class="checkbox-pago-total" onchange="markAllContasAsPaidFront('Variável', this.checked)">
+            <div class="total-pago-box">
+                <span id="totalContasVariaveis">Total: R$ 0.00</span>
+                <div>
+                    <label for="pagoContasVariaveis">Tudo Pago:</label>
+                    <input type="checkbox" id="pagoContasVariaveis" class="checkbox-pago" onchange="markAllContasAsPaidFront('Variável', this.checked)">
+                </div>
             </div>
           </div>
         </div>
       </div>
 
       <div class="cartoes-section">
-        <h2>Cartões</h2>
-        <div class="cartoes-grid" id="cartoesGrid">
-          <p>Carregando cartões...</p>
-        </div>
+        <h2>Compras por Cartão</h2>
+        <div class="cartoes-grid">
+          <p>Carregando compras por cartão...</p>
+          </div>
       </div>
 
-      <div class="form-sections-wrapper" style="display: flex; gap: 20px; margin-bottom: 20px;">
-        <div class="form-section" id="formAdicionarCompra" style="flex: 1;">
+      <div class="forms-container">
+        <div class="form-section" id="formAdicionarCompra">
           <h2>Adicionar Compra</h2>
           <div class="row">
             <select id="responsavelCompra">
-              <option value="">Selecione o Responsável</option>
               <option value="Liana">Liana</option>
               <option value="Stefany">Stefany</option>
               <option value="Marília">Marília</option>
               <option value="Nosso ❤️">Nosso ❤️</option>
             </select>
             <select id="cartaoCompra">
-              <option value="">Selecione o Cartão</option>
+              <option value="Liana">LIANA</option>
+              <option value="Stefany">STEFANY</option>
+              <option value="Marília">MARÍLIA</option>
               <option value="Nubank">NUBANK</option>
-              <option value="C6">C6</option>
-              <option value="Itaú">ITAÚ</option>
-              <option value="Bradesco">BRADESCO</option>
-              <option value="Inter">INTER</option>
-              <option value="M.Pago">M.PAGO</option>
               <option value="Amazon">AMAZON</option>
+              <option value="M. Pago">M. PAGO</option>
             </select>
           </div>
           <div class="row">
@@ -472,7 +432,7 @@
           <button>Adicionar Compra no Cartão</button>
           </div>
 
-        <div class="form-section" id="formAdicionarConta" style="flex: 1;">
+        <div class="form-section" id="formAdicionarConta">
           <h2>Adicionar Conta</h2>
           <select id="tipoConta">
             <option value="Fixa">Fixa</option>
@@ -487,14 +447,13 @@
 
       <div class="compras-responsaveis">
         <h2>Total de Compras por Responsável</h2>
-        <div class="responsaveis-container" id="responsaveisContainer">
+        <div class="responsaveis-container">
           <p>Carregando totais por responsável...</p>
         </div>
       </div>
 
       <footer>
         <p>
-          Cores dos Responsáveis:
           <span class="liana">Liana</span>,
           <span class="stefany">Stefany</span>,
           <span class="marilia">Marília</span>,
@@ -531,599 +490,561 @@
         }
         updateMonthDisplay();
         // Recarrega todos os dados para o novo mês/ano
-        fetchAllData();
+        atualizarReceitas(); // Receitas não são por mês, mas mantenha para consistência se no futuro filtrar.
+        atualizarContas();
+        atualizarCartoes();
+        atualizarComprasPorResponsavel();
+        atualizarTotais();
       }
 
-      async function fetchBackend(action, data = {}, recordId = null) {
-          const payload = {
-              action: action,
-              data: data,
-              recordId: recordId,
-              month: currentMonth + 1, // Mês ajustado para 1-12
-              year: currentYear
-          };
-          try {
-              const response = await fetch(webAppUrl, {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify(payload)
-              });
-              if (!response.ok) {
-                  const errorText = await response.text();
-                  throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-              }
-              return await response.json();
-          } catch (error) {
-              console.error(`Erro na requisição para o backend (${action}):`, error);
-              alert(`Erro: ${error.message}. Verifique o console para mais detalhes.`);
-              throw error; // Propaga o erro para quem chamou
+      async function fetchData(action, payload = {}) {
+        const fullPayload = { ...payload, action, month: currentMonth + 1, year: currentYear }; // Envia mês e ano
+        try {
+          const response = await fetch(webAppUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(fullPayload)
+          });
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
           }
+          return await response.json();
+        } catch (error) {
+          console.error(`Erro ao buscar dados para ${action}:`, error);
+          alert(`Erro ao carregar dados. Verifique o console para mais detalhes. (${action})`);
+          return { data: [] }; // Retorna um array vazio para evitar erros em loops
+        }
       }
 
-      function atualizarReceitas() {
-        fetchBackend("getReceitas", {}, null)
-          .then(data => {
-            const listaReceitas = document.getElementById("listaReceitas");
-            listaReceitas.innerHTML = "";
+      async function atualizarReceitas() {
+        const listaReceitas = document.getElementById("listaReceitas");
+        listaReceitas.innerHTML = "<p>Carregando receitas...</p>";
+        const data = await fetchData("getReceitas");
+        listaReceitas.innerHTML = ""; // Limpa a mensagem de carregamento
+
+        if (data.data && data.data.length > 0) {
             let totalReceitas = 0;
-            if (data.data && data.data.length > 0) {
-              data.data.forEach(item => {
+            data.data.forEach(receita => {
                 const div = document.createElement("div");
                 div.classList.add("list-item");
+                const valor = parseFloat(receita.valor || 0);
+                totalReceitas += valor;
                 div.innerHTML = `
-                  <span>${item.nome} | R$ ${parseFloat(item.valor).toFixed(2)}</span>
-                  <div class="list-item-controls">
-                    <button onclick='editReceitaFront(\"${item.id}\")'>Edit</button>
-                    <button onclick='deleteReceitaFront(\"${item.id}\")'>X</button>
-                  </div>
+                    <div class="list-item-content">
+                        <span>${receita.nome} | R$ ${valor.toFixed(2)}</span>
+                        <div class="list-item-controls">
+                            <button class="edit" onclick='editReceitaFront("${receita.id}")'>Edit</button>
+                            <button class="delete" onclick='deleteReceitaFront("${receita.id}")'>X</button>
+                        </div>
+                    </div>
                 `;
                 listaReceitas.appendChild(div);
-                totalReceitas += parseFloat(item.valor);
-              });
-            } else {
-              listaReceitas.innerHTML = "<p>Nenhuma receita cadastrada.</p>";
-            }
+            });
             document.querySelector(".totals-wrapper span:first-child").textContent = `Total de Receitas: R$ ${totalReceitas.toFixed(2)}`;
-            atualizarTotais();
-          })
-          .catch(error => {
-            console.error("Erro ao carregar receitas:", error);
-            document.getElementById("listaReceitas").innerHTML = "<p>Erro ao carregar receitas.</p>";
-          });
-      }
-
-      function submitReceita() {
-        const nome = prompt("Nome da Receita:");
-        if (!nome) return;
-        const valor = prompt("Valor da Receita:");
-        if (!valor || isNaN(parseFloat(valor))) {
-          alert("Valor inválido.");
-          return;
+        } else {
+            listaReceitas.innerHTML = "<p>Nenhuma receita adicionada.</p>";
+            document.querySelector(".totals-wrapper span:first-child").textContent = `Total de Receitas: R$ 0.00`;
         }
-
-        const payload = {
-          nome: nome,
-          valor: parseFloat(valor),
-          mes: currentMonth + 1, // Mês atual
-          ano: currentYear // Ano atual
-        };
-        fetchBackend("addReceita", payload)
-          .then(data => {
-            alert(data.message);
-            atualizarReceitas();
-          })
-          .catch(error => console.error("Erro ao adicionar receita:", error));
+        atualizarTotais();
       }
 
-      function editReceitaFront(recordId) {
-          fetchBackend("getReceita", {}, recordId)
-              .then(data => {
-                  const receita = data.data;
-                  if (!receita) {
-                      alert("Receita não encontrada.");
-                      return;
+
+      async function atualizarContas() {
+          const listaContasFixas = document.getElementById("listaContasFixas");
+          const listaContasVariaveis = document.getElementById("listaContasVariaveis");
+          const totalContasFixasElem = document.getElementById("totalContasFixas");
+          const totalContasVariaveisElem = document.getElementById("totalContasVariaveis");
+          const pagoContasFixasCheckbox = document.getElementById("pagoContasFixas");
+          const pagoContasVariaveisCheckbox = document.getElementById("pagoContasVariaveis");
+
+          listaContasFixas.innerHTML = "<p>Carregando contas fixas...</p>";
+          listaContasVariaveis.innerHTML = "<p>Carregando contas variáveis...</p>";
+
+          const data = await fetchData("getContas"); // O Apps Script deve filtrar por mês/ano
+
+          let totalFixas = 0;
+          let totalVariaveis = 0;
+          let allFixedPaid = true;
+          let allVariablePaid = true;
+          let hasFixed = false;
+          let hasVariable = false;
+
+          listaContasFixas.innerHTML = "";
+          listaContasVariaveis.innerHTML = "";
+
+          if (data.data && data.data.length > 0) {
+              data.data.forEach(conta => {
+                  const valor = parseFloat(conta.valor || 0);
+                  const parcelas = conta.parcelas || "1/1"; // Garante "1/1" se vazio
+
+                  const div = document.createElement("div");
+                  div.classList.add("list-item");
+                  div.innerHTML = `
+                      <div class="list-item-content">
+                          <span>${conta.nome} | ${parcelas} | R$ ${valor.toFixed(2)}</span>
+                          <div class="list-item-controls">
+                              <button class="edit" onclick='editContaFront("${conta.id}")'>Edit</button>
+                              <button class="delete" onclick='deleteContaFront("${conta.id}")'>X</button>
+                          </div>
+                      </div>
+                  `;
+
+                  if (conta.tipo === 'Fixa') {
+                      listaContasFixas.appendChild(div);
+                      totalFixas += valor;
+                      hasFixed = true;
+                      if (conta.pago !== 'Sim') {
+                          allFixedPaid = false;
+                      }
+                  } else if (conta.tipo === 'Variável') {
+                      listaContasVariaveis.appendChild(div);
+                      totalVariaveis += valor;
+                      hasVariable = true;
+                      if (conta.pago !== 'Sim') {
+                          allVariablePaid = false;
+                      }
                   }
-                  const novoNome = prompt("Novo nome da Receita:", receita.nome);
-                  if (novoNome === null) return; // Cancelado
-                  const novoValor = prompt("Novo valor da Receita:", receita.valor);
-                  if (novoValor === null || isNaN(parseFloat(novoValor))) {
-                      alert("Valor inválido.");
-                      return;
-                  }
-
-                  const payload = {
-                      nome: novoNome,
-                      valor: parseFloat(novoValor),
-                      mes: currentMonth + 1,
-                      ano: currentYear
-                  };
-                  fetchBackend("updateReceita", payload, recordId)
-                      .then(updateData => {
-                          alert(updateData.message);
-                          atualizarReceitas();
-                      })
-                      .catch(error => console.error("Erro ao atualizar receita:", error));
-              })
-              .catch(error => console.error("Erro ao buscar receita para edição:", error));
-      }
-
-      function deleteReceitaFront(recordId) {
-        if (!confirm("Tem certeza que deseja excluir esta receita?")) return;
-        fetchBackend("deleteReceita", {}, recordId)
-          .then(data => {
-            alert(data.message);
-            atualizarReceitas();
-          })
-          .catch(error => console.error("Erro ao excluir receita:", error));
-      }
-
-      function atualizarContas() {
-        fetchBackend("getContasFiltradas", {}, null)
-          .then(data => {
-            const listaContasFixas = document.getElementById("listaContasFixas");
-            const listaContasVariaveis = document.getElementById("listaContasVariaveis");
-            listaContasFixas.innerHTML = "";
-            listaContasVariaveis.innerHTML = "";
-
-            let totalFixas = 0;
-            let totalVariaveis = 0;
-            let allFixasPaid = true;
-            let allVariaveisPaid = true;
-            let hasFixas = false;
-            let hasVariaveis = false;
-
-            if (data.data && data.data.length > 0) {
-              data.data.forEach(item => {
-                const div = document.createElement("div");
-                div.classList.add("list-item");
-
-                // Garante que parcelaAtual e parcelasTotais são números
-                const parcelaAtual = parseInt(item.parcelaAtual) || 1;
-                const parcelasTotais = parseInt(item.parcelasTotais) || 1;
-                const parcelasInfo = `${parcelaAtual}/${parcelasTotais}`;
-
-                div.innerHTML = `
-                  <span>${item.nome} | ${parcelasInfo} | R$ ${parseFloat(item.valor).toFixed(2)}</span>
-                  <div class="list-item-controls">
-                    <button onclick='editContaFront(\"${item.id}\")'>Edit</button>
-                    <button onclick='deleteContaFront(\"${item.id}\")'>X</button>
-                  </div>
-                `;
-
-                if (item.tipo === "Fixa") {
-                  listaContasFixas.appendChild(div);
-                  totalFixas += parseFloat(item.valor);
-                  if (item.pago !== 'Sim') allFixasPaid = false;
-                  hasFixas = true;
-                } else if (item.tipo === "Variável") {
-                  listaContasVariaveis.appendChild(div);
-                  totalVariaveis += parseFloat(item.valor);
-                  if (item.pago !== 'Sim') allVariaveisPaid = false;
-                  hasVariaveis = true;
-                }
               });
-            }
+          }
 
-            if (!hasFixas) {
-                listaContasFixas.innerHTML = "<p>Nenhuma conta fixa cadastrada.</p>";
-            }
-            if (!hasVariaveis) {
-                listaContasVariaveis.innerHTML = "<p>Nenhuma conta variável cadastrada.</p>";
-            }
+          if (!hasFixed) {
+              listaContasFixas.innerHTML = "<p>Nenhuma conta fixa adicionada.</p>";
+          }
+          if (!hasVariable) {
+              listaContasVariaveis.innerHTML = "<p>Nenhuma conta variável adicionada.</p>";
+          }
 
-            document.querySelector(".categoria-box.contas:nth-of-type(1) .total-categoria span").textContent = `Total Fixas: R$ ${totalFixas.toFixed(2)}`;
-            document.querySelector(".categoria-box.contas:nth-of-type(1) .checkbox-pago-total").checked = allFixasPaid && hasFixas;
+          totalContasFixasElem.textContent = `Total: R$ ${totalFixas.toFixed(2)}`;
+          totalContasVariaveisElem.textContent = `Total: R$ ${totalVariaveis.toFixed(2)}`;
 
-            document.querySelector(".categoria-box.contas:nth-of-type(2) .total-categoria span").textContent = `Total Variáveis: R$ ${totalVariaveis.toFixed(2)}`;
-            document.querySelector(".categoria-box.contas:nth-of-type(2) .checkbox-pago-total").checked = allVariaveisPaid && hasVariaveis;
+          pagoContasFixasCheckbox.checked = hasFixed && allFixedPaid;
+          pagoContasVariaveisCheckbox.checked = hasVariable && allVariablePaid;
 
-            atualizarTotais();
-          })
-          .catch(error => {
-            console.error("Erro ao carregar contas:", error);
-            document.getElementById("listaContasFixas").innerHTML = "<p>Erro ao carregar contas fixas.</p>";
-            document.getElementById("listaContasVariaveis").innerHTML = "<p>Erro ao carregar contas variáveis.</p>";
-          });
+          atualizarTotais();
       }
-
-      function submitConta() {
-        const tipo = document.getElementById("tipoConta").value;
-        const nome = document.getElementById("nomeConta").value;
-        const parcelas = document.getElementById("parcelasConta").value; // Ex: "2/6"
-        const valor = document.getElementById("valorConta").value;
-
-        if (!nome || !valor || isNaN(parseFloat(valor))) {
-          alert("Por favor, preencha nome e valor da conta corretamente.");
-          return;
-        }
-
-        const payload = {
-          tipo: tipo,
-          nome: nome,
-          parcelas: parcelas || "1/1", // Garante que sempre tenha um valor
-          valor: parseFloat(valor)
-        };
-
-        fetchBackend("addConta", payload)
-          .then(data => {
-            alert(data.message);
-            document.getElementById("nomeConta").value = "";
-            document.getElementById("parcelasConta").value = "";
-            document.getElementById("valorConta").value = "";
-            atualizarContas();
-          })
-          .catch(error => console.error("Erro ao adicionar conta:", error));
-      }
-
-      function editContaFront(recordId) {
-          fetchBackend("getConta", {}, recordId)
-              .then(data => {
-                  const conta = data.data;
-                  if (!conta) {
-                      alert("Conta não encontrada.");
-                      return;
-                  }
-                  const novoTipo = prompt("Novo tipo da Conta (Fixa/Variável):", conta.tipo);
-                  if (novoTipo === null) return;
-                  const novoNome = prompt("Novo nome da Conta:", conta.nome);
-                  if (novoNome === null) return;
-                  // Garante que parcelas seja uma string no formato X/Y
-                  const novasParcelas = prompt("Novas parcelas (ex: 2/6):", `${conta.parcelaAtual}/${conta.parcelasTotais}`);
-                  if (novasParcelas === null) return;
-                  const novoValor = prompt("Novo valor da Conta:", conta.valor);
-                  if (novoValor === null || isNaN(parseFloat(novoValor))) {
-                      alert("Valor inválido.");
-                      return;
-                  }
-
-                  const payload = {
-                      tipo: novoTipo,
-                      nome: novoNome,
-                      parcelas: novasParcelas,
-                      valor: parseFloat(novoValor),
-                  };
-                  fetchBackend("updateConta", payload, recordId)
-                      .then(updateData => {
-                          alert(updateData.message);
-                          atualizarContas();
-                      })
-                      .catch(error => console.error("Erro ao atualizar conta:", error));
-              })
-              .catch(error => console.error("Erro ao buscar conta para edição:", error));
-      }
-
-      function deleteContaFront(recordId) {
-        if (!confirm("Tem certeza que deseja excluir esta conta?")) return;
-        fetchBackend("deleteConta", {}, recordId)
-          .then(data => {
-            alert(data.message);
-            atualizarContas();
-          })
-          .catch(error => console.error("Erro ao excluir conta:", error));
-      }
-
-      function markAllContasAsPaidFront(tipoConta, isChecked) {
-          const pagoStatus = isChecked ? 'Sim' : 'Não';
-          fetchBackend("markAllContasAsPaid", { tipo: tipoConta, pago: pagoStatus })
-              .then(data => {
-                  alert(data.message);
-                  atualizarContas(); // Recarrega para refletir o status de pago
-              })
-              .catch(error => console.error(`Erro ao marcar todas as contas ${tipoConta} como pagas:`, error));
-      }
-
 
       async function atualizarCartoes() {
-        const cartoesGrid = document.getElementById("cartoesGrid");
-        cartoesGrid.innerHTML = "<p>Carregando compras...</p>"; // Mensagem de carregamento única
+        const cartoesGrid = document.querySelector(".cartoes-grid");
+        cartoesGrid.innerHTML = "<p>Carregando compras por cartão...</p>";
 
-        try {
-            const data = await fetchBackend("getComprasPorCartao", {}, null);
-            cartoesGrid.innerHTML = ""; // Limpa a mensagem de carregamento
+        const data = await fetchData("getComprasPorCartao");
 
-            if (data.data && Object.keys(data.data).length > 0) {
-                const responsavelColors = {
-                    'Liana': 'liana',
-                    'Stefany': 'stefany',
-                    'Marília': 'marilia',
-                    'Nosso ❤️': 'nosso'
-                };
+        cartoesGrid.innerHTML = ""; // Limpa a mensagem de carregamento
 
-                // Ordem dos cartões
-                const cardOrder = ["NUBANK", "C6", "ITAÚ", "BRADESCO", "INTER", "M.PAGO", "AMAZON"];
-                const sortedCardNames = Object.keys(data.data).sort((a, b) => {
-                    const indexA = cardOrder.indexOf(a.toUpperCase());
-                    const indexB = cardOrder.indexOf(b.toUpperCase());
-                    return indexA - indexB;
-                });
+        if (data.data && Object.keys(data.data).length > 0) {
+            const cardNames = Object.keys(data.data);
+            const orderedCardNames = ["Liana", "Stefany", "Marília", "Nubank", "Amazon", "M. Pago"].filter(name => cardNames.includes(name));
+            const remainingCardNames = cardNames.filter(name => !orderedCardNames.includes(name));
+            const finalCardOrder = [...orderedCardNames, ...remainingCardNames];
 
-                sortedCardNames.forEach(cardNome => {
-                    const comprasDoCartao = data.data[cardNome];
-                    let totalCartao = 0; // Este total deve ser para itens não pagos
-                    let allComprasPaid = true;
-                    let hasCompras = false; // Flag para verificar se há alguma compra
 
-                    const cardBox = document.createElement("div");
-                    cardBox.classList.add("cartao-box");
+            finalCardOrder.forEach(cardNome => {
+                const comprasDoCartao = data.data[cardNome];
+                let totalCartao = 0;
+                let allComprasPaid = true;
+                let hasCompras = false;
 
-                    const cardListElem = document.createElement("div");
-                    cardListElem.classList.add("cartao-list");
-
-                    if (comprasDoCartao && comprasDoCartao.length > 0) {
-                        hasCompras = true;
-                        comprasDoCartao.forEach(item => {
-                            const div = document.createElement("div");
-                            // Garante que a classe do responsável seja aplicada corretamente
-                            const responsavelClass = responsavelColors[item.responsavel] || '';
-                            div.classList.add("compra", responsavelClass);
-
-                            // Ajusta a exibição das parcelas
-                            const parcelaAtual = parseInt(item.parcelaAtual) || 1;
-                            const parcelasTotais = parseInt(item.parcelasTotais) || 1;
-                            const parcelaDisplay = `${parcelaAtual}/${parcelasTotais}`;
-
-                            div.innerHTML = `
-                                <div class="list-item-content">
-                                    <span>${item.nome} | ${parcelaDisplay} | R$ ${parseFloat(item.valor).toFixed(2)} (${item.responsavel})</span>
-                                    <div class="list-item-controls">
-                                        <button onclick='editCompraFront(\"${item.id}\")'>Edit</button>
-                                        <button onclick='deleteCompraFront(\"${item.id}\")'>X</button>
-                                    </div>
-                                </div>
-                            `;
-                            cardListElem.appendChild(div);
-
-                            if (item.pago !== 'Sim') { // Somar apenas se não estiver pago
-                                totalCartao += parseFloat(item.valor);
-                                allComprasPaid = false;
-                            }
-                        });
-                    } else {
-                        cardListElem.innerHTML = "<p>Nenhuma compra neste cartão.</p>";
-                        allComprasPaid = false; // Se não há compras, não está "tudo pago"
-                    }
-
-                    cardBox.innerHTML = `
-                        <h3>${cardNome}</h3>
-                        ${cardListElem.outerHTML}
-                        <div class="total-cartao">
-                            <span>Total: R$ ${totalCartao.toFixed(2)}</span>
-                            <input type="checkbox" class="checkbox-pago-total" ${allComprasPaid && hasCompras ? 'checked' : ''} onchange="markAllComprasOfCardAsPaid('${cardNome}', this.checked)">
+                const cardBox = document.createElement("div");
+                cardBox.classList.add("cartao-box");
+                cardBox.innerHTML = `
+                    <h3>${cardNome}</h3>
+                    <div class="cartao-list"></div>
+                    <div class="total-pago-box">
+                        <p class="cartao-total">Total: R$ 0.00</p>
+                        <div>
+                            <label for="pago-${cardNome.replace(/\s/g, '-')}-cartao">Tudo Pago:</label>
+                            <input type="checkbox" id="pago-${cardNome.replace(/\s/g, '-')}-cartao" class="checkbox-pago cartao-paid" onchange="markAllComprasOfCardAsPaid('${cardNome}', this.checked)">
                         </div>
+                    </div>
+                `;
+                const cardListElem = cardBox.querySelector(".cartao-list");
+                const cardTotalElem = cardBox.querySelector(".cartao-total");
+                const checkboxCardPago = cardBox.querySelector(".cartao-paid");
+
+
+                if (comprasDoCartao && comprasDoCartao.length > 0) {
+                    hasCompras = true;
+                    comprasDoCartao.forEach(item => {
+                        const div = document.createElement("div");
+                        const responsavelClass = item.responsavel ? item.responsavel.toLowerCase().replace(/á/g, 'a').replace(/ /g, '') : '';
+                        div.classList.add("compra", responsavelClass);
+
+                        const parcelasDisplay = item.parcelas ? `${item.parcelaAtual}/${item.parcelasTotais}` : '1/1';
+                        const valorParcela = parseFloat(item.valor || 0); // Já é o valor da parcela
+
+                        div.innerHTML = `
+                            <div class="list-item-content">
+                                <span>${item.nome} | ${parcelasDisplay} | R$ ${valorParcela.toFixed(2)} (${item.responsavel})</span>
+                                <div class="list-item-controls">
+                                    <button class="edit" onclick='editCompraFront(\"${item.id}\")'>Edit</button>
+                                    <button class="delete" onclick='deleteCompraFront(\"${item.id}\")'>X</button>
+                                </div>
+                            </div>
+                        `;
+                        cardListElem.appendChild(div);
+                        if (item.pago !== 'Sim') {
+                            totalCartao += valorParcela;
+                            allComprasPaid = false;
+                        }
+                    });
+                } else {
+                    cardListElem.innerHTML = "<p>Nenhuma compra neste cartão.</p>";
+                }
+                cardTotalElem.textContent = `Total: R$ ${totalCartao.toFixed(2)}`;
+                checkboxCardPago.checked = hasCompras && allComprasPaid;
+                cartoesGrid.appendChild(cardBox);
+            });
+        } else {
+            cartoesGrid.innerHTML = "<p>Nenhuma compra por cartão.</p>";
+        }
+        atualizarTotais();
+      }
+
+
+      async function atualizarComprasPorResponsavel() {
+        const responsaveisContainer = document.querySelector(".responsaveis-container");
+        responsaveisContainer.innerHTML = "<p>Carregando totais por responsável...</p>";
+
+        const data = await fetchData("getComprasPorResponsavel");
+        responsaveisContainer.innerHTML = ""; // Limpa a mensagem de carregamento
+
+        if (data.data && Object.keys(data.data).length > 0) {
+            // Ordenar para garantir que Liana, Stefany, Marília, Nosso ❤️ apareçam primeiro
+            const orderedResponsibles = ['Liana', 'Stefany', 'Marília', 'Nosso ❤️'].filter(r => data.data[r]);
+            const otherResponsibles = Object.keys(data.data).filter(r => !orderedResponsibles.includes(r));
+            const finalOrder = [...orderedResponsibles, ...otherResponsibles];
+
+            finalOrder.forEach(responsavelNome => {
+                const info = data.data[responsavelNome];
+                if (info) {
+                    const responsavelClass = responsavelNome.toLowerCase().replace(/á/g, 'a').replace(/ /g, '');
+                    const div = document.createElement("div");
+                    div.classList.add("responsavel-box", responsavelClass);
+                    div.innerHTML = `
+                        <h3>${responsavelNome}</h3>
+                        <p>Total: R$ ${info.total.toFixed(2)}</p>
                     `;
-                    cartoesGrid.appendChild(cardBox);
-                });
-            } else {
-                cartoesGrid.innerHTML = "<p>Nenhum cartão com compras para este mês.</p>";
-            }
-            atualizarTotais();
-        } catch (error) {
-            console.error("Erro ao carregar compras por cartão:", error);
-            cartoesGrid.innerHTML = "<p>Erro ao carregar compras de cartões.</p>";
+                    responsaveisContainer.appendChild(div);
+                }
+            });
+        } else {
+            responsaveisContainer.innerHTML = "<p>Nenhum total por responsável disponível.</p>";
         }
-      }
-
-
-      function submitCompraCartao() {
-        const responsavel = document.getElementById("responsavelCompra").value;
-        const cartao = document.getElementById("cartaoCompra").value;
-        const nome = document.getElementById("nomeCompra").value;
-        const valor = document.getElementById("valorCompra").value;
-        const parcelas = document.getElementById("parcelasCompra").value;
-
-        if (!responsavel || !cartao || !nome || !valor || isNaN(parseFloat(valor))) {
-          alert("Por favor, preencha todos os campos da compra corretamente.");
-          return;
-        }
-
-        const payload = {
-          nome: nome,
-          valor: parseFloat(valor),
-          parcelas: parcelas || "1/1",
-          responsavel: responsavel,
-          cartao: cartao,
-          mes: currentMonth + 1,
-          ano: currentYear
-        };
-
-        fetchBackend("addCompra", payload)
-          .then(data => {
-            alert(data.message);
-            document.getElementById("responsavelCompra").value = "";
-            document.getElementById("cartaoCompra").value = "";
-            document.getElementById("nomeCompra").value = "";
-            document.getElementById("valorCompra").value = "";
-            document.getElementById("parcelasCompra").value = "";
-            atualizarCartoes();
-            atualizarComprasPorResponsavel();
-          })
-          .catch(error => console.error("Erro ao adicionar compra:", error));
-      }
-
-      function editCompraFront(recordId) {
-          fetchBackend("getCompra", {}, recordId)
-              .then(data => {
-                  const compra = data.data;
-                  if (!compra) {
-                      alert("Compra não encontrada.");
-                      return;
-                  }
-
-                  const novoNome = prompt("Novo nome da Compra:", compra.nome);
-                  if (novoNome === null) return;
-                  const novoValor = prompt("Novo valor da Compra:", compra.valor);
-                  if (novoValor === null || isNaN(parseFloat(novoValor))) {
-                      alert("Valor inválido.");
-                      return;
-                  }
-                  // Garante que parcelas seja uma string no formato X/Y
-                  const novasParcelas = prompt("Novas parcelas (ex: 2/6):", `${compra.parcelaAtual}/${compra.parcelasTotais}`);
-                  if (novasParcelas === null) return;
-                  const novoResponsavel = prompt("Novo Responsável:", compra.responsavel);
-                  if (novoResponsavel === null) return;
-                  const novoCartao = prompt("Novo Cartão:", compra.cartao);
-                  if (novoCartao === null) return;
-
-                  const payload = {
-                      nome: novoNome,
-                      valor: parseFloat(novoValor),
-                      parcelas: novasParcelas,
-                      responsavel: novoResponsavel,
-                      cartao: novoCartao,
-                      mes: currentMonth + 1,
-                      ano: currentYear
-                  };
-                  fetchBackend("updateCompra", payload, recordId)
-                      .then(updateData => {
-                          alert(updateData.message);
-                          atualizarCartoes();
-                          atualizarComprasPorResponsavel();
-                      })
-                      .catch(error => console.error("Erro ao atualizar compra:", error));
-              })
-              .catch(error => console.error("Erro ao buscar compra para edição:", error));
-      }
-
-
-      function deleteCompraFront(recordId) {
-        if (!confirm("Tem certeza que deseja excluir esta compra?")) return;
-        fetchBackend("deleteCompra", {}, recordId)
-          .then(data => {
-            alert(data.message);
-            atualizarCartoes(); // Atualiza a lista de cartões
-            atualizarComprasPorResponsavel(); // Atualiza lista de responsáveis
-            atualizarTotais(); // Atualiza os totais
-          })
-          .catch(error => console.error("Erro ao excluir compra:", error));
-      }
-
-      function markAllComprasOfCardAsPaid(cardNome, isChecked) {
-          const pagoStatus = isChecked ? 'Sim' : 'Não';
-          fetchBackend("markAllComprasOfCardAsPaid", { cartao: cardNome, pago: pagoStatus })
-              .then(data => {
-                  alert(data.message);
-                  atualizarCartoes();
-                  atualizarComprasPorResponsavel();
-              })
-              .catch(error => console.error(`Erro ao marcar todas as compras do cartão ${cardNome} como pagas:`, error));
-      }
-
-
-      function atualizarComprasPorResponsavel() {
-        fetchBackend("getComprasPorResponsavel", {}, null)
-          .then(data => {
-            const responsaveisContainer = document.getElementById("responsaveisContainer");
-            responsaveisContainer.innerHTML = "";
-            if (data.data && Object.keys(data.data).length > 0) {
-              const responsavelColors = {
-                  'Liana': 'liana',
-                  'Stefany': 'stefany',
-                  'Marília': 'marilia',
-                  'Nosso ❤️': 'nosso'
-              };
-
-              // Ordem fixa para exibição
-              const responsavelOrder = ['Liana', 'Stefany', 'Marília', 'Nosso ❤️'];
-
-              responsavelOrder.forEach(responsavelNome => {
-                  const responsavelData = data.data[responsavelNome];
-                  if (responsavelData) {
-                      const div = document.createElement("div");
-                      div.classList.add("responsavel-box", responsavelColors[responsavelNome] || ''); // Adiciona classe de cor
-                      div.innerHTML = `
-                          <h3>${responsavelNome}</h3>
-                          <p>Total: R$ ${responsavelData.total.toFixed(2)}</p>
-                      `;
-                      responsaveisContainer.appendChild(div);
-                  }
-              });
-
-            } else {
-              responsaveisContainer.innerHTML = "<p>Nenhuma compra por responsável para este mês.</p>";
-            }
-            atualizarTotais();
-          })
-          .catch(error => {
-            console.error("Erro ao carregar compras por responsável:", error);
-            document.getElementById("responsaveisContainer").innerHTML = "<p>Erro ao carregar compras por responsável.</p>";
-          });
       }
 
       async function atualizarTotais() {
-        try {
-          // As Receitas não são filtradas por mês/ano.
-          const receitasData = await fetchBackend("getReceitas", {}, null);
-          // Contas e Compras já são filtradas pelo backend usando o mês/ano atual do frontend
-          const contasData = await fetchBackend("getContasFiltradas", {}, null);
-          const comprasData = await fetchBackend("getComprasFiltradas", {}, null);
+        const totalReceitasElem = document.querySelector(".totals-wrapper span:first-child");
+        const totalDespesasElem = document.querySelector(".totals-wrapper span:last-child");
+        const saldoLabel = document.querySelector(".saldo-label");
+        const saldoBar = document.querySelector(".saldo-bar");
 
-          let totalReceitas = receitasData.data.reduce((sum, r) => sum + parseFloat(r.valor), 0);
-          let totalDespesas = 0;
+        const receitasData = await fetchData("getReceitas");
+        const comprasData = await fetchData("getComprasPorCartao"); // Pega compras para calcular despesas de compras
+        const contasData = await fetchData("getContas"); // Pega contas para calcular despesas de contas
 
-          // Contas
-          contasData.data.forEach(item => {
-              if (item.pago !== 'Sim') { // Considerar apenas as contas não pagas no total de despesas
-                  totalDespesas += parseFloat(item.valor);
-              }
-          });
+        let totalReceitas = 0;
+        if (receitasData.data) {
+            receitasData.data.forEach(receita => {
+                totalReceitas += parseFloat(receita.valor || 0);
+            });
+        }
 
-          // Compras (cartões)
-          comprasData.data.forEach(item => {
-              if (item.pago !== 'Sim') { // Considerar apenas as compras não pagas no total de despesas
-                  totalDespesas += parseFloat(item.valor);
-              }
-          });
+        let totalDespesas = 0;
+        if (comprasData.data) {
+            Object.values(comprasData.data).forEach(comprasDoCartao => {
+                comprasDoCartao.forEach(compra => {
+                    if (compra.pago !== 'Sim') { // Somar apenas se não estiver pago
+                        totalDespesas += parseFloat(compra.valor || 0);
+                    }
+                });
+            });
+        }
+        if (contasData.data) {
+            contasData.data.forEach(conta => {
+                if (conta.pago !== 'Sim') { // Somar apenas se não estiver pago
+                    totalDespesas += parseFloat(conta.valor || 0);
+                }
+            });
+        }
 
-          const saldo = totalReceitas - totalDespesas;
+        totalReceitasElem.textContent = `Total de Receitas: R$ ${totalReceitas.toFixed(2)}`;
+        totalDespesasElem.textContent = `Total de Despesas: R$ ${totalDespesas.toFixed(2)}`;
 
-          document.querySelector(".totals-wrapper span:first-child").textContent = `Total de Receitas: R$ ${totalReceitas.toFixed(2)}`;
-          document.querySelector(".totals-wrapper span:last-child").textContent = `Total de Despesas: R$ ${totalDespesas.toFixed(2)}`;
-          document.querySelector(".saldo-label").textContent = `Saldo: R$ ${saldo.toFixed(2)}`;
+        const saldo = totalReceitas - totalDespesas;
+        saldoLabel.textContent = `Saldo: R$ ${saldo.toFixed(2)}`;
 
-          const saldoBar = document.querySelector(".saldo-bar");
-          saldoBar.classList.remove("negative"); // Remove a classe negativa por padrão
+        // Atualizar o termômetro
+        const maxDisplayValue = Math.max(totalReceitas, totalDespesas, Math.abs(saldo)); // Garante que a barra seja escalada corretamente
+        let percentage = 0;
+        if (maxDisplayValue > 0) {
+            percentage = (Math.abs(saldo) / maxDisplayValue) * 100;
+        }
 
-          // Ajusta a barra de saldo
-          if (saldo > 0) {
-              // Quando o saldo é positivo, a barra verde representa o % do saldo em relação ao total de receitas.
-              // Se a despesa for 0, o saldo é igual à receita, e a barra deve ser 100%.
-              // Se a despesa aumenta, o saldo diminui, e a barra verde encolhe.
-              // Para evitar 100% se saldo for maior que total de receitas (o que não deve acontecer com o cálculo atual, mas por segurança)
-              let percentage = (saldo / totalReceitas) * 100;
-              if (totalReceitas === 0) percentage = 0; // Evita divisão por zero
-              if (percentage > 100) percentage = 100; // Limita a 100%
-              saldoBar.style.width = `${percentage}%`;
-              saldoBar.style.backgroundColor = 'green';
-          } else if (saldo < 0) {
-              // Quando o saldo é negativo, a barra vermelha representa o % do saldo negativo em relação ao total de despesas.
-              // Se o saldo for -100 e a despesa for 100, a barra deve ser 100% vermelha.
-              let percentage = (Math.abs(saldo) / totalDespesas) * 100;
-              if (totalDespesas === 0) percentage = 0; // Evita divisão por zero
-              if (percentage > 100) percentage = 100;
-              saldoBar.style.width = `${percentage}%`;
-              saldoBar.style.backgroundColor = 'red';
-              saldoBar.classList.add("negative");
-          } else { // Saldo é zero
-              saldoBar.style.width = '0%';
-              saldoBar.style.backgroundColor = 'grey'; // Cor para saldo zero
-          }
-
-        } catch (error) {
-          console.error("Erro ao atualizar totais:", error);
+        saldoBar.style.width = `${percentage}%`;
+        saldoBar.classList.remove('positive', 'negative');
+        if (saldo >= 0) {
+            saldoBar.classList.add('positive');
+        } else {
+            saldoBar.classList.add('negative');
         }
       }
 
-      function fetchAllData() {
-          atualizarReceitas();
-          atualizarContas();
+
+      async function submitReceita() {
+        const nome = prompt("Nome da Receita:");
+        const valorStr = prompt("Valor da Receita:");
+        if (!nome || !valorStr) {
+            alert("Nome e Valor da receita são obrigatórios.");
+            return;
+        }
+        const valor = parseFloat(valorStr);
+        if (isNaN(valor) || valor <= 0) {
+            alert("Valor da receita deve ser um número positivo.");
+            return;
+        }
+        const payload = {
+            action: "addReceita",
+            data: { nome, valor }
+        };
+        const data = await fetchData("addReceita", payload);
+        alert(data.message);
+        atualizarReceitas();
+      }
+
+      async function editReceitaFront(recordId) {
+        const nomeAtual = prompt("Novo Nome da Receita:");
+        const valorAtualStr = prompt("Novo Valor da Receita:");
+        if (!nomeAtual || !valorAtualStr) {
+            alert("Nome e Valor da receita são obrigatórios.");
+            return;
+        }
+        const valorAtual = parseFloat(valorAtualStr);
+        if (isNaN(valorAtual) || valorAtual <= 0) {
+            alert("Valor da receita deve ser um número positivo.");
+            return;
+        }
+
+        const payload = {
+            action: "updateReceita",
+            recordId: recordId,
+            data: { nome: nomeAtual, valor: valorAtual }
+        };
+        const data = await fetchData("updateReceita", payload);
+        alert(data.message);
+        atualizarReceitas();
+      }
+
+      async function deleteReceitaFront(recordId) {
+        if (!confirm("Tem certeza que deseja excluir esta receita?")) return;
+        const payload = { action: "deleteReceita", recordId: recordId };
+        const data = await fetchData("deleteReceita", payload);
+        alert(data.message);
+        atualizarReceitas();
+      }
+
+      async function submitCompraCartao() {
+        const responsavel = document.getElementById("responsavelCompra").value;
+        const cartao = document.getElementById("cartaoCompra").value;
+        const nome = document.getElementById("nomeCompra").value;
+        const valorStr = document.getElementById("valorCompra").value;
+        const parcelas = document.getElementById("parcelasCompra").value;
+
+        if (!nome || !valorStr || !parcelas || !responsavel || !cartao) {
+            alert("Todos os campos de compra são obrigatórios.");
+            return;
+        }
+        const valor = parseFloat(valorStr);
+        if (isNaN(valor) || valor <= 0) {
+            alert("Valor da compra deve ser um número positivo.");
+            return;
+        }
+
+        const payload = {
+            action: "addCompra",
+            data: { nome, valor, parcelas, responsavel, cartao }
+        };
+        const data = await fetchData("addCompra", payload);
+        alert(data.message);
+        document.getElementById("nomeCompra").value = "";
+        document.getElementById("valorCompra").value = "";
+        document.getElementById("parcelasCompra").value = "";
+        atualizarCartoes();
+        atualizarComprasPorResponsavel();
+        atualizarTotais();
+      }
+
+      function deleteCompraFront(recordId) {
+        if (!confirm("Tem certeza que deseja excluir esta compra?")) return;
+        const payload = { action: "deleteCompra", recordId: recordId };
+        fetch(webAppUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+          alert(data.message);
           atualizarCartoes();
           atualizarComprasPorResponsavel();
+          atualizarTotais();
+        })
+        .catch(error => {
+          console.error("Erro ao excluir compra:", error);
+          alert("Erro ao excluir compra. Verifique o console.");
+        });
+      }
+
+      async function editCompraFront(recordId) {
+        const currentData = await fetchData("getCompra", { recordId: recordId });
+        if (!currentData.data) {
+            alert("Dados da compra não encontrados.");
+            return;
+        }
+
+        const currentCompra = currentData.data;
+
+        const novoNome = prompt("Novo Nome da Compra:", currentCompra.nome);
+        const novoValorStr = prompt("Novo Valor da Compra:", currentCompra.valor);
+        const novasParcelas = prompt("Novas Parcelas (ex: 2/6):", currentCompra.parcelas);
+        const novoResponsavel = prompt("Novo Responsável:", currentCompra.responsavel);
+        const novoCartao = prompt("Novo Cartão:", currentCompra.cartao);
+
+        if (!novoNome || !novoValorStr || !novasParcelas || !novoResponsavel || !novoCartao) {
+            alert("Todos os campos de compra são obrigatórios.");
+            return;
+        }
+        const novoValor = parseFloat(novoValorStr);
+        if (isNaN(novoValor) || novoValor <= 0) {
+            alert("Valor da compra deve ser um número positivo.");
+            return;
+        }
+
+        const payload = {
+            action: "updateCompra",
+            recordId: recordId,
+            data: {
+                nome: novoNome,
+                valor: novoValor,
+                parcelas: novasParcelas,
+                responsavel: novoResponsavel,
+                cartao: novoCartao
+            }
+        };
+        const data = await fetchData("updateCompra", payload);
+        alert(data.message);
+        atualizarCartoes();
+        atualizarComprasPorResponsavel();
+        atualizarTotais();
+      }
+
+      async function markAllComprasOfCardAsPaid(cardName, isPaid) {
+          const payload = {
+              action: "markComprasByCardAsPaid",
+              cardName: cardName,
+              pago: isPaid ? "Sim" : "Não"
+          };
+          const data = await fetchData("markComprasByCardAsPaid", payload);
+          alert(data.message);
+          atualizarCartoes();
+          atualizarTotais();
+      }
+
+      async function submitConta() {
+        const tipo = document.getElementById("tipoConta").value;
+        const nome = document.getElementById("nomeConta").value;
+        const parcelas = document.getElementById("parcelasConta").value;
+        const valorStr = document.getElementById("valorConta").value;
+
+        if (!nome || !valorStr || !parcelas) {
+            alert("Todos os campos de conta são obrigatórios.");
+            return;
+        }
+        const valor = parseFloat(valorStr);
+        if (isNaN(valor) || valor <= 0) {
+            alert("Valor da conta deve ser um número positivo.");
+            return;
+        }
+
+        const payload = {
+            action: "addConta",
+            data: { tipo, nome, parcelas, valor }
+        };
+        const data = await fetchData("addConta", payload);
+        alert(data.message);
+        document.getElementById("nomeConta").value = "";
+        document.getElementById("parcelasConta").value = "";
+        document.getElementById("valorConta").value = "";
+        atualizarContas();
+        atualizarTotais();
+      }
+
+      async function deleteContaFront(recordId) {
+        if (!confirm("Tem certeza que deseja excluir esta conta?")) return;
+        const payload = { action: "deleteConta", recordId: recordId };
+        const data = await fetchData("deleteConta", payload);
+        alert(data.message);
+        atualizarContas();
+        atualizarTotais();
+      }
+
+      async function editContaFront(recordId) {
+          const currentData = await fetchData("getConta", { recordId: recordId });
+          if (!currentData.data) {
+              alert("Dados da conta não encontrados.");
+              return;
+          }
+          const currentConta = currentData.data;
+
+          const novoTipo = prompt("Novo Tipo (Fixa/Variável):", currentConta.tipo);
+          const novoNome = prompt("Novo Nome da Conta:", currentConta.nome);
+          const novasParcelas = prompt("Novas Parcelas (ex: 2/3):", currentConta.parcelas);
+          const novoValorStr = prompt("Novo Valor da Conta:", currentConta.valor);
+
+          if (!novoTipo || !novoNome || !novasParcelas || !novoValorStr) {
+              alert("Todos os campos de conta são obrigatórios.");
+              return;
+          }
+          const novoValor = parseFloat(novoValorStr);
+          if (isNaN(novoValor) || novoValor <= 0) {
+              alert("Valor da conta deve ser um número positivo.");
+              return;
+          }
+
+          const payload = {
+              action: "updateConta",
+              recordId: recordId,
+              data: {
+                  tipo: novoTipo,
+                  nome: novoNome,
+                  parcelas: novasParcelas,
+                  valor: novoValor
+              }
+          };
+          const data = await fetchData("updateConta", payload);
+          alert(data.message);
+          atualizarContas();
+          atualizarTotais();
+      }
+
+      async function markAllContasAsPaidFront(tipoConta, isPaid) {
+          const payload = {
+              action: "markContasAsPaid",
+              tipo: tipoConta,
+              pago: isPaid ? "Sim" : "Não"
+          };
+          const data = await fetchData("markContasAsPaid", payload);
+          alert(data.message);
+          atualizarContas();
           atualizarTotais();
       }
 
       document.addEventListener("DOMContentLoaded", function(){
         updateMonthDisplay(); // Define o mês e ano iniciais
-        fetchAllData(); // Carrega todos os dados iniciais
+        atualizarReceitas();
+        atualizarContas(); // Atualiza contas fixas e variáveis
+        atualizarCartoes(); // Atualiza a seção de cartões
+        atualizarComprasPorResponsavel(); // Atualiza a seção de totais por responsável
+        atualizarTotais(); // Atualiza os totais gerais
 
         // Event listeners para navegação de mês
         document.querySelector(".nav-buttons button:first-child").addEventListener("click", function(){
