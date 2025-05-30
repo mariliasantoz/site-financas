@@ -167,6 +167,20 @@
         font-weight: bold;
         margin-top: 5px;
       }
+       /* Checkbox total contas */
+      .conta-total-wrapper {
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          margin-top: 10px;
+      }
+      .conta-total-wrapper .conta-total {
+          margin-right: 10px; /* Espaço entre o total e o checkbox */
+      }
+      .conta-total-wrapper input[type="checkbox"] {
+          transform: scale(1.2);
+      }
+
       .categoria-box.receitas button {
         display: block;
         margin: 10px auto 0;
@@ -365,170 +379,142 @@
         transform: scale(1.2);
       }
     </style>
-    <script>
-      // *** AQUI É ONDE A URL DO SEU CLOUDFLARE WORKER DEVE ENTRAR ***
-      const webAppUrl = "https://painel-financas-proxy.mariliaedua.workers.dev/";
-      // ***************************************************************
+</head>
+<body>
+    <div class="container">
+      <header>
+        <h1>Painel Financeiro</h1>
+        <h2>Maio 2025</h2> <!-- JS vai atualizar -->
+        <div class="nav-buttons">
+          <button id="btnMesAnterior">&laquo; Mês Anterior</button>
+          <button id="btnMesSeguinte">Mês Seguinte &raquo;</button>
+        </div>
+      </header>
       
-      let currentMonth = new Date().getMonth(); // 0-Janeiro, 1-Fevereiro, etc.
-      let currentYear = new Date().getFullYear();
-
-      const monthNames = [
-        "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-        "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
-      ];
-
-      function updateMonthDisplay() {
-        document.querySelector("header h2").textContent = `${monthNames[currentMonth]} ${currentYear}`;
-      }
-
-      function changeMonth(delta) {
-        currentMonth += delta;
-        if (currentMonth < 0) {
-          currentMonth = 11;
-          currentYear--;
-        } else if (currentMonth > 11) {
-          currentMonth = 0;
-          currentYear++;
-        }
-        updateMonthDisplay();
-        // Recarrega todos os dados para o novo mês/ano
-        // Passando month e year para as funções de atualização
-        atualizarTodosOsDados();
-      }
-
-      function atualizarTodosOsDados() {
-          const month = currentMonth + 1; // Apps Script usa mês 1-12
-          const year = currentYear;
-          console.log(`Atualizando dados para ${month}/${year}`);
-          atualizarReceitas(month, year);
-          atualizarContas(month, year);
-          atualizarCartoes(month, year);
-          atualizarComprasPorResponsavel(month, year);
-          atualizarTotais(month, year);
-      }
-
-      // RECEITAS
-      function atualizarReceitas(month, year) {
-        // Nota: A função getReceitas no Apps Script atual não filtra por mês/ano.
-        // Se for necessário filtrar, o Apps Script precisará ser modificado.
-        const payload = { action: "getReceitas" }; 
-        fetch(webAppUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-          const container = document.getElementById("listaReceitas");
-          container.innerHTML = "";
-          if (data && Array.isArray(data) && data.length > 0) {
-            data.forEach(item => {
-              const div = document.createElement("div");
-              div.classList.add("receita-item");
-              div.innerHTML = `
-                <div class="list-item-content">
-                  <span>${item.nome} - R$ ${Number(item.valor).toFixed(2)}</span>
-                  <div class="list-item-controls">
-                    <button onclick='editReceitaFront("${item.id}")'>Edit</button>
-                    <button onclick='deleteReceitaFront("${item.id}")'>X</button>
-                  </div>
-                </div>
-              `;
-              container.appendChild(div);
-            });
-          } else {
-            container.innerHTML = "<p>Nenhuma receita cadastrada.</p>";
-          }
-        })
-        .catch(error => {
-          console.error("Erro ao carregar receitas:", error);
-          document.getElementById("listaReceitas").innerHTML = "<p>Erro ao carregar receitas.</p>";
-        });
-      }
+      <div class="totals-section">
+        <div class="totals-wrapper">
+          <span>Total de Receitas: R$ 0.00</span>
+          <span>Total de Despesas: R$ 0.00</span>
+        </div>
+        <div class="saldo-bar-container">
+          <div class="saldo-bar"></div>
+          <div class="saldo-label">Saldo: R$ 0.00</div>
+        </div>
+      </div>
       
-      function deleteReceitaFront(recordId) {
-        if (!confirm("Tem certeza que deseja excluir esta receita?")) return;
-        const payload = { action: "deleteReceita", recordId: recordId };
-        fetch(webAppUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-          alert(data.message);
-          atualizarTodosOsDados(); // Recarrega tudo
-        })
-        .catch(error => {
-          alert("Erro ao excluir receita: " + error.message);
-        });
-      }
+      <div class="categorias-section">
+        <h2>Resumo do Mês</h2>
+        <div class="categorias-columns">
+          <div class="categoria-box receitas">
+            <h3>Receitas</h3>
+            <div class="categoria-list" id="listaReceitas">
+              <p>Carregando receitas...</p>
+            </div>
+            <button id="btnAddReceita">Adicionar Receita</button>
+          </div>
+          
+          <div class="categoria-box contas">
+            <h3>Contas Fixas</h3>
+            <div class="categoria-list" id="listaContasFixas">
+              <p>Carregando contas fixas...</p>
+            </div>
+            <div class="conta-total-wrapper">
+                <span class="conta-total" id="totalContasFixas">Total: R$ 0.00</span>
+                <input type="checkbox" id="checkTodasContasFixas" title="Marcar/Desmarcar todas contas fixas visíveis como pagas"/>
+            </div>
+          </div>
+          
+          <div class="categoria-box contas">
+            <h3>Contas Variáveis</h3>
+            <div class="categoria-list" id="listaContasVariaveis">
+              <p>Carregando contas variáveis...</p>
+            </div>
+             <div class="conta-total-wrapper">
+                <span class="conta-total" id="totalContasVariaveis">Total: R$ 0.00</span>
+                <input type="checkbox" id="checkTodasContasVariaveis" title="Marcar/Desmarcar todas contas variáveis visíveis como pagas"/>
+            </div>
+          </div>
+        </div>
+      </div>
       
-      function editReceitaFront(recordId) {
-        let novoNome = prompt("Digite o novo nome da receita:");
-        if (novoNome === null) return; // Usuário cancelou
-        let novoValor = prompt("Digite o novo valor da receita:");
-        if (novoValor === null) return; // Usuário cancelou
-
-        novoValor = parseFloat(novoValor.replace(',', '.'));
-        if (isNaN(novoValor)) {
-          alert("Valor inválido. Digite um número.");
-          return;
-        }
-
-        const payload = {
-          action: "updateReceita",
-          recordId: recordId,
-          data: { nome: novoNome, valor: novoValor }
-        };
-        fetch(webAppUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-          alert(data.message);
-          atualizarTodosOsDados(); // Recarrega tudo
-        })
-        .catch(error => {
-          alert("Erro ao editar receita: " + error.message);
-        });
-      }
-
-      function submitReceita() {
-          const nome = prompt("Nome da Receita:");
-          if (nome === null || nome.trim() === "") {
-              alert("Nome da receita não pode ser vazio.");
-              return;
-          }
-          const valor = prompt("Valor da Receita:");
-          if (valor === null || valor.trim() === "") {
-              alert("Valor da receita não pode ser vazio.");
-              return;
-          }
-          const valorFloat = parseFloat(valor.replace(',', '.'));
-          if (isNaN(valorFloat)) {
-              alert("Valor inválido. Digite um número.");
-              return;
-          }
-
-          const payload = {
-              action: "addReceita",
-              data: { nome: nome, valor: valorFloat }
-          };
-
-          fetch(webAppUrl, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload)
-          })
-          .then(response => response.json())
-          .then(data => {
-              alert(data.message);
-              atualizarTodosOsDados(); // Recarrega tudo
-          })
-          .catch(error => {
-              alert("Erro
+      <div class="cartoes-section" id="cartoesSection">
+        <h2>Cartões</h2>
+        <div class="cartoes-columns">
+          <div class="cartao-box" id="nubankCard">
+            <h3>
+              NUBANK
+              <input type="checkbox" class="cartao-paid" data-cartao="Nubank" title="Marcar/Desmarcar todas compras visíveis como pagas"/>
+            </h3>
+            <div class="cartao-total">Total Fatura: R$ 0.00</div>
+            <div class="cartao-list">
+              <p>Carregando compras...</p>
+            </div>
+          </div>
+          <div class="cartao-box" id="santanderCard">
+            <h3>
+              SANTANDER
+              <input type="checkbox" class="cartao-paid" data-cartao="Santander" title="Marcar/Desmarcar todas compras visíveis como pagas"/>
+            </h3>
+            <div class="cartao-total">Total Fatura: R$ 0.00</div>
+            <div class="cartao-list">
+              <p>Carregando compras...</p>
+            </div>
+          </div>
+          <div class="cartao-box" id="mpagoCard"> <!-- ID corrigido para corresponder ao JS -->
+            <h3>
+              M.PAGO
+              <input type="checkbox" class="cartao-paid" data-cartao="Mercado Pago" title="Marcar/Desmarcar todas compras visíveis como pagas"/>
+            </h3>
+            <div class="cartao-total">Total Fatura: R$ 0.00</div>
+            <div class="cartao-list">
+              <p>Carregando compras...</p>
+            </div>
+          </div>
+          <div class="cartao-box" id="amazonCard">
+            <h3>
+              AMAZON
+              <input type="checkbox" class="cartao-paid" data-cartao="Amazon" title="Marcar/Desmarcar todas compras visíveis como pagas"/>
+            </h3>
+            <div class="cartao-total">Total Fatura: R$ 0.00</div>
+            <div class="cartao-list">
+              <p>Carregando compras...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="forms-container">
+        <div class="form-section" id="formAdicionarCompra">
+          <h2>Adicionar Compra no Cartão</h2>
+          <div class="row">
+            <select id="respCompra">
+              <option value="Liana">Liana</option>
+              <option value="Stefany">Stefany</option>
+              <option value="Marília">Marília</option>
+              <option value="Nosso ❤️">Nosso ❤️</option>
+            </select>
+            <select id="cartaoCompra">
+              <option value="Nubank">NUBANK</option>
+              <option value="Santander">SANTANDER</option>
+              <option value="Mercado Pago">M.PAGO</option> <!-- Nome no backend é 'Mercado Pago' -->
+              <option value="Amazon">AMAZON</option>
+            </select>
+          </div>
+          <div class="row">
+            <input type="text" id="nomeCompra" placeholder="Nome da Compra" class="nome-field" />
+          </div>
+          <div class="row">
+            <input type="text" id="valorCompra" inputmode="decimal" placeholder="Valor" />
+            <input type="text" id="parcelasCompra" inputmode="text" placeholder="Parcelas (ex: 1/6 ou 6)" />
+          </div>
+          <button id="btnSubmitCompra">Adicionar Compra</button>
+          </div>
+        
+        <div class="form-section" id="formAdicionarConta">
+          <h2>Adicionar Conta</h2>
+          <select id="tipoConta">
+            <option value="Fixa">Fixa</option>
+            <option value="Variável">Variável</option>
+          </select>
+          <input type="text" id="nomeConta" 
 (Content truncated due to size limit. Use line ranges to read in chunks)
