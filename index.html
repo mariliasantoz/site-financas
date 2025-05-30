@@ -137,10 +137,22 @@
         margin-bottom: 8px;
         text-align: center;
       }
-      .categoria-box.receitas .categoria-list .receita-item input {
+      .categoria-box.receitas .add-receita-form input {
         padding: 5px;
-        margin: 5px;
+        margin: 5px auto;
         box-sizing: border-box;
+        display: block;
+        text-align: center;
+      }
+      .categoria-box.receitas .add-receita-form input#nomeReceita {
+          width: 80%;
+      }
+      .categoria-box.receitas .add-receita-form input#valorReceita {
+          width: 40%;
+      }
+      .categoria-box.receitas button#btnSubmitReceita {
+        display: block;
+        margin: 10px auto 0;
       }
       /* CAIXA CONTAS FIXAS/VARIÁVEIS */
       .categoria-box.contas {
@@ -181,10 +193,6 @@
           transform: scale(1.2);
       }
 
-      .categoria-box.receitas button {
-        display: block;
-        margin: 10px auto 0;
-      }
       /* FORMULÁRIOS */
       .form-section {
         padding: 15px;
@@ -410,7 +418,12 @@
             <div class="categoria-list" id="listaReceitas">
               <p>Carregando receitas...</p>
             </div>
-            <button id="btnAddReceita">Adicionar Receita</button>
+            <!-- Formulário para adicionar receita -->
+            <div class="add-receita-form">
+                <input type="text" id="nomeReceita" placeholder="Nome da Receita">
+                <input type="text" id="valorReceita" inputmode="decimal" placeholder="Valor">
+                <button id="btnSubmitReceita">Adicionar Receita</button>
+            </div>
           </div>
           
           <div class="categoria-box contas">
@@ -579,6 +592,9 @@
       const nomeContaInput = document.getElementById("nomeConta");
       const parcelasContaInput = document.getElementById("parcelasConta");
       const valorContaInput = document.getElementById("valorConta");
+      // Formulário Receita
+      const nomeReceitaInput = document.getElementById("nomeReceita");
+      const valorReceitaInput = document.getElementById("valorReceita");
       
       // --- Funções Auxiliares ---
       function showLoading(element, message = "Carregando...") {
@@ -597,9 +613,10 @@
       }
 
       // CORRIGIDO: Assinatura da função fetchData para incluir recordId corretamente
+      // CORRIGIDO: Tratamento de resposta para extrair dados de 'data' e tratar 'error'
       async function fetchData(action, data = {}, month = null, year = null, recordId = null) {
           const payload = { action, data };
-          if (month !== null) payload.month = month;
+          if (month !== null) payload.month = month + 1; // Ajusta mês para 1-12 para o backend
           if (year !== null) payload.year = year;
           if (recordId !== null) payload.recordId = recordId; // Inclui recordId no payload
           
@@ -621,13 +638,24 @@
               const responseData = await response.json();
               console.log("Resposta recebida:", responseData); // Log para depuração
               
-              // Verifica se a resposta contém um erro do Apps Script
-              if (responseData.status === 'error') {
-                  console.error("Erro retornado pelo Apps Script:", responseData.message);
-                  throw new Error(responseData.message || 'Erro desconhecido no backend.');
+              // Verifica se a resposta contém um erro explícito do Apps Script
+              if (responseData.status === 'error' || responseData.error) {
+                  const errorMessage = responseData.message || responseData.error || 'Erro desconhecido no backend.';
+                  console.error("Erro retornado pelo backend:", errorMessage);
+                  throw new Error(errorMessage);
               }
 
+              // Verifica se os dados estão encapsulados em 'data'
+              if (responseData && typeof responseData === 'object' && responseData.hasOwnProperty('data')) {
+                  console.log("Dados extraídos da propriedade 'data'.");
+                  return responseData.data; // Retorna apenas o conteúdo de 'data'
+              }
+
+              // Se não houver 'error' e não houver 'data', retorna a resposta como está
+              // (Assume que é o formato esperado ou uma resposta de sucesso simples como {status: 'success', message: '...'}) 
+              // ou um array direto (como esperado originalmente)
               return responseData;
+
           } catch (error) {
               console.error(`Fetch error for action ${action}:`, error);
               // Re-throw para ser pego pela função chamadora
@@ -656,9 +684,9 @@
       }
 
       async function atualizarTodosOsDados() {
-          const month = currentMonth + 1; // Apps Script usa mês 1-12
+          const month = currentMonth; // Usa mês 0-11 internamente no JS
           const year = currentYear;
-          console.log(`Atualizando dados para ${month}/${year}`);
+          console.log(`Atualizando dados para ${monthNames[month]}/${year}`);
 
           // Mostra loading inicial
           showLoading(listaReceitasElem, "Carregando receitas...");
@@ -672,6 +700,7 @@
 
           // Executa todas as atualizações em paralelo
           try {
+              // Passa month (0-11) e year para as funções de atualização
               await Promise.all([
                   atualizarReceitas(month, year),
                   atualizarContas(month, year),
@@ -691,7 +720,8 @@
       // RECEITAS
       async function atualizarReceitas(month, year) {
           try {
-              const data = await fetchData("getReceitas"); 
+              // Passa month (0-11) e year para fetchData, que ajustará para 1-12
+              const data = await fetchData("getReceitas", {}, month, year); 
               listaReceitasElem.innerHTML = ""; 
               if (data && Array.isArray(data) && data.length > 0) {
                   data.forEach(item => {
@@ -702,8 +732,8 @@
                           <div class="list-item-content">
                               <span>${item.nome} - R$ ${Number(item.valor || 0).toFixed(2)}</span>
                               <div class="list-item-controls">
-                                  <button onclick='editReceitaFront("${item.id}", "${item.nome}", "${item.valor}")'>Edit</button>
-                                  <button onclick='deleteReceitaFront("${item.id}")'>X</button>
+                                  <button onclick=\'editReceitaFront("${item.id}", "${item.nome}", "${item.valor}")\'>Edit</button>
+                                  <button onclick=\'deleteReceitaFront("${item.id}")\'>X</button>
                               </div>
                           </div>
                       `;
@@ -720,6 +750,7 @@
       // CONTAS
       async function atualizarContas(month, year) {
           try {
+              // Passa month (0-11) e year para fetchData, que ajustará para 1-12
               const data = await fetchData("getContas", {}, month, year);
               listaContasFixasElem.innerHTML = "";
               listaContasVariaveisElem.innerHTML = "";
@@ -746,8 +777,8 @@
                           <div class="list-item-content">
                               <span>${item.nome}: R$ ${valorParcela.toFixed(2)} | ${item.parcelas || '1/1'}</span> 
                               <div class="list-item-controls">
-                                  <button onclick='editContaFront("${recordId}")'>Edit</button>
-                                  <button onclick='deleteContaFront("${recordId}")'>X</button>
+                                  <button onclick=\'editContaFront("${recordId}")\'>Edit</button>
+                                  <button onclick=\'deleteContaFront("${recordId}")\'>X</button>
                               </div>
                           </div>
                       `;
@@ -797,6 +828,7 @@
       // CARTÕES
       async function atualizarCartoes(month, year) {
           try {
+              // Passa month (0-11) e year para fetchData, que ajustará para 1-12
               const data = await fetchData("getComprasPorCartao", {}, month, year);
               const cartoes = ['Nubank', 'Santander', 'Mercado Pago', 'Amazon'];
               
@@ -817,7 +849,9 @@
                   let allMarkedAsPaid = true;
                   let hasCompras = false;
 
-                  const comprasDoCartao = (data && data[cartaoNome] && Array.isArray(data[cartaoNome].compras)) ? data[cartaoNome].compras : [];
+                  // Ajuste: Verifica se 'data' existe e se a propriedade do cartão existe e é um objeto com 'compras'
+                  const cartaoData = (data && data[cartaoNome]) ? data[cartaoNome] : { total: 0, compras: [] };
+                  const comprasDoCartao = Array.isArray(cartaoData.compras) ? cartaoData.compras : [];
 
                   if (comprasDoCartao.length > 0) {
                       hasCompras = true;
@@ -836,8 +870,8 @@
                               <div class="list-item-content">
                                   <span><span class="${responsavelClass}">${item.responsavel || ''}</span>: ${item.nome} | ${item.parcelas || '1/1'} | R$ ${valorParcela.toFixed(2)}</span>
                                   <div class="list-item-controls">
-                                      <button onclick='editCompraFront("${recordId}")'>Edit</button>
-                                      <button onclick='deleteCompraFront("${recordId}")'>X</button>
+                                      <button onclick=\'editCompraFront("${recordId}")\'>Edit</button>
+                                      <button onclick=\'deleteCompraFront("${recordId}")\'>X</button>
                                   </div>
                               </div>
                           `;
@@ -852,7 +886,8 @@
                       allMarkedAsPaid = true; 
                   }
                   
-                  cardTotalElem.textContent = `Total Fatura: R$ ${totalCartao.toFixed(2)}`;
+                  // Usa o total vindo do backend se disponível, senão calcula localmente (fallback)
+                  cardTotalElem.textContent = `Total Fatura: R$ ${Number(cartaoData.total || totalCartao).toFixed(2)}`;
                   
                   if (checkboxCardPago) {
                       checkboxCardPago.checked = hasCompras && allMarkedAsPaid;
@@ -870,7 +905,9 @@
       // TOTAIS GERAIS
       async function atualizarTotais(month, year) {
           try {
+              // Passa month (0-11) e year para fetchData, que ajustará para 1-12
               const data = await fetchData("getTotais", {}, month, year);
+              // Ajuste: Acessa as propriedades dentro do objeto 'data' retornado
               const saldo = data.saldo || 0;
               const receitas = data.receitas || 0;
               const despesas = data.despesas || 0; // Despesas aqui são as não pagas
@@ -905,13 +942,16 @@
       // TOTAIS POR RESPONSÁVEL
       async function atualizarComprasPorResponsavel(month, year) {
           try {
+              // Passa month (0-11) e year para fetchData, que ajustará para 1-12
               const data = await fetchData("getComprasPorResponsavel", {}, month, year);
               const responsaveis = ['Liana', 'Stefany', 'Marília', 'Nosso ❤️'];
               responsaveisContainerElem.innerHTML = ""; 
 
+              // Ajuste: Verifica se 'data' existe e é um objeto
               if (data && typeof data === 'object') {
                   responsaveis.forEach(responsavelNome => {
                       const responsavelKey = responsavelNome.toLowerCase().replace(/á/g, 'a').replace(/❤️/g, '').replace(/ /g, '');
+                      // Ajuste: Acessa os dados do responsável dentro do objeto 'data'
                       const totalData = data[responsavelNome] || { total: 0, compras: [] };
                       const totalValor = Number(totalData.total || 0);
 
@@ -925,6 +965,7 @@
                       responsaveisContainerElem.appendChild(box);
                   });
               } else {
+                  // Se data for null ou não for objeto após fetchData, mostra erro
                   throw new Error("Formato de dados inválido recebido para totais por responsável.");
               }
           } catch (error) {
@@ -938,7 +979,7 @@
       async function deleteReceitaFront(recordId) {
           if (!confirm("Tem certeza que deseja excluir esta receita?")) return;
           try {
-              // CORRIGIDO: Passa recordId como último argumento para fetchData
+              // Passa recordId como último argumento para fetchData
               const result = await fetchData("deleteReceita", {}, null, null, recordId); 
               alert(result.message || "Receita excluída com sucesso!");
               atualizarTodosOsDados();
@@ -960,7 +1001,7 @@
           }
 
           try {
-              // CORRIGIDO: Passa recordId como último argumento para fetchData
+              // Passa recordId como último argumento para fetchData
               const result = await fetchData("updateReceita", { nome: novoNome, valor: novoValor }, null, null, recordId);
               alert(result.message || "Receita atualizada com sucesso!");
               atualizarTodosOsDados();
@@ -969,11 +1010,47 @@
           }
       }
 
+      // IMPLEMENTADO: Função para submeter nova receita
+      async function submitReceita() {
+          const nome = nomeReceitaInput.value.trim();
+          const valorStr = valorReceitaInput.value.trim();
+
+          if (!nome || !valorStr) {
+              alert("Por favor, preencha o nome e o valor da receita.");
+              return;
+          }
+
+          const valor = parseFloat(valorStr.replace(',', '.'));
+          if (isNaN(valor) || valor <= 0) {
+              alert("Valor da receita inválido.");
+              return;
+          }
+
+          const receitaData = {
+              nome: nome,
+              valor: valor
+          };
+
+          try {
+              // Não passa recordId para add
+              const result = await fetchData("addReceita", receitaData);
+              // A resposta de addRecord é { status: 'success', message: '...' }
+              // fetchData já trata o erro, aqui esperamos a mensagem de sucesso
+              alert(result.message || "Receita adicionada com sucesso!");
+              // Limpa formulário
+              nomeReceitaInput.value = "";
+              valorReceitaInput.value = "";
+              atualizarTodosOsDados(); // Atualiza tudo, incluindo receitas e totais
+          } catch (error) {
+              alert("Erro ao adicionar receita: " + error.message);
+          }
+      }
+
       // CONTAS
       async function deleteContaFront(recordId) {
           if (!confirm("Tem certeza que deseja excluir esta conta (todas as parcelas)?")) return;
           try {
-              // CORRIGIDO: Passa recordId como último argumento para fetchData
+              // Passa recordId como último argumento para fetchData
               const result = await fetchData("deleteConta", {}, null, null, recordId);
               alert(result.message || "Conta excluída com sucesso!");
               atualizarTodosOsDados();
@@ -1002,7 +1079,7 @@
           const parcelasStr = `1/${parseInt(novasParcelas)}`; // Assume que edição reinicia contagem
 
           try {
-              // CORRIGIDO: Passa recordId como último argumento para fetchData
+              // Passa recordId como último argumento para fetchData
               // NOTA: Backend precisa tratar corretamente a atualização de itens parcelados.
               const result = await fetchData("updateConta", { nome: novoNome, valor: novoValorTotal, parcelas: parcelasStr, data: novaData }, null, null, recordId);
               alert(result.message || "Conta atualizada com sucesso! (Verifique os dados)");
@@ -1030,7 +1107,7 @@
 
           checkbox.disabled = true;
           const status = isChecked ? 'Sim' : 'Não';
-          // CORRIGIDO: Passa recordId como último argumento para fetchData
+          // Passa recordId como último argumento para fetchData
           const promises = itemsToUpdateIds.map(id => fetchData("markContaAsPaid", { pago: status }, null, null, id).catch(err => ({ success: false, id: id, error: err })));
 
           try {
@@ -1042,15 +1119,15 @@
               }
               // Recarrega contas e totais
               await Promise.all([
-                  atualizarContas(currentMonth + 1, currentYear),
-                  atualizarTotais(currentMonth + 1, currentYear)
+                  atualizarContas(currentMonth, currentYear),
+                  atualizarTotais(currentMonth, currentYear)
               ]);
           } catch (error) {
               alert(`Erro geral ao atualizar contas ${tipoConta.toLowerCase()}s: ${error.message}`);
               // Recarrega para garantir consistência visual
               await Promise.all([
-                  atualizarContas(currentMonth + 1, currentYear),
-                  atualizarTotais(currentMonth + 1, currentYear)
+                  atualizarContas(currentMonth, currentYear),
+                  atualizarTotais(currentMonth, currentYear)
               ]);
           } finally {
               // Re-habilita o checkbox APÓS a atualização da UI em atualizarContas
@@ -1062,7 +1139,7 @@
       async function deleteCompraFront(recordId) {
           if (!confirm("Tem certeza que deseja excluir esta compra (todas as parcelas)?")) return;
           try {
-              // CORRIGIDO: Passa recordId como último argumento para fetchData
+              // Passa recordId como último argumento para fetchData
               const result = await fetchData("deleteCompra", {}, null, null, recordId);
               alert(result.message || "Compra excluída com sucesso!");
               atualizarTodosOsDados();
@@ -1091,7 +1168,7 @@
           const parcelasStr = `1/${parseInt(novasParcelas)}`;
 
           try {
-              // CORRIGIDO: Passa recordId como último argumento para fetchData
+              // Passa recordId como último argumento para fetchData
               // NOTA: Backend precisa tratar corretamente a atualização de itens parcelados.
               // Precisa também do responsável e cartão se for editar
               const result = await fetchData("updateCompra", { nome: novoNome, valor: novoValorTotal, parcelas: parcelasStr, data: novaData }, null, null, recordId);
@@ -1120,7 +1197,7 @@
 
           checkbox.disabled = true;
           const status = isChecked ? 'Sim' : 'Não';
-          // CORRIGIDO: Passa recordId como último argumento para fetchData
+          // Passa recordId como último argumento para fetchData
           const promises = itemsToUpdateIds.map(id => fetchData("markCompraAsPaid", { pago: status }, null, null, id).catch(err => ({ success: false, id: id, error: err })));
 
           try {
@@ -1132,16 +1209,16 @@
               }
               // Recarrega cartões e totais
               await Promise.all([
-                  atualizarCartoes(currentMonth + 1, currentYear),
-                  atualizarTotais(currentMonth + 1, currentYear),
-                  atualizarComprasPorResponsavel(currentMonth + 1, currentYear) 
+                  atualizarCartoes(currentMonth, currentYear),
+                  atualizarTotais(currentMonth, currentYear),
+                  atualizarComprasPorResponsavel(currentMonth, currentYear) 
               ]);
           } catch (error) {
               alert(`Erro geral ao atualizar compras do cartão ${cartaoNome}: ${error.message}`);
               await Promise.all([
-                  atualizarCartoes(currentMonth + 1, currentYear),
-                  atualizarTotais(currentMonth + 1, currentYear),
-                  atualizarComprasPorResponsavel(currentMonth + 1, currentYear)
+                  atualizarCartoes(currentMonth, currentYear),
+                  atualizarTotais(currentMonth, currentYear),
+                  atualizarComprasPorResponsavel(currentMonth, currentYear)
               ]);
           } finally {
              // Re-habilita o checkbox APÓS a atualização da UI em atualizarCartoes
@@ -1271,7 +1348,8 @@
           document.getElementById("btnMesSeguinte").addEventListener("click", () => changeMonth(1));
 
           // Adicionar Itens
-          document.getElementById("btnAddReceita").addEventListener("click", (e) => { e.preventDefault(); submitReceita(); });
+          // CORRIGIDO: Listener para o botão de submeter receita
+          document.getElementById("btnSubmitReceita").addEventListener("click", (e) => { e.preventDefault(); submitReceita(); });
           document.getElementById("btnSubmitCompra").addEventListener("click", (e) => { e.preventDefault(); submitCompraCartao(); });
           document.getElementById("btnSubmitConta").addEventListener("click", (e) => { e.preventDefault(); submitConta(); });
 
