@@ -38,26 +38,13 @@
         color: #fff;
         border: none;
         border-radius: 5px;
-        padding: 8px 12px;
+        padding: 10px 15px;
         cursor: pointer;
-        font-size: 0.9em;
-        transition: background-color 0.3s ease;
+        font-size: 1em;
         margin-top: 10px;
       }
       button:hover {
         background-color: #45a049;
-      }
-      button.delete {
-        background-color: #f44336;
-      }
-      button.delete:hover {
-        background-color: #da190b;
-      }
-      button.edit {
-        background-color: #008cba;
-      }
-      button.edit:hover {
-        background-color: #007bb5;
       }
       /* HEADER */
       header {
@@ -65,18 +52,16 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ccc;
       }
       header h1 {
-        color: #333;
-        margin: 0;
-      }
-      header h2 {
-        color: #555;
         margin: 0;
       }
       .nav-buttons button {
-        background-color: #007bff;
         margin: 0 5px;
+        padding: 8px 12px;
+        background-color: #007bff;
       }
       .nav-buttons button:hover {
         background-color: #0056b3;
@@ -87,78 +72,63 @@
         margin-bottom: 20px;
         text-align: center;
       }
-      .totals-wrapper {
-        display: flex;
-        justify-content: space-around;
-        margin-bottom: 15px;
-      }
       .totals-wrapper span {
-        font-size: 1.1em;
+        display: inline-block;
+        margin: 0 15px;
         font-weight: bold;
       }
-      /* Termômetro de Saldo */
       .saldo-bar-container {
-        width: 100%;
+        width: 80%;
         background-color: #ddd;
         border-radius: 5px;
-        height: 25px;
         overflow: hidden;
+        margin: 10px auto;
+        height: 20px;
         position: relative;
-        margin-top: 10px;
       }
       .saldo-bar {
         height: 100%;
-        width: 0%; /* Será preenchido por JS */
-        background-color: green; /* Cor padrão */
-        border-radius: 5px;
-        transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out;
-      }
-      .saldo-bar.positive {
         background-color: #28a745; /* Verde para saldo positivo */
-      }
-      .saldo-bar.negative {
-        background-color: #dc3545; /* Vermelho para saldo negativo */
+        width: 0%; /* Será ajustado via JS */
       }
       .saldo-label {
         position: absolute;
         width: 100%;
         text-align: center;
-        line-height: 25px;
-        color: #333;
-        font-weight: bold;
+        line-height: 20px;
+        color: black;
       }
-      /* SEÇÃO DE CATEGORIAS (Receitas, Contas Fixas, Contas Variáveis) */
+      /* SEÇÃO DE CATEGORIAS */
       .categorias-section {
         padding: 15px;
         margin-bottom: 20px;
       }
       .categorias-columns {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        display: flex;
+        justify-content: space-around;
         gap: 20px;
+        flex-wrap: wrap; /* Permite quebrar linha em telas menores */
       }
       .categoria-box {
+        flex: 1;
+        min-width: 280px; /* Largura mínima para cada caixa */
         padding: 15px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between; /* Empurra o botão para baixo */
+        margin-bottom: 15px;
       }
       .categoria-box h3 {
         margin-top: 0;
-        color: #333;
+        text-align: center;
       }
       .categoria-list {
-        margin-top: 10px;
-        flex-grow: 1; /* Permite que a lista cresça e ocupe o espaço */
-      }
-      .categoria-list p {
-        margin: 5px 0;
+        max-height: 200px; /* Altura máxima para rolagem */
+        overflow-y: auto;
+        margin-bottom: 10px;
       }
       .list-item {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 5px 0;
+        padding: 8px 0;
         border-bottom: 1px solid #eee;
       }
       .list-item:last-child {
@@ -166,126 +136,130 @@
       }
       .list-item-content {
         display: flex;
+        justify-content: space-between;
+        width: 100%;
         align-items: center;
-        flex-grow: 1;
+        gap: 10px;
       }
-      .list-item-content span {
-        flex-grow: 1;
+      .list-item-controls {
+          display: flex;
+          gap: 5px;
+      }
+      .list-item-controls button {
+          padding: 5px 8px;
+          font-size: 0.8em;
+          margin-top: 0;
+      }
+      .list-item-controls button:first-child {
+          background-color: #ffc107; /* Amarelo para editar */
+          color: #333;
+      }
+      .list-item-controls button:first-child:hover {
+          background-color: #e0a800;
+      }
+      .list-item-controls button:last-child {
+          background-color: #dc3545; /* Vermelho para excluir */
+      }
+      .list-item-controls button:last-child:hover {
+          background-color: #c82333;
       }
       .checkbox-pago {
         margin-left: 10px;
-        margin-right: 10px;
-        transform: scale(1.2); /* Aumenta o tamanho do checkbox */
-      }
-      .total-pago-box {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 10px;
-        padding-top: 10px;
-        border-top: 1px solid #90caf9;
-      }
-      .total-pago-box span {
-        font-weight: bold;
-      }
-      .total-pago-box input[type="checkbox"] {
-        transform: scale(1.3);
       }
       /* SEÇÃO DE CARTÕES */
       .cartoes-section {
         padding: 15px;
         margin-bottom: 20px;
       }
-      .cartoes-grid {
+      .cartoes-container {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 20px;
       }
       .cartao-box {
-        background-color: #f0f8ff;
-        border: 1px solid #a7d9ff;
+        background-color: #bbdefb;
+        border: 1px solid #64b5f6;
         border-radius: 5px;
         padding: 15px;
-        display: flex;
-        flex-direction: column;
       }
       .cartao-box h3 {
         margin-top: 0;
-        color: #333;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        text-align: center;
       }
-      .cartao-box ul {
-        list-style: none;
-        padding: 0;
-        margin: 10px 0;
-        flex-grow: 1;
-      }
-      .cartao-box ul li {
-        margin-bottom: 5px;
-      }
-      .cartao-box p {
-        font-weight: bold;
-        margin-top: 10px;
-        border-top: 1px solid #a7d9ff;
-        padding-top: 10px;
+      .cartao-list {
+        max-height: 150px;
+        overflow-y: auto;
       }
       .compra {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
         padding: 5px 0;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid #e3f2fd;
       }
       .compra:last-child {
         border-bottom: none;
       }
+      .cartao-total {
+        margin-top: 10px;
+        font-weight: bold;
+        text-align: right;
+      }
+      .cartao-paid-checkbox {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        margin-top: 5px;
+        font-size: 0.9em;
+      }
+      .cartao-paid-checkbox input {
+        margin-left: 5px;
+      }
       /* SEÇÃO DE FORMULÁRIOS */
       .forms-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        display: flex;
+        justify-content: space-around;
         gap: 20px;
+        flex-wrap: wrap;
         margin-bottom: 20px;
       }
       .form-section {
+        flex: 1;
+        min-width: 300px;
         padding: 15px;
       }
       .form-section h2 {
         margin-top: 0;
-        color: #333;
+        text-align: center;
       }
       .form-section input[type="text"],
       .form-section input[type="number"],
       .form-section select {
         width: calc(100% - 20px);
-        padding: 8px;
+        padding: 8px 10px;
         margin-bottom: 10px;
         border: 1px solid #ccc;
         border-radius: 4px;
+        box-sizing: border-box;
       }
       .form-section .row {
         display: flex;
         gap: 10px;
-        margin-bottom: 10px;
       }
       .form-section .row input {
         flex: 1;
+        width: auto; /* Sobrescreve o 100% para inputs dentro de .row */
       }
+
       /* SEÇÃO DE COMPRAS POR RESPONSÁVEL */
       .compras-responsaveis {
         padding: 15px;
         margin-bottom: 20px;
       }
       .responsaveis-container {
-        display: flex;
-        justify-content: space-around;
-        flex-wrap: wrap;
-        gap: 15px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
       }
       .responsavel-box {
-        padding: 10px;
-        min-width: 150px;
+        padding: 15px;
         text-align: center;
       }
       .responsavel-box h3 {
@@ -326,11 +300,67 @@
         margin: 0 5px;
         font-weight: bold;
       }
-      .list-item-controls {
-          display: flex;
-          justify-content: flex-end;
-          gap: 5px;
-          margin-left: 10px;
+      /* Estilos para Modal de Edição (novo) */
+      .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        justify-content: center;
+        align-items: center;
+      }
+      .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%; /* Could be more responsive */
+        max-width: 500px;
+        border-radius: 8px;
+        position: relative;
+      }
+      .close-button {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        position: absolute;
+        top: 10px;
+        right: 20px;
+      }
+      .close-button:hover,
+      .close-button:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .modal-content input[type="text"],
+      .modal-content input[type="number"],
+      .modal-content select {
+        width: calc(100% - 20px);
+        padding: 8px 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      .modal-content button {
+        background-color: #007bff;
+        margin-right: 10px;
+      }
+      .modal-content button:hover {
+        background-color: #0056b3;
+      }
+      .modal-content button.cancel {
+        background-color: #6c757d;
+      }
+      .modal-content button.cancel:hover {
+        background-color: #5a6268;
       }
     </style>
   </head>
@@ -343,18 +373,18 @@
           <button>Mês Seguinte &raquo;</button>
         </div>
       </header>
-
+      
       <div class="totals-section">
         <div class="totals-wrapper">
-          <span>Total de Receitas: R$ 0.00</span>
-          <span>Total de Despesas: R$ 0.00</span>
+          <span id="totalReceitasDisplay">Total de Receitas: R$ 0.00</span>
+          <span id="totalDespesasDisplay">Total de Despesas: R$ 0.00</span>
         </div>
         <div class="saldo-bar-container">
-          <div class="saldo-bar"></div>
-          <div class="saldo-label">Saldo: R$ 0.00</div>
+          <div class="saldo-bar" id="saldoBar"></div>
+          <div class="saldo-label" id="saldoLabel">Saldo: R$ 0.00</div>
         </div>
       </div>
-
+      
       <div class="categorias-section">
         <h2>Resumo do Mês</h2>
         <div class="categorias-columns">
@@ -363,34 +393,28 @@
             <div class="categoria-list" id="listaReceitas">
               <p>Carregando receitas...</p>
             </div>
-            <button>Adicionar Receita</button>
+            <button onclick="openReceitaModal()">Adicionar Receita</button>
           </div>
-
+          
           <div class="categoria-box contas">
             <h3>Contas Fixas</h3>
             <div class="categoria-list" id="listaContasFixas">
               <p>Carregando contas fixas...</p>
             </div>
-            <div class="total-pago-box">
-                <span id="totalContasFixas">Total: R$ 0.00</span>
-                <div>
-                    <label for="pagoContasFixas">Tudo Pago:</label>
-                    <input type="checkbox" id="pagoContasFixas" class="checkbox-pago" onchange="markAllContasAsPaidFront('Fixa', this.checked)">
-                </div>
+            <div class="conta-total" id="totalContasFixas">Total: R$ 0.00</div>
+            <div class="cartao-paid-checkbox">
+                Marcar todas fixas como pagas: <input type="checkbox" id="markAllFixasPaid" onchange="markAllContasAsPaidFront('Fixa', this.checked)">
             </div>
           </div>
-
+          
           <div class="categoria-box contas">
             <h3>Contas Variáveis</h3>
             <div class="categoria-list" id="listaContasVariaveis">
               <p>Carregando contas variáveis...</p>
             </div>
-            <div class="total-pago-box">
-                <span id="totalContasVariaveis">Total: R$ 0.00</span>
-                <div>
-                    <label for="pagoContasVariaveis">Tudo Pago:</label>
-                    <input type="checkbox" id="pagoContasVariaveis" class="checkbox-pago" onchange="markAllContasAsPaidFront('Variável', this.checked)">
-                </div>
+            <div class="conta-total" id="totalContasVariaveis">Total: R$ 0.00</div>
+            <div class="cartao-paid-checkbox">
+                Marcar todas variáveis como pagas: <input type="checkbox" id="markAllVariaveisPaid" onchange="markAllContasAsPaidFront('Variável', this.checked)">
             </div>
           </div>
         </div>
@@ -398,28 +422,30 @@
 
       <div class="cartoes-section">
         <h2>Compras por Cartão</h2>
-        <div class="cartoes-grid">
+        <div class="cartoes-container" id="listaCartoes">
           <p>Carregando compras por cartão...</p>
-          </div>
+        </div>
       </div>
 
       <div class="forms-container">
         <div class="form-section" id="formAdicionarCompra">
-          <h2>Adicionar Compra</h2>
+          <h2>Adicionar Compra no Cartão</h2>
           <div class="row">
             <select id="responsavelCompra">
+              <option value="">Responsável</option>
               <option value="Liana">Liana</option>
               <option value="Stefany">Stefany</option>
               <option value="Marília">Marília</option>
               <option value="Nosso ❤️">Nosso ❤️</option>
             </select>
             <select id="cartaoCompra">
-              <option value="Liana">LIANA</option>
-              <option value="Stefany">STEFANY</option>
-              <option value="Marília">MARÍLIA</option>
+              <option value="">Cartão</option>
               <option value="Nubank">NUBANK</option>
+              <option value="Picpay">PICPAY</option>
+              <option value="Itaucard">ITAUCARD</option>
+              <option value="Inter">INTER</option>
+              <option value="Mercado Pago">MERCADO PAGO</option>
               <option value="Amazon">AMAZON</option>
-              <option value="M. Pago">M. PAGO</option>
             </select>
           </div>
           <div class="row">
@@ -429,9 +455,9 @@
             <input type="number" id="valorCompra" placeholder="Valor" />
             <input type="text" id="parcelasCompra" placeholder="Parcelas (ex: 2/6)" />
           </div>
-          <button>Adicionar Compra no Cartão</button>
+          <button onclick="submitCompraCartao()">Adicionar Compra no Cartão</button>
           </div>
-
+        
         <div class="form-section" id="formAdicionarConta">
           <h2>Adicionar Conta</h2>
           <select id="tipoConta">
@@ -441,17 +467,17 @@
           <input type="text" id="nomeConta" placeholder="Nome da Conta" />
           <input type="text" id="parcelasConta" placeholder="Parcelas (ex: 2/3)" />
           <input type="number" id="valorConta" placeholder="Valor" />
-          <button>Adicionar Conta</button>
+          <button onclick="submitConta()">Adicionar Conta</button>
           </div>
       </div>
-
+      
       <div class="compras-responsaveis">
         <h2>Total de Compras por Responsável</h2>
-        <div class="responsaveis-container">
+        <div class="responsaveis-container" id="listaComprasResponsaveis">
           <p>Carregando totais por responsável...</p>
         </div>
       </div>
-
+      
       <footer>
         <p>
           <span class="liana">Liana</span>,
@@ -462,11 +488,68 @@
       </footer>
     </div>
 
+    <div id="receitaModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeReceitaModal()">&times;</span>
+            <h2>Editar Receita</h2>
+            <input type="hidden" id="editReceitaId">
+            <input type="text" id="editNomeReceita" placeholder="Nome da Receita">
+            <input type="number" id="editValorReceita" placeholder="Valor">
+            <button onclick="saveReceitaEdit()">Salvar</button>
+            <button class="cancel" onclick="closeReceitaModal()">Cancelar</button>
+        </div>
+    </div>
+
+    <div id="compraModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeCompraModal()">&times;</span>
+            <h2>Editar Compra</h2>
+            <input type="hidden" id="editCompraId">
+            <input type="text" id="editNomeCompra" placeholder="Nome da Compra">
+            <input type="number" id="editValorCompra" placeholder="Valor">
+            <input type="text" id="editParcelasCompra" placeholder="Parcelas (ex: 1/3)">
+            <select id="editResponsavelCompra">
+                <option value="Liana">Liana</option>
+                <option value="Stefany">Stefany</option>
+                <option value="Marília">Marília</option>
+                <option value="Nosso ❤️">Nosso ❤️</option>
+            </select>
+            <select id="editCartaoCompra">
+                <option value="Nubank">NUBANK</option>
+                <option value="Picpay">PICPAY</option>
+                <option value="Itaucard">ITAUCARD</option>
+                <option value="Inter">INTER</option>
+                <option value="Mercado Pago">MERCADO PAGO</option>
+                <option value="Amazon">AMAZON</option>
+            </select>
+            <button onclick="saveCompraEdit()">Salvar</button>
+            <button class="cancel" onclick="closeCompraModal()">Cancelar</button>
+        </div>
+    </div>
+
+    <div id="contaModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeContaModal()">&times;</span>
+            <h2>Editar Conta</h2>
+            <input type="hidden" id="editContaId">
+            <input type="text" id="editNomeConta" placeholder="Nome da Conta">
+            <input type="number" id="editValorConta" placeholder="Valor">
+            <input type="text" id="editParcelasConta" placeholder="Parcelas (ex: 1/3)">
+            <select id="editTipoConta">
+                <option value="Fixa">Fixa</option>
+                <option value="Variável">Variável</option>
+            </select>
+            <button onclick="saveContaEdit()">Salvar</button>
+            <button class="cancel" onclick="closeContaModal()">Cancelar</button>
+        </div>
+    </div>
+
+
     <script>
       // *** AQUI É ONDE A URL DO SEU CLOUDFLARE WORKER DEVE ENTRAR ***
       const webAppUrl = "https://painel-financas-proxy.mariliaedua.workers.dev/";
       // ***************************************************************
-
+      
       let currentMonth = new Date().getMonth(); // 0-Janeiro, 1-Fevereiro, etc.
       let currentYear = new Date().getFullYear();
 
@@ -490,560 +573,610 @@
         }
         updateMonthDisplay();
         // Recarrega todos os dados para o novo mês/ano
-        atualizarReceitas(); // Receitas não são por mês, mas mantenha para consistência se no futuro filtrar.
+        atualizarReceitas();
         atualizarContas();
         atualizarCartoes();
         atualizarComprasPorResponsavel();
-        atualizarTotais();
+        atualizarTotais(); // Atualiza os totais gerais
       }
 
-      async function fetchData(action, payload = {}) {
-        const fullPayload = { ...payload, action, month: currentMonth + 1, year: currentYear }; // Envia mês e ano
+      async function fetchData(action, payloadData = {}) {
+        const payload = {
+          action: action,
+          month: currentMonth + 1, // Envia o mês como 1-indexed (1 a 12)
+          year: currentYear,
+          ...payloadData
+        };
+
         try {
           const response = await fetch(webAppUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(fullPayload)
+            body: JSON.stringify(payload)
           });
           if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorText = await response.text();
+            throw new Error(`Erro de rede ou servidor: ${response.status} - ${errorText}`);
           }
-          return await response.json();
+          const data = await response.json();
+          if (data.error) {
+            throw new Error(data.error);
+          }
+          return data;
         } catch (error) {
-          console.error(`Erro ao buscar dados para ${action}:`, error);
-          alert(`Erro ao carregar dados. Verifique o console para mais detalhes. (${action})`);
-          return { data: [] }; // Retorna um array vazio para evitar erros em loops
+          console.error("Erro ao buscar dados:", error);
+          alert("Erro ao carregar dados: " + error.message);
+          return { data: null, message: error.message };
         }
       }
 
+      // ======================= FUNÇÕES DE ATUALIZAÇÃO DA INTERFACE =======================
+
       async function atualizarReceitas() {
-        const listaReceitas = document.getElementById("listaReceitas");
-        listaReceitas.innerHTML = "<p>Carregando receitas...</p>";
+        const listaReceitasElem = document.getElementById("listaReceitas");
+        listaReceitasElem.innerHTML = "<p>Carregando receitas...</p>";
         const data = await fetchData("getReceitas");
-        listaReceitas.innerHTML = ""; // Limpa a mensagem de carregamento
+        listaReceitasElem.innerHTML = "";
+        let totalReceitas = 0;
 
         if (data.data && data.data.length > 0) {
-            let totalReceitas = 0;
-            data.data.forEach(receita => {
-                const div = document.createElement("div");
-                div.classList.add("list-item");
-                const valor = parseFloat(receita.valor || 0);
-                totalReceitas += valor;
-                div.innerHTML = `
-                    <div class="list-item-content">
-                        <span>${receita.nome} | R$ ${valor.toFixed(2)}</span>
-                        <div class="list-item-controls">
-                            <button class="edit" onclick='editReceitaFront("${receita.id}")'>Edit</button>
-                            <button class="delete" onclick='deleteReceitaFront("${receita.id}")'>X</button>
-                        </div>
-                    </div>
-                `;
-                listaReceitas.appendChild(div);
-            });
-            document.querySelector(".totals-wrapper span:first-child").textContent = `Total de Receitas: R$ ${totalReceitas.toFixed(2)}`;
+          data.data.forEach(item => {
+            const div = document.createElement("div");
+            div.classList.add("list-item");
+            div.innerHTML = `
+              <div class="list-item-content">
+                <span>${item.nome} | R$ ${parseFloat(item.valor || 0).toFixed(2)}</span>
+                <div class="list-item-controls">
+                  <button onclick='editReceitaFront(\"${item.id}\")'>Edit</button>
+                  <button onclick='deleteReceitaFront(\"${item.id}\")'>X</button>
+                </div>
+              </div>
+            `;
+            listaReceitasElem.appendChild(div);
+            totalReceitas += parseFloat(item.valor || 0);
+          });
         } else {
-            listaReceitas.innerHTML = "<p>Nenhuma receita adicionada.</p>";
-            document.querySelector(".totals-wrapper span:first-child").textContent = `Total de Receitas: R$ 0.00`;
+          listaReceitasElem.innerHTML = "<p>Nenhuma receita cadastrada.</p>";
         }
+        document.getElementById("totalReceitasDisplay").textContent = `Total de Receitas: R$ ${totalReceitas.toFixed(2)}`;
         atualizarTotais();
       }
 
-
       async function atualizarContas() {
-          const listaContasFixas = document.getElementById("listaContasFixas");
-          const listaContasVariaveis = document.getElementById("listaContasVariaveis");
-          const totalContasFixasElem = document.getElementById("totalContasFixas");
-          const totalContasVariaveisElem = document.getElementById("totalContasVariaveis");
-          const pagoContasFixasCheckbox = document.getElementById("pagoContasFixas");
-          const pagoContasVariaveisCheckbox = document.getElementById("pagoContasVariaveis");
+        const listaContasFixasElem = document.getElementById("listaContasFixas");
+        const listaContasVariaveisElem = document.getElementById("listaContasVariaveis");
+        const totalContasFixasElem = document.getElementById("totalContasFixas");
+        const totalContasVariaveisElem = document.getElementById("totalContasVariaveis");
 
-          listaContasFixas.innerHTML = "<p>Carregando contas fixas...</p>";
-          listaContasVariaveis.innerHTML = "<p>Carregando contas variáveis...</p>";
+        listaContasFixasElem.innerHTML = "<p>Carregando contas fixas...</p>";
+        listaContasVariaveisElem.innerHTML = "<p>Carregando contas variáveis...</p>";
+        totalContasFixasElem.textContent = "Total: R$ 0.00";
+        totalContasVariaveisElem.textContent = "Total: R$ 0.00";
 
-          const data = await fetchData("getContas"); // O Apps Script deve filtrar por mês/ano
+        const data = await fetchData("getContas");
+        
+        listaContasFixasElem.innerHTML = "";
+        listaContasVariaveisElem.innerHTML = "";
 
-          let totalFixas = 0;
-          let totalVariaveis = 0;
-          let allFixedPaid = true;
-          let allVariablePaid = true;
-          let hasFixed = false;
-          let hasVariable = false;
+        let totalFixas = 0;
+        let totalVariaveis = 0;
+        let allFixasPaid = true;
+        let allVariaveisPaid = true;
+        let anyFixaFound = false;
+        let anyVariavelFound = false;
 
-          listaContasFixas.innerHTML = "";
-          listaContasVariaveis.innerHTML = "";
+        if (data.data && data.data.length > 0) {
+          data.data.forEach(item => {
+            const div = document.createElement("div");
+            div.classList.add("list-item");
+            const valorFormatado = parseFloat(item.valor || 0).toFixed(2);
+            div.innerHTML = `
+              <div class="list-item-content">
+                <span>${item.nome} | ${item.parcelas} | R$ ${valorFormatado}</span>
+                <input type="checkbox" class="checkbox-pago" ${item.pago === 'Sim' ? 'checked' : ''} onchange="markContaAsPaidFront('${item.id}', this.checked)">
+                <div class="list-item-controls">
+                  <button onclick='editContaFront(\"${item.id}\")'>Edit</button>
+                  <button onclick='deleteContaFront(\"${item.id}\")'>X</button>
+                </div>
+              </div>
+            `;
+            
+            if (item.tipo === 'Fixa') {
+              listaContasFixasElem.appendChild(div);
+              totalFixas += parseFloat(item.valor || 0);
+              if (item.pago !== 'Sim') allFixasPaid = false;
+              anyFixaFound = true;
+            } else if (item.tipo === 'Variável') {
+              listaContasVariaveisElem.appendChild(div);
+              totalVariaveis += parseFloat(item.valor || 0);
+              if (item.pago !== 'Sim') allVariaveisPaid = false;
+              anyVariavelFound = true;
+            }
+          });
+        } else {
+          listaContasFixasElem.innerHTML = "<p>Nenhuma conta fixa cadastrada para este mês.</p>";
+          listaContasVariaveisElem.innerHTML = "<p>Nenhuma conta variável cadastrada para este mês.</p>";
+        }
 
-          if (data.data && data.data.length > 0) {
-              data.data.forEach(conta => {
-                  const valor = parseFloat(conta.valor || 0);
-                  const parcelas = conta.parcelas || "1/1"; // Garante "1/1" se vazio
+        totalContasFixasElem.textContent = `Total: R$ ${totalFixas.toFixed(2)}`;
+        totalContasVariaveisElem.textContent = `Total: R$ ${totalVariaveis.toFixed(2)}`;
+        
+        // Atualiza os checkboxes de marcar todas
+        document.getElementById("markAllFixasPaid").checked = anyFixaFound && allFixasPaid;
+        document.getElementById("markAllVariaveisPaid").checked = anyVariavelFound && allVariaveisPaid;
 
-                  const div = document.createElement("div");
-                  div.classList.add("list-item");
-                  div.innerHTML = `
-                      <div class="list-item-content">
-                          <span>${conta.nome} | ${parcelas} | R$ ${valor.toFixed(2)}</span>
-                          <div class="list-item-controls">
-                              <button class="edit" onclick='editContaFront("${conta.id}")'>Edit</button>
-                              <button class="delete" onclick='deleteContaFront("${conta.id}")'>X</button>
-                          </div>
-                      </div>
-                  `;
-
-                  if (conta.tipo === 'Fixa') {
-                      listaContasFixas.appendChild(div);
-                      totalFixas += valor;
-                      hasFixed = true;
-                      if (conta.pago !== 'Sim') {
-                          allFixedPaid = false;
-                      }
-                  } else if (conta.tipo === 'Variável') {
-                      listaContasVariaveis.appendChild(div);
-                      totalVariaveis += valor;
-                      hasVariable = true;
-                      if (conta.pago !== 'Sim') {
-                          allVariablePaid = false;
-                      }
-                  }
-              });
-          }
-
-          if (!hasFixed) {
-              listaContasFixas.innerHTML = "<p>Nenhuma conta fixa adicionada.</p>";
-          }
-          if (!hasVariable) {
-              listaContasVariaveis.innerHTML = "<p>Nenhuma conta variável adicionada.</p>";
-          }
-
-          totalContasFixasElem.textContent = `Total: R$ ${totalFixas.toFixed(2)}`;
-          totalContasVariaveisElem.textContent = `Total: R$ ${totalVariaveis.toFixed(2)}`;
-
-          pagoContasFixasCheckbox.checked = hasFixed && allFixedPaid;
-          pagoContasVariaveisCheckbox.checked = hasVariable && allVariablePaid;
-
-          atualizarTotais();
+        atualizarTotais();
       }
 
       async function atualizarCartoes() {
-        const cartoesGrid = document.querySelector(".cartoes-grid");
-        cartoesGrid.innerHTML = "<p>Carregando compras por cartão...</p>";
-
+        const listaCartoesElem = document.getElementById("listaCartoes");
+        listaCartoesElem.innerHTML = "<p>Carregando compras por cartão...</p>";
         const data = await fetchData("getComprasPorCartao");
-
-        cartoesGrid.innerHTML = ""; // Limpa a mensagem de carregamento
+        listaCartoesElem.innerHTML = "";
 
         if (data.data && Object.keys(data.data).length > 0) {
-            const cardNames = Object.keys(data.data);
-            const orderedCardNames = ["Liana", "Stefany", "Marília", "Nubank", "Amazon", "M. Pago"].filter(name => cardNames.includes(name));
-            const remainingCardNames = cardNames.filter(name => !orderedCardNames.includes(name));
-            const finalCardOrder = [...orderedCardNames, ...remainingCardNames];
+          Object.keys(data.data).forEach(cardNome => {
+            const cardBox = document.createElement("div");
+            cardBox.classList.add("cartao-box");
+            cardBox.innerHTML = `
+              <h3>${cardNome}</h3>
+              <div class="cartao-list" id="card-${cardNome.replace(/\s/g, '')}-list"></div>
+              <div class="cartao-total" id="card-${cardNome.replace(/\s/g, '')}-total"></div>
+              <div class="cartao-paid-checkbox">
+                Marcar todas pagas: <input type="checkbox" class="cartao-paid" id="markAll${cardNome.replace(/\s/g, '')}Paid" onchange="markAllComprasOfCardAsPaid('${cardNome}', this.checked)">
+              </div>
+            `;
+            listaCartoesElem.appendChild(cardBox);
 
+            const cardListElem = document.getElementById(`card-${cardNome.replace(/\s/g, '')}-list`);
+            const cardTotalElem = document.getElementById(`card-${cardNome.replace(/\s/g, '')}-total`);
+            const comprasDoCartao = data.data[cardNome];
+            let totalCartao = 0;
+            let allCardPurchasesPaid = true;
 
-            finalCardOrder.forEach(cardNome => {
-                const comprasDoCartao = data.data[cardNome];
-                let totalCartao = 0;
-                let allComprasPaid = true;
-                let hasCompras = false;
+            if (comprasDoCartao && comprasDoCartao.length > 0) {
+              comprasDoCartao.forEach(item => {
+                const div = document.createElement("div");
+                // Adiciona a classe do responsável para estilização
+                const responsavelClass = item.responsavel ? item.responsavel.toLowerCase().replace(/á/g, 'a').replace(/ /g, '') : '';
+                div.classList.add("compra", responsavelClass); 
 
-                const cardBox = document.createElement("div");
-                cardBox.classList.add("cartao-box");
-                cardBox.innerHTML = `
-                    <h3>${cardNome}</h3>
-                    <div class="cartao-list"></div>
-                    <div class="total-pago-box">
-                        <p class="cartao-total">Total: R$ 0.00</p>
-                        <div>
-                            <label for="pago-${cardNome.replace(/\s/g, '-')}-cartao">Tudo Pago:</label>
-                            <input type="checkbox" id="pago-${cardNome.replace(/\s/g, '-')}-cartao" class="checkbox-pago cartao-paid" onchange="markAllComprasOfCardAsPaid('${cardNome}', this.checked)">
-                        </div>
+                div.innerHTML = `
+                  <div class="list-item-content">
+                    <span>${item.nome} | ${item.parcelaAtual}/${item.parcelasTotais} | R$ ${parseFloat(item.valor || 0).toFixed(2)} (${item.responsavel})</span>
+                    <input type="checkbox" class="checkbox-pago" ${item.pago === 'Sim' ? 'checked' : ''} onchange="markCompraAsPaidFront('${item.id}', this.checked)">
+                    <div class="list-item-controls">
+                      <button onclick='editCompraFront(\"${item.id}\")'>Edit</button>
+                      <button onclick='deleteCompraFront(\"${item.id}\")'>X</button>
                     </div>
+                  </div>
                 `;
-                const cardListElem = cardBox.querySelector(".cartao-list");
-                const cardTotalElem = cardBox.querySelector(".cartao-total");
-                const checkboxCardPago = cardBox.querySelector(".cartao-paid");
-
-
-                if (comprasDoCartao && comprasDoCartao.length > 0) {
-                    hasCompras = true;
-                    comprasDoCartao.forEach(item => {
-                        const div = document.createElement("div");
-                        const responsavelClass = item.responsavel ? item.responsavel.toLowerCase().replace(/á/g, 'a').replace(/ /g, '') : '';
-                        div.classList.add("compra", responsavelClass);
-
-                        const parcelasDisplay = item.parcelas ? `${item.parcelaAtual}/${item.parcelasTotais}` : '1/1';
-                        const valorParcela = parseFloat(item.valor || 0); // Já é o valor da parcela
-
-                        div.innerHTML = `
-                            <div class="list-item-content">
-                                <span>${item.nome} | ${parcelasDisplay} | R$ ${valorParcela.toFixed(2)} (${item.responsavel})</span>
-                                <div class="list-item-controls">
-                                    <button class="edit" onclick='editCompraFront(\"${item.id}\")'>Edit</button>
-                                    <button class="delete" onclick='deleteCompraFront(\"${item.id}\")'>X</button>
-                                </div>
-                            </div>
-                        `;
-                        cardListElem.appendChild(div);
-                        if (item.pago !== 'Sim') {
-                            totalCartao += valorParcela;
-                            allComprasPaid = false;
-                        }
-                    });
-                } else {
-                    cardListElem.innerHTML = "<p>Nenhuma compra neste cartão.</p>";
+                cardListElem.appendChild(div);
+                
+                if (item.pago !== 'Sim') { // Somar apenas se não estiver pago
+                  totalCartao += parseFloat(item.valor || 0);
+                  allCardPurchasesPaid = false;
                 }
-                cardTotalElem.textContent = `Total: R$ ${totalCartao.toFixed(2)}`;
-                checkboxCardPago.checked = hasCompras && allComprasPaid;
-                cartoesGrid.appendChild(cardBox);
-            });
+              });
+            } else {
+              cardListElem.innerHTML = "<p>Nenhuma compra neste cartão para este mês.</p>";
+            }
+            cardTotalElem.textContent = `Total: R$ ${totalCartao.toFixed(2)}`;
+            document.getElementById(`markAll${cardNome.replace(/\s/g, '')}Paid`).checked = comprasDoCartao.length > 0 && allCardPurchasesPaid;
+          });
         } else {
-            cartoesGrid.innerHTML = "<p>Nenhuma compra por cartão.</p>";
+          listaCartoesElem.innerHTML = "<p>Nenhum cartão com compras para este mês.</p>";
         }
         atualizarTotais();
       }
 
-
       async function atualizarComprasPorResponsavel() {
-        const responsaveisContainer = document.querySelector(".responsaveis-container");
-        responsaveisContainer.innerHTML = "<p>Carregando totais por responsável...</p>";
-
+        const listaComprasResponsaveisElem = document.getElementById("listaComprasResponsaveis");
+        listaComprasResponsaveisElem.innerHTML = "<p>Carregando totais por responsável...</p>";
         const data = await fetchData("getComprasPorResponsavel");
-        responsaveisContainer.innerHTML = ""; // Limpa a mensagem de carregamento
+        listaComprasResponsaveisElem.innerHTML = "";
 
-        if (data.data && Object.keys(data.data).length > 0) {
-            // Ordenar para garantir que Liana, Stefany, Marília, Nosso ❤️ apareçam primeiro
-            const orderedResponsibles = ['Liana', 'Stefany', 'Marília', 'Nosso ❤️'].filter(r => data.data[r]);
-            const otherResponsibles = Object.keys(data.data).filter(r => !orderedResponsibles.includes(r));
-            const finalOrder = [...orderedResponsibles, ...otherResponsibles];
+        if (data.data) {
+          Object.keys(data.data).forEach(responsavelNome => {
+            const responsavelData = data.data[responsavelNome];
+            const div = document.createElement("div");
+            const responsavelClass = responsavelNome.toLowerCase().replace(/á/g, 'a').replace(/ /g, '');
+            div.classList.add("responsavel-box", responsavelClass);
+            div.innerHTML = `
+              <h3>${responsavelNome}</h3>
+              <p>Total: R$ ${parseFloat(responsavelData.total || 0).toFixed(2)}</p>
+              <div class="compras-detalhe"></div>
+            `;
+            listaComprasResponsaveisElem.appendChild(div);
 
-            finalOrder.forEach(responsavelNome => {
-                const info = data.data[responsavelNome];
-                if (info) {
-                    const responsavelClass = responsavelNome.toLowerCase().replace(/á/g, 'a').replace(/ /g, '');
-                    const div = document.createElement("div");
-                    div.classList.add("responsavel-box", responsavelClass);
-                    div.innerHTML = `
-                        <h3>${responsavelNome}</h3>
-                        <p>Total: R$ ${info.total.toFixed(2)}</p>
-                    `;
-                    responsaveisContainer.appendChild(div);
-                }
-            });
+            const comprasDetalheElem = div.querySelector(".compras-detalhe");
+            if (responsavelData.compras && responsavelData.compras.length > 0) {
+                responsavelData.compras.forEach(compra => {
+                    const compraDiv = document.createElement("p");
+                    compraDiv.textContent = `${compra.nome} (${compra.parcelas}) - R$ ${parseFloat(compra.valor || 0).toFixed(2)}`;
+                    comprasDetalheElem.appendChild(compraDiv);
+                });
+            } else {
+                comprasDetalheElem.innerHTML = "<p>Nenhuma compra para este responsável no mês.</p>";
+            }
+          });
         } else {
-            responsaveisContainer.innerHTML = "<p>Nenhum total por responsável disponível.</p>";
+            listaComprasResponsaveisElem.innerHTML = "<p>Nenhum dado de compras por responsável.</p>";
         }
+        atualizarTotais();
       }
 
-      async function atualizarTotais() {
-        const totalReceitasElem = document.querySelector(".totals-wrapper span:first-child");
-        const totalDespesasElem = document.querySelector(".totals-wrapper span:last-child");
-        const saldoLabel = document.querySelector(".saldo-label");
-        const saldoBar = document.querySelector(".saldo-bar");
-
-        const receitasData = await fetchData("getReceitas");
-        const comprasData = await fetchData("getComprasPorCartao"); // Pega compras para calcular despesas de compras
-        const contasData = await fetchData("getContas"); // Pega contas para calcular despesas de contas
-
-        let totalReceitas = 0;
-        if (receitasData.data) {
-            receitasData.data.forEach(receita => {
-                totalReceitas += parseFloat(receita.valor || 0);
-            });
-        }
-
+      function atualizarTotais() {
+        const totalReceitas = parseFloat(document.getElementById("totalReceitasDisplay").textContent.replace('Total de Receitas: R$ ', '')) || 0;
+        
         let totalDespesas = 0;
-        if (comprasData.data) {
-            Object.values(comprasData.data).forEach(comprasDoCartao => {
-                comprasDoCartao.forEach(compra => {
-                    if (compra.pago !== 'Sim') { // Somar apenas se não estiver pago
-                        totalDespesas += parseFloat(compra.valor || 0);
-                    }
-                });
-            });
-        }
-        if (contasData.data) {
-            contasData.data.forEach(conta => {
-                if (conta.pago !== 'Sim') { // Somar apenas se não estiver pago
-                    totalDespesas += parseFloat(conta.valor || 0);
-                }
-            });
-        }
+        document.querySelectorAll(".cartao-total").forEach(elem => {
+          totalDespesas += parseFloat(elem.textContent.replace('Total: R$ ', '')) || 0;
+        });
+        totalDespesas += parseFloat(document.getElementById("totalContasFixas").textContent.replace('Total: R$ ', '')) || 0;
+        totalDespesas += parseFloat(document.getElementById("totalContasVariaveis").textContent.replace('Total: R$ ', '')) || 0;
 
-        totalReceitasElem.textContent = `Total de Receitas: R$ ${totalReceitas.toFixed(2)}`;
-        totalDespesasElem.textContent = `Total de Despesas: R$ ${totalDespesas.toFixed(2)}`;
+        document.getElementById("totalDespesasDisplay").textContent = `Total de Despesas: R$ ${totalDespesas.toFixed(2)}`;
 
         const saldo = totalReceitas - totalDespesas;
+        const saldoLabel = document.getElementById("saldoLabel");
+        const saldoBar = document.getElementById("saldoBar");
+
         saldoLabel.textContent = `Saldo: R$ ${saldo.toFixed(2)}`;
 
-        // Atualizar o termômetro
-        const maxDisplayValue = Math.max(totalReceitas, totalDespesas, Math.abs(saldo)); // Garante que a barra seja escalada corretamente
-        let percentage = 0;
-        if (maxDisplayValue > 0) {
-            percentage = (Math.abs(saldo) / maxDisplayValue) * 100;
-        }
-
-        saldoBar.style.width = `${percentage}%`;
-        saldoBar.classList.remove('positive', 'negative');
-        if (saldo >= 0) {
-            saldoBar.classList.add('positive');
+        // Atualizar barra de saldo
+        const totalMax = Math.max(totalReceitas, totalDespesas, 1); // Evitar divisão por zero
+        let percentage = (saldo / totalMax) * 100;
+        
+        // Ajustar a porcentagem para exibição visual
+        if (saldo > 0) {
+            saldoBar.style.backgroundColor = '#28a745'; // Verde
+            saldoBar.style.width = `${Math.min(percentage, 100)}%`; // Limitar a 100%
+        } else if (saldo < 0) {
+            saldoBar.style.backgroundColor = '#dc3545'; // Vermelho
+            saldoBar.style.width = `${Math.min(Math.abs(percentage), 100)}%`; // Usar valor absoluto para largura
         } else {
-            saldoBar.classList.add('negative');
+            saldoBar.style.backgroundColor = '#6c757d'; // Cinza
+            saldoBar.style.width = '0%'; // Ou 0%
         }
       }
 
+      // ======================= FUNÇÕES DE SUBMISSÃO DE FORMULÁRIOS =======================
 
       async function submitReceita() {
         const nome = prompt("Nome da Receita:");
-        const valorStr = prompt("Valor da Receita:");
-        if (!nome || !valorStr) {
-            alert("Nome e Valor da receita são obrigatórios.");
-            return;
-        }
-        const valor = parseFloat(valorStr);
-        if (isNaN(valor) || valor <= 0) {
-            alert("Valor da receita deve ser um número positivo.");
-            return;
-        }
-        const payload = {
+        const valor = prompt("Valor da Receita:");
+
+        if (nome && valor) {
+          const payload = {
             action: "addReceita",
-            data: { nome, valor }
-        };
-        const data = await fetchData("addReceita", payload);
-        alert(data.message);
-        atualizarReceitas();
-      }
-
-      async function editReceitaFront(recordId) {
-        const nomeAtual = prompt("Novo Nome da Receita:");
-        const valorAtualStr = prompt("Novo Valor da Receita:");
-        if (!nomeAtual || !valorAtualStr) {
-            alert("Nome e Valor da receita são obrigatórios.");
-            return;
+            data: { nome: nome, valor: parseFloat(valor).toFixed(2) }
+          };
+          const response = await fetchData(payload.action, payload.data);
+          if (response.message) {
+            alert(response.message);
+            atualizarReceitas();
+          }
         }
-        const valorAtual = parseFloat(valorAtualStr);
-        if (isNaN(valorAtual) || valorAtual <= 0) {
-            alert("Valor da receita deve ser um número positivo.");
-            return;
-        }
-
-        const payload = {
-            action: "updateReceita",
-            recordId: recordId,
-            data: { nome: nomeAtual, valor: valorAtual }
-        };
-        const data = await fetchData("updateReceita", payload);
-        alert(data.message);
-        atualizarReceitas();
-      }
-
-      async function deleteReceitaFront(recordId) {
-        if (!confirm("Tem certeza que deseja excluir esta receita?")) return;
-        const payload = { action: "deleteReceita", recordId: recordId };
-        const data = await fetchData("deleteReceita", payload);
-        alert(data.message);
-        atualizarReceitas();
       }
 
       async function submitCompraCartao() {
         const responsavel = document.getElementById("responsavelCompra").value;
         const cartao = document.getElementById("cartaoCompra").value;
         const nome = document.getElementById("nomeCompra").value;
-        const valorStr = document.getElementById("valorCompra").value;
+        const valor = document.getElementById("valorCompra").value;
         const parcelas = document.getElementById("parcelasCompra").value;
 
-        if (!nome || !valorStr || !parcelas || !responsavel || !cartao) {
-            alert("Todos os campos de compra são obrigatórios.");
-            return;
-        }
-        const valor = parseFloat(valorStr);
-        if (isNaN(valor) || valor <= 0) {
-            alert("Valor da compra deve ser um número positivo.");
-            return;
-        }
-
-        const payload = {
-            action: "addCompra",
-            data: { nome, valor, parcelas, responsavel, cartao }
-        };
-        const data = await fetchData("addCompra", payload);
-        alert(data.message);
-        document.getElementById("nomeCompra").value = "";
-        document.getElementById("valorCompra").value = "";
-        document.getElementById("parcelasCompra").value = "";
-        atualizarCartoes();
-        atualizarComprasPorResponsavel();
-        atualizarTotais();
-      }
-
-      function deleteCompraFront(recordId) {
-        if (!confirm("Tem certeza que deseja excluir esta compra?")) return;
-        const payload = { action: "deleteCompra", recordId: recordId };
-        fetch(webAppUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-          alert(data.message);
-          atualizarCartoes();
-          atualizarComprasPorResponsavel();
-          atualizarTotais();
-        })
-        .catch(error => {
-          console.error("Erro ao excluir compra:", error);
-          alert("Erro ao excluir compra. Verifique o console.");
-        });
-      }
-
-      async function editCompraFront(recordId) {
-        const currentData = await fetchData("getCompra", { recordId: recordId });
-        if (!currentData.data) {
-            alert("Dados da compra não encontrados.");
-            return;
-        }
-
-        const currentCompra = currentData.data;
-
-        const novoNome = prompt("Novo Nome da Compra:", currentCompra.nome);
-        const novoValorStr = prompt("Novo Valor da Compra:", currentCompra.valor);
-        const novasParcelas = prompt("Novas Parcelas (ex: 2/6):", currentCompra.parcelas);
-        const novoResponsavel = prompt("Novo Responsável:", currentCompra.responsavel);
-        const novoCartao = prompt("Novo Cartão:", currentCompra.cartao);
-
-        if (!novoNome || !novoValorStr || !novasParcelas || !novoResponsavel || !novoCartao) {
-            alert("Todos os campos de compra são obrigatórios.");
-            return;
-        }
-        const novoValor = parseFloat(novoValorStr);
-        if (isNaN(novoValor) || novoValor <= 0) {
-            alert("Valor da compra deve ser um número positivo.");
-            return;
-        }
-
-        const payload = {
-            action: "updateCompra",
-            recordId: recordId,
-            data: {
-                nome: novoNome,
-                valor: novoValor,
-                parcelas: novasParcelas,
-                responsavel: novoResponsavel,
-                cartao: novoCartao
-            }
-        };
-        const data = await fetchData("updateCompra", payload);
-        alert(data.message);
-        atualizarCartoes();
-        atualizarComprasPorResponsavel();
-        atualizarTotais();
-      }
-
-      async function markAllComprasOfCardAsPaid(cardName, isPaid) {
+        if (responsavel && cartao && nome && valor && parcelas) {
           const payload = {
-              action: "markComprasByCardAsPaid",
-              cardName: cardName,
-              pago: isPaid ? "Sim" : "Não"
+            action: "addCompra",
+            data: {
+              responsavel: responsavel,
+              cartao: cartao,
+              nome: nome,
+              valor: parseFloat(valor).toFixed(2),
+              parcelas: parcelas
+            }
           };
-          const data = await fetchData("markComprasByCardAsPaid", payload);
-          alert(data.message);
-          atualizarCartoes();
-          atualizarTotais();
+          const response = await fetchData(payload.action, payload.data);
+          if (response.message) {
+            alert(response.message);
+            // Limpa o formulário
+            document.getElementById("responsavelCompra").value = "";
+            document.getElementById("cartaoCompra").value = "";
+            document.getElementById("nomeCompra").value = "";
+            document.getElementById("valorCompra").value = "";
+            document.getElementById("parcelasCompra").value = "";
+            atualizarCartoes();
+            atualizarComprasPorResponsavel();
+          }
+        } else {
+          alert("Por favor, preencha todos os campos da compra.");
+        }
       }
 
       async function submitConta() {
         const tipo = document.getElementById("tipoConta").value;
         const nome = document.getElementById("nomeConta").value;
         const parcelas = document.getElementById("parcelasConta").value;
-        const valorStr = document.getElementById("valorConta").value;
+        const valor = document.getElementById("valorConta").value;
 
-        if (!nome || !valorStr || !parcelas) {
-            alert("Todos os campos de conta são obrigatórios.");
-            return;
-        }
-        const valor = parseFloat(valorStr);
-        if (isNaN(valor) || valor <= 0) {
-            alert("Valor da conta deve ser um número positivo.");
-            return;
-        }
-
-        const payload = {
+        if (tipo && nome && valor && parcelas) {
+          const payload = {
             action: "addConta",
-            data: { tipo, nome, parcelas, valor }
-        };
-        const data = await fetchData("addConta", payload);
-        alert(data.message);
-        document.getElementById("nomeConta").value = "";
-        document.getElementById("parcelasConta").value = "";
-        document.getElementById("valorConta").value = "";
-        atualizarContas();
-        atualizarTotais();
+            data: {
+              tipo: tipo,
+              nome: nome,
+              valor: parseFloat(valor).toFixed(2),
+              parcelas: parcelas
+            }
+          };
+          const response = await fetchData(payload.action, payload.data);
+          if (response.message) {
+            alert(response.message);
+            // Limpa o formulário
+            document.getElementById("tipoConta").value = "Fixa";
+            document.getElementById("nomeConta").value = "";
+            document.getElementById("parcelasConta").value = "";
+            document.getElementById("valorConta").value = "";
+            atualizarContas();
+          }
+        } else {
+          alert("Por favor, preencha todos os campos da conta.");
+        }
+      }
+
+
+      // ======================= FUNÇÕES DE EDIÇÃO E EXCLUSÃO (CRUD) =======================
+
+      // Receitas
+      let currentReceitaId = null;
+      async function openReceitaModal(id = null) {
+          const modal = document.getElementById("receitaModal");
+          currentReceitaId = id; // Store the ID
+          
+          if (id) {
+              const data = await fetchData("getReceita", { recordId: id });
+              if (data.data) {
+                  document.getElementById("editReceitaId").value = id;
+                  document.getElementById("editNomeReceita").value = data.data.nome;
+                  document.getElementById("editValorReceita").value = parseFloat(data.data.valor || 0).toFixed(2);
+                  modal.style.display = "flex"; // Show modal
+              } else {
+                  alert("Receita não encontrada.");
+              }
+          } else { // For adding new receita (prompt approach)
+              submitReceita();
+          }
+      }
+
+      function closeReceitaModal() {
+          document.getElementById("receitaModal").style.display = "none";
+          currentReceitaId = null; // Clear ID
+      }
+
+      async function saveReceitaEdit() {
+          const id = document.getElementById("editReceitaId").value;
+          const nome = document.getElementById("editNomeReceita").value;
+          const valor = document.getElementById("editValorReceita").value;
+
+          if (id && nome && valor) {
+              const payload = {
+                  action: "updateReceita",
+                  recordId: id,
+                  data: { nome: nome, valor: parseFloat(valor).toFixed(2) }
+              };
+              const response = await fetchData(payload.action, payload.data);
+              if (response.message) {
+                  alert(response.message);
+                  closeReceitaModal();
+                  atualizarReceitas();
+              }
+          } else {
+              alert("Por favor, preencha todos os campos da receita.");
+          }
+      }
+
+      async function deleteReceitaFront(recordId) {
+        if (!confirm("Tem certeza que deseja excluir esta receita?")) return;
+        const payload = { action: "deleteReceita", recordId: recordId };
+        const response = await fetchData(payload.action, {recordId: recordId}); // Passa recordId como parte do payloadData
+        if (response.message) {
+            alert(response.message);
+            atualizarReceitas();
+        }
+      }
+
+      // Compras (Cartão)
+      let currentCompraId = null;
+      async function editCompraFront(id) {
+          const modal = document.getElementById("compraModal");
+          currentCompraId = id;
+          
+          const data = await fetchData("getCompra", { recordId: id });
+          if (data.data) {
+              document.getElementById("editCompraId").value = id;
+              document.getElementById("editNomeCompra").value = data.data.nome;
+              document.getElementById("editValorCompra").value = parseFloat(data.data.valor || 0).toFixed(2);
+              document.getElementById("editParcelasCompra").value = data.data.parcelas;
+              document.getElementById("editResponsavelCompra").value = data.data.responsavel;
+              document.getElementById("editCartaoCompra").value = data.data.cartao;
+              modal.style.display = "flex";
+          } else {
+              alert("Compra não encontrada.");
+          }
+      }
+
+      function closeCompraModal() {
+          document.getElementById("compraModal").style.display = "none";
+          currentCompraId = null;
+      }
+
+      async function saveCompraEdit() {
+          const id = document.getElementById("editCompraId").value;
+          const nome = document.getElementById("editNomeCompra").value;
+          const valor = document.getElementById("editValorCompra").value;
+          const parcelas = document.getElementById("editParcelasCompra").value;
+          const responsavel = document.getElementById("editResponsavelCompra").value;
+          const cartao = document.getElementById("editCartaoCompra").value;
+
+          if (id && nome && valor && parcelas && responsavel && cartao) {
+              const payload = {
+                  action: "updateCompra",
+                  recordId: id,
+                  data: {
+                      nome: nome,
+                      valor: parseFloat(valor).toFixed(2),
+                      parcelas: parcelas,
+                      responsavel: responsavel,
+                      cartao: cartao
+                  }
+              };
+              const response = await fetchData(payload.action, payload.data);
+              if (response.message) {
+                  alert(response.message);
+                  closeCompraModal();
+                  atualizarCartoes();
+                  atualizarComprasPorResponsavel();
+              }
+          } else {
+              alert("Por favor, preencha todos os campos da compra.");
+          }
+      }
+
+      async function deleteCompraFront(recordId) {
+        if (!confirm("Tem certeza que deseja excluir esta compra?")) return;
+        const payload = { action: "deleteCompra", recordId: recordId };
+        const response = await fetchData(payload.action, {recordId: recordId});
+        if (response.message) {
+          alert(response.message);
+          atualizarCartoes();
+          atualizarComprasPorResponsavel();
+        }
+      }
+
+      // Contas
+      let currentContaId = null;
+      async function editContaFront(id) {
+          const modal = document.getElementById("contaModal");
+          currentContaId = id;
+          
+          const data = await fetchData("getConta", { recordId: id });
+          if (data.data) {
+              document.getElementById("editContaId").value = id;
+              document.getElementById("editNomeConta").value = data.data.nome;
+              document.getElementById("editValorConta").value = parseFloat(data.data.valor || 0).toFixed(2);
+              document.getElementById("editParcelasConta").value = data.data.parcelas;
+              document.getElementById("editTipoConta").value = data.data.tipo;
+              modal.style.display = "flex";
+          } else {
+              alert("Conta não encontrada.");
+          }
+      }
+
+      function closeContaModal() {
+          document.getElementById("contaModal").style.display = "none";
+          currentContaId = null;
+      }
+
+      async function saveContaEdit() {
+          const id = document.getElementById("editContaId").value;
+          const nome = document.getElementById("editNomeConta").value;
+          const valor = document.getElementById("editValorConta").value;
+          const parcelas = document.getElementById("editParcelasConta").value;
+          const tipo = document.getElementById("editTipoConta").value;
+
+          if (id && nome && valor && parcelas && tipo) {
+              const payload = {
+                  action: "updateConta",
+                  recordId: id,
+                  data: {
+                      nome: nome,
+                      valor: parseFloat(valor).toFixed(2),
+                      parcelas: parcelas,
+                      tipo: tipo
+                  }
+              };
+              const response = await fetchData(payload.action, payload.data);
+              if (response.message) {
+                  alert(response.message);
+                  closeContaModal();
+                  atualizarContas();
+              }
+          } else {
+              alert("Por favor, preencha todos os campos da conta.");
+          }
       }
 
       async function deleteContaFront(recordId) {
         if (!confirm("Tem certeza que deseja excluir esta conta?")) return;
         const payload = { action: "deleteConta", recordId: recordId };
-        const data = await fetchData("deleteConta", payload);
-        alert(data.message);
-        atualizarContas();
-        atualizarTotais();
+        const response = await fetchData(payload.action, {recordId: recordId});
+        if (response.message) {
+            alert(response.message);
+            atualizarContas();
+        }
       }
 
-      async function editContaFront(recordId) {
-          const currentData = await fetchData("getConta", { recordId: recordId });
-          if (!currentData.data) {
-              alert("Dados da conta não encontrados.");
-              return;
-          }
-          const currentConta = currentData.data;
+      // Funções para marcar como pago
+      async function markCompraAsPaidFront(recordId, isChecked) {
+        const newPagoStatus = isChecked ? 'Sim' : 'Não';
+        const payload = { action: "updateCompra", recordId: recordId, data: { pago: newPagoStatus } };
+        const response = await fetchData(payload.action, payload.data);
+        if (response.message) {
+            // alert(response.message); // Opcional: mostrar alerta
+            atualizarCartoes(); // Recarrega para atualizar totais e checkboxes
+            atualizarComprasPorResponsavel();
+        }
+      }
 
-          const novoTipo = prompt("Novo Tipo (Fixa/Variável):", currentConta.tipo);
-          const novoNome = prompt("Novo Nome da Conta:", currentConta.nome);
-          const novasParcelas = prompt("Novas Parcelas (ex: 2/3):", currentConta.parcelas);
-          const novoValorStr = prompt("Novo Valor da Conta:", currentConta.valor);
+      async function markContaAsPaidFront(recordId, isChecked) {
+        const newPagoStatus = isChecked ? 'Sim' : 'Não';
+        const payload = { action: "updateConta", recordId: recordId, data: { pago: newPagoStatus } };
+        const response = await fetchData(payload.action, payload.data);
+        if (response.message) {
+            // alert(response.message); // Opcional: mostrar alerta
+            atualizarContas(); // Recarrega para atualizar totais e checkboxes
+        }
+      }
 
-          if (!novoTipo || !novoNome || !novasParcelas || !novoValorStr) {
-              alert("Todos os campos de conta são obrigatórios.");
-              return;
-          }
-          const novoValor = parseFloat(novoValorStr);
-          if (isNaN(novoValor) || novoValor <= 0) {
-              alert("Valor da conta deve ser um número positivo.");
-              return;
-          }
-
-          const payload = {
-              action: "updateConta",
-              recordId: recordId,
-              data: {
-                  tipo: novoTipo,
-                  nome: novoNome,
-                  parcelas: novasParcelas,
-                  valor: novoValor
-              }
+      async function markAllComprasOfCardAsPaid(cardName, isChecked) {
+          const newPagoStatus = isChecked ? 'Sim' : 'Não';
+          const payload = { 
+              action: "markComprasByCardAsPaid", 
+              cardName: cardName, 
+              pago: newPagoStatus 
           };
-          const data = await fetchData("updateConta", payload);
-          alert(data.message);
-          atualizarContas();
-          atualizarTotais();
+          const response = await fetchData(payload.action, payload); // Envia o payload completo
+          if (response.message) {
+              alert(response.message);
+              atualizarCartoes();
+              atualizarComprasPorResponsavel();
+          }
       }
 
-      async function markAllContasAsPaidFront(tipoConta, isPaid) {
-          const payload = {
-              action: "markContasAsPaid",
-              tipo: tipoConta,
-              pago: isPaid ? "Sim" : "Não"
+      async function markAllContasAsPaidFront(tipoConta, isChecked) {
+          const newPagoStatus = isChecked ? 'Sim' : 'Não';
+          const payload = { 
+              action: "markContasAsPaid", 
+              tipo: tipoConta, 
+              pago: newPagoStatus 
           };
-          const data = await fetchData("markContasAsPaid", payload);
-          alert(data.message);
-          atualizarContas();
-          atualizarTotais();
+          const response = await fetchData(payload.action, payload); // Envia o payload completo
+          if (response.message) {
+              alert(response.message);
+              atualizarContas();
+          }
       }
 
+
+      // Inicialização
       document.addEventListener("DOMContentLoaded", function(){
         updateMonthDisplay(); // Define o mês e ano iniciais
         atualizarReceitas();
-        atualizarContas(); // Atualiza contas fixas e variáveis
-        atualizarCartoes(); // Atualiza a seção de cartões
-        atualizarComprasPorResponsavel(); // Atualiza a seção de totais por responsável
+        atualizarContas(); 
+        atualizarCartoes(); 
+        atualizarComprasPorResponsavel();
         atualizarTotais(); // Atualiza os totais gerais
 
         // Event listeners para navegação de mês
@@ -1054,21 +1187,20 @@
           changeMonth(1);
         });
 
-        // Event listener para o botão de "Salvar Receitas" (agora um prompt)
-        document.querySelector(".categoria-box.receitas button").addEventListener("click", function(e){
-            e.preventDefault(); // Evita o comportamento padrão do botão se estiver dentro de um form
-            submitReceita();
+        // Modais Close buttons
+        document.querySelectorAll('.modal .close-button').forEach(button => {
+            button.onclick = function() {
+                this.closest('.modal').style.display = 'none';
+            };
         });
 
-        // Event listeners para os formulários de Compra e Conta
-        document.querySelector("#formAdicionarCompra button").addEventListener("click", function(e){
-          e.preventDefault();
-          submitCompraCartao();
-        });
-        document.querySelector("#formAdicionarConta button").addEventListener("click", function(e){
-          e.preventDefault();
-          submitConta();
-        });
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = "none";
+            }
+        };
+
       });
     </script>
   </body>
