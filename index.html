@@ -239,12 +239,11 @@
       }
       .cartoes-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        /* Ajuste para garantir 4 colunas quando possível */
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
         gap: 20px;
       }
       .cartao-box {
-        /* background-color: #f0f8ff; */ /* Cor base será definida por cartão */
-        /* border: 1px solid #a7d9f7; */ /* Cor base será definida por cartão */
         border-radius: 5px;
         padding: 15px;
         text-align: center;
@@ -256,10 +255,11 @@
       .cartao-box.santander { background-color: #ffebee; border: 1px solid #ef9a9a; }
       .cartao-box.mercadopago { background-color: #e3f2fd; border: 1px solid #90caf9; } /* M.Pago */
       .cartao-box.amazon { background-color: #fff3e0; border: 1px solid #ffcc80; }
-      .cartao-box.c6 { background-color: #e0e0e0; border: 1px solid #bdbdbd; } /* Cinza para C6 */
-      .cartao-box.itaú { background-color: #fff3e0; border: 1px solid #ffb74d; } /* Laranja para Itaú */
-      .cartao-box.bradesco { background-color: #ffebee; border: 1px solid #e57373; } /* Vermelho claro Bradesco */
-      .cartao-box.inter { background-color: #ffecb3; border: 1px solid #ffca28; } /* Laranja Inter */
+      /* Remover outras cores se não forem mais usadas */
+      /* .cartao-box.c6 { background-color: #e0e0e0; border: 1px solid #bdbdbd; } */
+      /* .cartao-box.itaú { background-color: #fff3e0; border: 1px solid #ffb74d; } */
+      /* .cartao-box.bradesco { background-color: #ffebee; border: 1px solid #e57373; } */
+      /* .cartao-box.inter { background-color: #ffecb3; border: 1px solid #ffca28; } */
 
       .cartao-box h3 {
         margin-top: 0;
@@ -322,25 +322,21 @@
       .form-sections-wrapper {
         display: flex;
         gap: 20px;
-        /* margin-bottom: 20px; */ /* Removido, já na regra geral */
-        /* background-color e border já na regra geral */
-        /* padding: 15px; */ /* Removido, já na regra geral */
       }
       .form-section {
         flex: 1;
         text-align: center;
-        /* Remover padding e margin-bottom individuais */
         padding: 0; 
         margin-bottom: 0;
-        border: none; /* Remover borda individual */
-        background-color: transparent; /* Fundo transparente */
+        border: none; 
+        background-color: transparent; 
       }
       .form-section h2 {
         margin-top: 0;
-        margin-bottom: 15px; /* Espaço abaixo do título */
+        margin-bottom: 15px; 
         color: #333;
       }
-      .form-section label { /* Estilo para labels se adicionados */
+      .form-section label { 
         display: block;
         margin-bottom: 5px;
         text-align: left;
@@ -350,7 +346,7 @@
       .form-section input[type="text"],
       .form-section input[type="number"],
       .form-section select {
-        width: 100%; /* Ocupar largura total do container pai */
+        width: 100%; 
         padding: 8px;
         margin-bottom: 10px;
         border: 1px solid #ccc;
@@ -361,22 +357,20 @@
         display: flex;
         gap: 10px;
         margin-bottom: 10px;
-        align-items: center; /* Alinha itens na linha */
+        align-items: center; 
       }
       .form-section .row input,
       .form-section .row select {
         flex-grow: 1;
-        margin-bottom: 0; /* Remove margem inferior dentro da linha */
+        margin-bottom: 0; 
       }
       .form-section button {
-        width: 100%; /* Botão ocupa largura total */
-        margin-top: 10px; /* Espaço acima do botão */
+        width: 100%; 
+        margin-top: 10px; 
       }
 
       /* SEÇÃO DE COMPRAS POR RESPONSÁVEL */
       .compras-responsaveis {
-        /* padding: 15px; */
-        /* margin-bottom: 20px; */
         text-align: center;
       }
       .compras-responsaveis h2 {
@@ -385,12 +379,11 @@
       }
       .responsaveis-container {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Aumentar minmax */
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
         gap: 20px;
         margin-top: 15px;
       }
       .responsavel-box {
-        /* padding: 15px; */
         text-align: center;
       }
       .responsavel-box h3 {
@@ -398,7 +391,7 @@
         font-size: 1.2em;
         padding: 5px;
         border-radius: 3px;
-        display: inline-block; /* Para aplicar cor de fundo apenas ao texto */
+        display: inline-block; 
       }
       .responsavel-box p.total-responsavel {
         margin: 10px 0 5px 0;
@@ -410,10 +403,10 @@
       .responsavel-list {
           text-align: left;
           font-size: 0.9em;
-          max-height: 150px; /* Limita altura da lista */
-          overflow-y: auto; /* Adiciona scroll se necessário */
-          padding-right: 5px; /* Espaço para scrollbar */
-          margin-top: 10px; /* Espaço acima da lista */
+          max-height: 150px; 
+          overflow-y: auto; 
+          padding-right: 5px; 
+          margin-top: 10px; 
       }
        .responsavel-list .compra-item {
           display: flex;
@@ -436,17 +429,17 @@
            white-space: nowrap;
        }
 
-      /* Cores para Responsáveis (usadas no JS para background de compras/títulos) */
-      .responsavel-liana { background-color: #add8e6; } /* Classe para H3 */
+      /* Cores para Responsáveis */
+      .responsavel-liana { background-color: #add8e6; } 
       .responsavel-stefany { background-color: #ffb347; }
       .responsavel-marilia { background-color: #dda0dd; }
       .responsavel-nosso { background-color: #ffc0cb; }
 
-      /* Cores para background de itens de compra (usadas no JS) */
-      .compra-bg-liana { background-color: rgba(173, 216, 230, 0.3); } /* Light blue com alpha */
-      .compra-bg-stefany { background-color: rgba(255, 179, 71, 0.3); } /* Orange com alpha */
-      .compra-bg-marilia { background-color: rgba(221, 160, 221, 0.3); } /* Plum com alpha */
-      .compra-bg-nosso { background-color: rgba(255, 192, 203, 0.3); } /* Pink com alpha */
+      /* Cores para background de itens de compra */
+      .compra-bg-liana { background-color: rgba(173, 216, 230, 0.3); } 
+      .compra-bg-stefany { background-color: rgba(255, 179, 71, 0.3); } 
+      .compra-bg-marilia { background-color: rgba(221, 160, 221, 0.3); } 
+      .compra-bg-nosso { background-color: rgba(255, 192, 203, 0.3); } 
 
       /* RODAPÉ */
       footer {
@@ -476,22 +469,22 @@
 
       /* Modal Styles */
       .modal {
-          display: none; /* Hidden by default */
-          position: fixed; /* Stay in place */
-          z-index: 1000; /* Sit on top */
+          display: none; 
+          position: fixed; 
+          z-index: 1000; 
           left: 0;
           top: 0;
-          width: 100%; /* Full width */
-          height: 100%; /* Full height */
-          overflow: auto; /* Enable scroll if needed */
-          background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+          width: 100%; 
+          height: 100%; 
+          overflow: auto; 
+          background-color: rgba(0,0,0,0.4); 
       }
       .modal-content {
           background-color: #fefefe;
-          margin: 15% auto; /* 15% from the top and centered */
+          margin: 15% auto; 
           padding: 20px;
           border: 1px solid #888;
-          width: 80%; /* Could be more or less, depending on screen size */
+          width: 80%; 
           max-width: 500px;
           border-radius: 8px;
           position: relative;
@@ -538,10 +531,8 @@
     <div class="container">
       <header>
         <h1>Painel Financeiro</h1>
-        <!-- Mês/Ano será atualizado pelo JS -->
         <h2>Carregando...</h2>
         <div class="nav-buttons">
-          <!-- Botões de navegação -->
           <button id="prevMonthBtn">&laquo; Mês Anterior</button>
           <button id="nextMonthBtn">Mês Seguinte &raquo;</button>
         </div>
@@ -569,7 +560,6 @@
             <div class="categoria-list" id="listaReceitas">
               <p>Carregando...</p>
             </div>
-            <!-- Formulário de Adicionar Receita (inline) -->
             <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ccc;">
               <input type="text" id="nomeReceita" placeholder="Nome da Receita" style="width: calc(100% - 22px); margin-bottom: 5px;">
               <input type="number" id="valorReceita" placeholder="Valor" style="width: calc(100% - 22px); margin-bottom: 10px;">
@@ -608,6 +598,7 @@
         <h2>Cartões</h2>
         <div class="cartoes-grid" id="cartoesGrid">
           <p>Carregando...</p>
+          <!-- Cartões serão preenchidos pelo JS -->
         </div>
       </div>
 
@@ -624,21 +615,19 @@
               <option value="Marília">Marília</option>
               <option value="Nosso ❤️">Nosso ❤️</option>
             </select>
+            <!-- **AJUSTE CARTÕES**: Limitar opções aos 4 cartões -->
             <select id="cartaoCompra">
               <option value="">Cartão</option>
               <option value="Nubank">Nubank</option>
               <option value="Santander">Santander</option>
-              <option value="Mercado Pago">Mercado Pago</option> <!-- Nome consistente -->
+              <option value="Mercado Pago">Mercado Pago</option>
               <option value="Amazon">Amazon</option>
-              <option value="C6">C6</option>
-              <option value="Itaú">Itaú</option>
-              <option value="Bradesco">Bradesco</option>
-              <option value="Inter">Inter</option>
             </select>
           </div>
           <input type="text" id="nomeCompra" placeholder="Nome da Compra" />
           <div class="row">
-            <input type="number" id="valorCompra" placeholder="Valor Total" />
+            <!-- **AJUSTE PARCELAS**: Placeholder indica valor da parcela -->
+            <input type="number" id="valorCompra" placeholder="Valor da Parcela" />
             <input type="number" id="parcelasCompra" placeholder="Nº Parcelas (1 = à vista)" value="1" min="1"/>
           </div>
           <button id="addCompraBtn">Adicionar Compra</button>
@@ -653,7 +642,8 @@
           </select>
           <input type="text" id="nomeConta" placeholder="Nome da Conta" />
           <div class="row">
-             <input type="number" id="valorConta" placeholder="Valor Total" />
+             <!-- **AJUSTE PARCELAS**: Placeholder indica valor da parcela -->
+             <input type="number" id="valorConta" placeholder="Valor da Parcela" />
              <input type="number" id="parcelasConta" placeholder="Nº Parcelas (1 = única)" value="1" min="1"/>
           </div>
           <button id="addContaBtn">Adicionar Conta</button>
@@ -686,10 +676,10 @@
         <span class="close-button" onclick="closeModal()">&times;</span>
         <h2 id="modalTitle">Editar Item</h2>
         <input type="hidden" id="editItemId">
-        <input type="hidden" id="editItemType"> <!-- 'receita', 'conta', 'compra' -->
+        <input type="hidden" id="editItemType"> 
         
         <div id="editFormFields">
-          <!-- Campos serão preenchidos dinamicamente pelo JS -->
+          <!-- Campos serão preenchidos dinamicamente -->
         </div>
         
         <button id="saveEditBtn">Salvar Alterações</button>
@@ -698,14 +688,13 @@
 
     <script>
       // --- Configurações e Variáveis Globais ---
-      const webAppUrl = "https://painel-financas-proxy.mariliaedua.workers.dev/"; // URL do Cloudflare Worker
-      let currentMonth = new Date().getMonth(); // 0-Janeiro, 11-Dezembro
+      const webAppUrl = "https://painel-financas-proxy.mariliaedua.workers.dev/"; 
+      let currentMonth = new Date().getMonth(); 
       let currentYear = new Date().getFullYear();
       const monthNames = [
         "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
         "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
       ];
-      // Mapeamento de responsáveis para classes CSS (para cores)
       const responsavelClasses = {
           "Liana": "liana",
           "Stefany": "stefany",
@@ -718,16 +707,13 @@
           "Marília": "compra-bg-marilia",
           "Nosso ❤️": "compra-bg-nosso"
       };
-      // Mapeamento de nomes de cartão para classes CSS (para cores)
+      // **AJUSTE CARTÕES**: Definir os 4 cartões principais e suas classes
+      const cartoesPrincipais = ["Nubank", "Santander", "Mercado Pago", "Amazon"];
       const cartaoClasses = {
           "Nubank": "nubank",
           "Santander": "santander",
-          "Mercado Pago": "mercadopago", // Nome consistente
-          "Amazon": "amazon",
-          "C6": "c6",
-          "Itaú": "itaú",
-          "Bradesco": "bradesco",
-          "Inter": "inter"
+          "Mercado Pago": "mercadopago", 
+          "Amazon": "amazon"
       };
 
       // --- Funções de Formatação ---
@@ -743,7 +729,7 @@
             action: action,
             data: data,
             recordId: recordId,
-            month: currentMonth + 1, // Envia mês 1-12 para o backend
+            month: currentMonth + 1, 
             year: currentYear
         };
         try {
@@ -751,14 +737,9 @@
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
-                mode: "cors" // Necessário para interagir com Cloudflare Worker de outro domínio
+                mode: "cors" 
             });
             
-            // Log da resposta crua para depuração
-            // const rawResponseText = await response.text();
-            // console.log(`Resposta crua (${action}):`, rawResponseText);
-            // const result = JSON.parse(rawResponseText); // Tenta parsear
-
             if (!response.ok) {
                 const errorText = await response.text();
                 console.error(`Erro HTTP (${action}): ${response.status}`, errorText);
@@ -768,21 +749,18 @@
             const result = await response.json();
             console.log(`Resposta recebida (${action}):`, result);
 
-            // Verifica se a resposta contém um erro do Apps Script
             if (result && result.status === 'error') {
                 console.error(`Erro do Backend (${action}):`, result.message);
                 throw new Error(`Erro no backend: ${result.message}`);
             }
             
-            // Retorna APENAS o conteúdo dentro de 'data', se existir, caso contrário, a resposta inteira
             return result && result.hasOwnProperty('data') ? result.data : result;
 
         } catch (error) {
             console.error(`Falha na requisição (${action}):`, error);
             alert(`Erro ao comunicar com o servidor para a ação '${action}'. Verifique o console para detalhes.`);
-            // Retorna um estado de erro consistente para quem chamou
-            if (action.startsWith("get")) return action.includes("Por") || action === 'getTotais' ? {} : []; // Retorna objeto ou array vazio para GETs
-            return { status: 'error', message: error.message }; // Retorna erro para ações CUD
+            if (action.startsWith("get")) return action.includes("Por") || action === 'getTotais' ? {} : []; 
+            return { status: 'error', message: error.message }; 
         }
       }
 
@@ -813,11 +791,12 @@
           }
       }
 
-      // Atualiza a barra de saldo e os totais
+      // **AJUSTE TERMÔMETRO**: A lógica de cálculo agora está no backend (calculateTotals)
+      // Esta função apenas exibe os valores recebidos.
       function updateTotalsDisplay(totals) {
           const totalReceitas = totals.receitas || 0;
           const totalDespesasAbertas = totals.despesasAbertas || 0;
-          const saldoReal = totals.saldoReal || 0;
+          const saldoReal = totals.saldoReal || 0; // Saldo = Receitas - Despesas Abertas
 
           document.getElementById("totalReceitas").textContent = `Total de Receitas: ${formatCurrency(totalReceitas)}`;
           document.getElementById("totalDespesasAbertas").textContent = `Total de Despesas (Abertas): ${formatCurrency(totalDespesasAbertas)}`;
@@ -826,17 +805,17 @@
           const saldoBar = document.getElementById("saldoBar");
           let percentage = 0;
           if (totalReceitas > 0) {
-              // Calcula percentual do saldo em relação às receitas
+              // Percentual do saldo em relação às receitas
               percentage = Math.max(0, Math.min(100, (saldoReal / totalReceitas) * 100));
           } else if (saldoReal < 0) {
-              // Se não há receita mas há despesa, barra fica 100% vermelha
+              // Sem receita, mas com despesa -> 100% vermelho
               percentage = 100;
           }
           
           saldoBar.style.width = `${percentage}%`;
           if (saldoReal < 0) {
               saldoBar.classList.add("negative");
-              // Se negativo, a barra representa o "excesso" de despesa em relação à receita (ou 100% se não houver receita)
+              // Se negativo, a barra representa o "excesso" de despesa
               const deficitPercentage = totalReceitas > 0 ? Math.min(100, (Math.abs(saldoReal) / totalReceitas) * 100) : 100;
               saldoBar.style.width = `${deficitPercentage}%`; 
           } else {
@@ -844,7 +823,6 @@
           }
       }
 
-      // Exibe a lista de receitas
       function displayReceitas(receitas) {
           const listaElement = document.getElementById("listaReceitas");
           if (!Array.isArray(receitas)) {
@@ -856,7 +834,7 @@
               return;
           }
 
-          listaElement.innerHTML = ""; // Limpa lista
+          listaElement.innerHTML = ""; 
           receitas.forEach(item => {
               const div = document.createElement("div");
               div.className = "list-item";
@@ -871,7 +849,6 @@
           });
       }
 
-      // Exibe contas (Fixas e Variáveis)
       function displayContas(contas) {
           const listaFixas = document.getElementById("listaContasFixas");
           const listaVariaveis = document.getElementById("listaContasVariaveis");
@@ -893,10 +870,10 @@
 
           contas.forEach(item => {
               const isPago = String(item.pago).toLowerCase() === 'sim';
+              // **AJUSTE PARCELAS**: Valor já é da parcela
               const valor = parseFloat(item.valor || 0);
               const div = document.createElement("div");
               div.className = `list-item ${isPago ? 'item-pago' : ''}`;
-              // Usa originalId se existir (vem de getAllInstallmentsForMonth), senão usa id
               const itemId = item.originalId || item.id;
               div.innerHTML = `
                   <span>${item.nome || 'Conta sem nome'} (${item.parcelas || '1/1'}) - ${formatCurrency(valor)}</span>
@@ -922,7 +899,6 @@
               }
           });
 
-          // Atualiza totais e checkboxes "Marcar Todos"
           document.getElementById("totalContasFixas").textContent = `Total Aberto: ${formatCurrency(totalFixasAberto)}`;
           document.getElementById("totalContasVariaveis").textContent = `Total Aberto: ${formatCurrency(totalVariaveisAberto)}`;
           document.getElementById("checkAllContasFixas").checked = allFixasPaid;
@@ -932,7 +908,7 @@
           if (listaVariaveis.children.length === 0) displayEmpty("listaContasVariaveis", "Nenhuma conta variável para este mês.");
       }
 
-      // Exibe compras por cartão
+      // **AJUSTE CARTÕES**: Exibe sempre os 4 cartões principais, sem checkbox individual
       function displayComprasPorCartao(cartoesData) {
           const gridElement = document.getElementById("cartoesGrid");
           if (typeof cartoesData !== 'object' || cartoesData === null) {
@@ -941,44 +917,38 @@
           }
 
           gridElement.innerHTML = ""; // Limpa grid
-          const cartaoNames = Object.keys(cartoesData);
 
-          if (cartaoNames.length === 0) {
-              displayEmpty("cartoesGrid", "Nenhum cartão com compras neste mês.");
-              return;
-          }
-
-          cartaoNames.forEach(nomeCartao => {
-              const cartao = cartoesData[nomeCartao];
-              // Pula se não houver dados ou se for um cartão sem compras (total 0 e array vazio)
-              if (!cartao || typeof cartao !== 'object' || (cartao.total === 0 && cartao.compras.length === 0)) return; 
-
+          // Itera sobre os 4 cartões principais definidos
+          cartoesPrincipais.forEach(nomeCartao => {
+              // Pega os dados do cartão atual, ou um objeto vazio se não existir
+              const cartao = cartoesData[nomeCartao] || { total: 0, compras: [] }; 
+              
               const cartaoDiv = document.createElement("div");
-              const cartaoClass = cartaoClasses[nomeCartao] || 'default'; // Pega classe CSS do cartão
+              const cartaoClass = cartaoClasses[nomeCartao] || 'default'; 
               cartaoDiv.className = `cartao-box ${cartaoClass}`;
 
               const listaCompras = document.createElement("div");
               listaCompras.className = "cartao-list";
               let totalCartaoAberto = 0;
-              let allComprasPaid = cartao.compras.length > 0;
+              let allComprasPaid = cartao.compras.length > 0; // Assume true se houver compras
 
               if (cartao.compras && cartao.compras.length > 0) {
                   cartao.compras.forEach(compra => {
                       const isPago = String(compra.pago).toLowerCase() === 'sim';
+                      // **AJUSTE PARCELAS**: Valor já é da parcela
                       const valor = parseFloat(compra.valor || 0);
                       const responsavel = compra.responsavel || '';
-                      const bgClass = responsavelBgClasses[responsavel] || ''; // Classe de fundo por responsável
-                      const itemId = compra.originalId || compra.id; // Usa originalId se existir
+                      const bgClass = responsavelBgClasses[responsavel] || ''; 
+                      const itemId = compra.originalId || compra.id; 
 
                       const compraDiv = document.createElement("div");
                       compraDiv.className = `compra ${isPago ? 'item-pago' : ''} ${bgClass}`;
+                      // **AJUSTE CARTÕES**: Remove checkbox individual
                       compraDiv.innerHTML = `
                           <div class="list-item-content">
-                              <!-- ALTERAÇÃO: Exibe Nome (Parcela) - Valor -->
                               <span>${compra.nome || 'Compra sem nome'} (${compra.parcelas || '1/1'}) - ${formatCurrency(valor)}</span>
                           </div>
                           <div class="list-item-controls">
-                              <input type="checkbox" ${isPago ? 'checked' : ''} onchange="markAsPaid('compra', '${itemId}', this.checked)" title="Marcar como Paga">
                               <button class="edit-button" onclick="openEditModal('compra', '${itemId}')">Edit</button>
                               <button class="delete-button" onclick="deleteItem('compra', '${itemId}')">X</button>
                           </div>
@@ -986,17 +956,15 @@
                       listaCompras.appendChild(compraDiv);
                       if (!isPago) {
                           totalCartaoAberto += valor;
-                          allComprasPaid = false;
+                          allComprasPaid = false; // Se alguma não está paga, marca como false
                       }
                   });
               } else {
                   listaCompras.innerHTML = "<p>Nenhuma compra neste cartão para este mês.</p>";
-                  allComprasPaid = false; // Se não há compras, não estão todas pagas
+                  allComprasPaid = false; // Sem compras, não estão todas pagas
               }
 
-              cartaoDiv.innerHTML = `
-                  <h3>${nomeCartao}</h3>
-              `;
+              cartaoDiv.innerHTML = `<h3>${nomeCartao}</h3>`;
               cartaoDiv.appendChild(listaCompras);
               cartaoDiv.innerHTML += `
                   <div class="total-cartao">
@@ -1008,15 +976,15 @@
           });
       }
 
-      // Exibe totais e detalhes por responsável
       function displayComprasPorResponsavel(responsaveisData) {
           const containerElement = document.getElementById("responsaveisContainer");
            if (typeof responsaveisData !== 'object' || responsaveisData === null) {
               displayError("responsaveisContainer", "Formato de dados inválido.");
               return;
           }
-          containerElement.innerHTML = ""; // Limpa container
+          containerElement.innerHTML = ""; 
           const responsavelNames = Object.keys(responsaveisData);
+
           if (responsavelNames.length === 0) {
               displayEmpty("responsaveisContainer", "Nenhuma compra encontrada.");
               return;
@@ -1024,30 +992,27 @@
 
           responsavelNames.forEach(nomeResponsavel => {
               const responsavel = responsaveisData[nomeResponsavel];
-              // Pula se não houver dados ou se for um responsável sem compras
               if (!responsavel || typeof responsavel !== 'object' || (responsavel.total === 0 && responsavel.compras.length === 0)) return; 
 
               const responsavelDiv = document.createElement("div");
               responsavelDiv.className = "responsavel-box";
-              const h3Class = responsavelClasses[nomeResponsavel] || ''; // Classe para cor do H3
+              const h3Class = responsavelClasses[nomeResponsavel] || ''; 
 
-              // Cria o título H3
               const tituloH3 = document.createElement("h3");
               tituloH3.className = h3Class;
               tituloH3.textContent = nomeResponsavel;
               responsavelDiv.appendChild(tituloH3);
 
-              // Cria a div para a lista de compras
               const listaDetalhes = document.createElement("div");
               listaDetalhes.className = "responsavel-list";
 
               if (responsavel.compras && responsavel.compras.length > 0) {
                   responsavel.compras.forEach(compra => {
                       const isPago = String(compra.pago).toLowerCase() === 'sim';
+                      // **AJUSTE PARCELAS**: Valor já é da parcela
                       const valor = parseFloat(compra.valor || 0);
                       const itemDiv = document.createElement("div");
                       itemDiv.className = `compra-item ${isPago ? 'item-pago' : ''}`;
-                      // ALTERAÇÃO: Exibe Nome (Parcela) - Valor
                       itemDiv.innerHTML = `
                           <span class="compra-nome" title="${compra.nome || 'Compra s/ nome'}">${compra.nome || 'Compra s/ nome'}</span>
                           <span class="compra-detalhes">(${compra.parcelas || '1/1'}) - ${formatCurrency(valor)}</span>
@@ -1057,16 +1022,14 @@
               } else {
                   listaDetalhes.innerHTML = "<p>Nenhuma compra neste mês.</p>";
               }
-              // Adiciona a lista ao div do responsável
               responsavelDiv.appendChild(listaDetalhes);
 
-              // Cria e adiciona o parágrafo do total
               const totalP = document.createElement("p");
               totalP.className = "total-responsavel";
+              // **AJUSTE PARCELAS**: Total já vem calculado com valor da parcela no backend
               totalP.textContent = `Total (Mês): ${formatCurrency(responsavel.total || 0)}`;
               responsavelDiv.appendChild(totalP);
 
-              // Adiciona o div completo do responsável ao container
               containerElement.appendChild(responsavelDiv);
           });
       }
@@ -1080,11 +1043,11 @@
               alert("Por favor, preencha o nome e um valor válido para a receita.");
               return;
           }
-          const result = await fetchBackend("addReceita", { nome, valor });
+          const result = await fetchBackend("addReceita", { nome, valor: parseFloat(valor) });
           if (result && result.status === 'success') {
               document.getElementById("nomeReceita").value = '';
               document.getElementById("valorReceita").value = '';
-              fetchAllData(); // Recarrega tudo
+              fetchAllData(); 
           } else {
               alert("Erro ao adicionar receita: " + (result.message || "Erro desconhecido"));
           }
@@ -1093,21 +1056,20 @@
       async function addConta() {
           const tipo = document.getElementById("tipoConta").value;
           const nome = document.getElementById("nomeConta").value.trim();
-          const valor = document.getElementById("valorConta").value.trim();
+          // **AJUSTE PARCELAS**: Valor é da parcela
+          const valorParcela = document.getElementById("valorConta").value.trim();
           const parcelasInput = document.getElementById("parcelasConta").value.trim();
           
-          if (!nome || !valor || isNaN(parseFloat(valor)) || !parcelasInput || isNaN(parseInt(parcelasInput)) || parseInt(parcelasInput) < 1) {
-              alert("Preencha nome, valor total válido e número de parcelas (pelo menos 1).");
+          if (!nome || !valorParcela || isNaN(parseFloat(valorParcela)) || !parcelasInput || isNaN(parseInt(parcelasInput)) || parseInt(parcelasInput) < 1) {
+              alert("Preencha nome, valor da parcela válido e número de parcelas (pelo menos 1).");
               return;
           }
           const parcelas = parseInt(parcelasInput);
-          // O backend espera 'parcelas' como string '1/N' ou apenas 'N'
-          // Vamos enviar apenas N, o backend calculará a data da primeira parcela
           const dataToSend = {
               tipo,
               nome,
-              valor: parseFloat(valor),
-              parcelas: parcelas // Envia apenas o número total de parcelas
+              valor: parseFloat(valorParcela), // Envia valor da parcela
+              parcelas: parcelas 
           };
 
           const result = await fetchBackend("addConta", dataToSend);
@@ -1125,11 +1087,12 @@
           const responsavel = document.getElementById("responsavelCompra").value;
           const cartao = document.getElementById("cartaoCompra").value;
           const nome = document.getElementById("nomeCompra").value.trim();
-          const valor = document.getElementById("valorCompra").value.trim();
+          // **AJUSTE PARCELAS**: Valor é da parcela
+          const valorParcela = document.getElementById("valorCompra").value.trim();
           const parcelasInput = document.getElementById("parcelasCompra").value.trim();
 
-          if (!responsavel || !cartao || !nome || !valor || isNaN(parseFloat(valor)) || !parcelasInput || isNaN(parseInt(parcelasInput)) || parseInt(parcelasInput) < 1) {
-              alert("Preencha todos os campos da compra com valores válidos (parcelas >= 1).");
+          if (!responsavel || !cartao || !nome || !valorParcela || isNaN(parseFloat(valorParcela)) || !parcelasInput || isNaN(parseInt(parcelasInput)) || parseInt(parcelasInput) < 1) {
+              alert("Preencha todos os campos da compra com valores válidos (valor da parcela, parcelas >= 1).");
               return;
           }
           const parcelas = parseInt(parcelasInput);
@@ -1137,8 +1100,8 @@
               responsavel,
               cartao,
               nome,
-              valor: parseFloat(valor),
-              parcelas: parcelas // Envia apenas o número total de parcelas
+              valor: parseFloat(valorParcela), // Envia valor da parcela
+              parcelas: parcelas 
           };
 
           const result = await fetchBackend("addCompraCartao", dataToSend);
@@ -1179,15 +1142,13 @@
 
           const result = await fetchBackend(action, { pago: isPaid ? 'Sim' : 'Não' }, id);
           if (result && result.status === 'success') {
-              fetchAllData(); // Recarrega para atualizar totais e estilo
+              fetchAllData(); 
           } else {
               alert(`Erro ao marcar ${type} como ${isPaid ? 'pago' : 'não pago'}: ` + (result.message || "Erro desconhecido"));
-              // Reverter o checkbox visualmente em caso de erro?
-              fetchAllData(); // Recarregar mesmo em erro para sincronizar com estado real
+              fetchAllData(); 
           }
       }
 
-      // Função para marcar/desmarcar todas as contas de um tipo (Fixa/Variável)
       async function markAllContasAsPaidFront(tipoConta, isPaid) {
           const listId = tipoConta === 'Fixa' ? 'listaContasFixas' : 'listaContasVariaveis';
           const listElement = document.getElementById(listId);
@@ -1195,12 +1156,10 @@
           const promises = [];
 
           checkboxes.forEach(checkbox => {
-              // Extrai o ID do atributo onchange
               const onchangeAttr = checkbox.getAttribute('onchange');
               const match = onchangeAttr.match(/markAsPaid\('conta',\s*'([^']*)',/);
               if (match && match[1]) {
                   const itemId = match[1];
-                  // Só envia requisição se o estado for diferente
                   if (checkbox.checked !== isPaid) {
                      promises.push(fetchBackend('markContaAsPaid', { pago: isPaid ? 'Sim' : 'Não' }, itemId));
                   }
@@ -1209,15 +1168,14 @@
 
           try {
               await Promise.all(promises);
-              fetchAllData(); // Recarrega tudo após todas as operações
+              fetchAllData(); 
           } catch (error) {
               alert(`Erro ao marcar todas as contas ${tipoConta} como ${isPaid ? 'pagas' : 'não pagas'}. Verifique o console.`);
-              fetchAllData(); // Recarrega para garantir sincronia
+              fetchAllData(); 
           }
       }
-       // Função para marcar/desmarcar todas as compras de um cartão
+
       async function markAllCartaoAsPaidFront(nomeCartao, isPaid) {
-          // Encontra a classe CSS correta para o cartão
           const cartaoClass = cartaoClasses[nomeCartao];
           if (!cartaoClass) {
               console.error("Classe não encontrada para o cartão:", nomeCartao);
@@ -1229,21 +1187,24 @@
               return;
           }
 
-          const checkboxes = cartaoBox.querySelectorAll('.cartao-list input[type="checkbox"]');
-          const promises = [];
-
-          checkboxes.forEach(checkbox => {
-              const onchangeAttr = checkbox.getAttribute('onchange');
-              const match = onchangeAttr.match(/markAsPaid\('compra',\s*'([^']*)',/);
-              if (match && match[1]) {
-                  const itemId = match[1];
-                  if (checkbox.checked !== isPaid) {
-                      promises.push(fetchBackend('markCompraAsPaid', { pago: isPaid ? 'Sim' : 'Não' }, itemId));
-                  }
-              }
-          });
-
+          // Precisa encontrar os IDs dos itens *visíveis* neste cartão para marcar
+          // A forma mais segura é buscar os dados novamente e marcar no backend
+          // Ou, iterar pelos elementos DOM para pegar os IDs (menos robusto)
+          
+          // Abordagem 1: Buscar dados e marcar no backend (mais seguro)
           try {
+              const cartoesData = await fetchBackend('getComprasPorCartao');
+              const cartaoAtual = cartoesData[nomeCartao];
+              const promises = [];
+              if (cartaoAtual && cartaoAtual.compras) {
+                  cartaoAtual.compras.forEach(compra => {
+                      const itemId = compra.originalId || compra.id;
+                      // Marca apenas se o estado for diferente
+                      if ((String(compra.pago).toLowerCase() === 'sim') !== isPaid) {
+                          promises.push(fetchBackend('markCompraAsPaid', { pago: isPaid ? 'Sim' : 'Não' }, itemId));
+                      }
+                  });
+              }
               await Promise.all(promises);
               fetchAllData();
           } catch (error) {
@@ -1253,7 +1214,7 @@
       }
 
       // --- Funções do Modal de Edição ---
-      let currentEditData = null; // Armazena os dados do item sendo editado
+      let currentEditData = null; 
 
       async function openEditModal(type, id) {
           console.log(`Abrindo modal para ${type} ID: ${id}`);
@@ -1266,63 +1227,53 @@
           document.getElementById('editItemId').value = id;
           document.getElementById('editItemType').value = type;
 
-          // Buscar os dados completos do item original no backend
-          // Idealmente, o backend teria uma ação getById(id)
-          // Vamos usar as funções existentes que buscam TUDO e filtrar
           let itemData = null;
           try {
-              let allItems = [];
-              if (type === 'receita') {
-                  allItems = await fetchBackend('getReceitas');
-                  title.textContent = "Editar Receita";
-              } else if (type === 'conta') {
-                  // Busca TODAS as contas (sem filtro de mês) para encontrar a original
-                  // Precisamos de uma ação no backend para isso, ou ajustar getContas
-                  // Temporariamente, vamos assumir que o ID é único e buscar no mês atual
-                  // ISSO PODE FALHAR SE A CONTA NÃO ESTIVER NO MÊS ATUAL
-                  allItems = await fetchBackend('getContas'); 
-                  title.textContent = "Editar Conta";
-              } else if (type === 'compra') {
-                  // Mesma limitação das contas
-                  allItems = await fetchBackend('getComprasPorCartao'); // Retorna objeto, precisamos processar
-                  let allComprasFlat = [];
-                  Object.values(allItems).forEach(cartao => allComprasFlat.push(...cartao.compras));
-                  allItems = allComprasFlat;
-                  title.textContent = "Editar Compra";
-              }
+              // Ação para buscar item específico (idealmente)
+              // Como não temos, buscamos todos e filtramos
+              // IMPORTANTE: Isso busca os dados do MÊS ATUAL. Se o item original
+              // foi criado em outro mês, pode não encontrar ou pegar dados errados.
+              // A solução ideal é ter getContaById, getCompraById no backend.
               
-              // Encontra o item pelo ID (ou originalId)
+              let actionGet = '';
+              if (type === 'receita') actionGet = 'getReceitas';
+              else if (type === 'conta') actionGet = 'getContas';
+              else if (type === 'compra') actionGet = 'getComprasPorCartao'; // Retorna objeto
+              else throw new Error("Tipo de item inválido para edição");
+
+              const allItemsResult = await fetchBackend(actionGet);
+              let allItems = [];
+              if (type === 'compra') {
+                  Object.values(allItemsResult).forEach(cartao => allItems.push(...cartao.compras));
+              } else {
+                  allItems = allItemsResult; // Receitas ou Contas (já é array)
+              }
+
               itemData = allItems.find(item => (item.originalId || item.id) === id);
 
               if (!itemData) {
-                  // Tentar buscar sem filtro de mês se falhou (solução paliativa)
+                  // Tentar buscar sem filtro de mês (solução paliativa)
                   console.warn("Item não encontrado no mês atual, tentando buscar todos...");
-                  if (type === 'conta') {
-                      const allContasRaw = await fetchBackend('getContas', {}, null); // Força busca sem mês
-                      itemData = allContasRaw.find(item => item.id === id);
-                  } else if (type === 'compra') {
-                      const allComprasRaw = await fetchBackend('getCompras', {}, null); // Força busca sem mês
-                      itemData = allComprasRaw.find(item => item.id === id);
-                  }
-                  if (!itemData) throw new Error("Item não encontrado para edição.");
+                  // Precisaria de ações getContasAll, getComprasAll no backend
+                  throw new Error("Item não encontrado para edição. Funcionalidade de busca completa não implementada.");
               }
               
-              currentEditData = itemData; // Guarda os dados atuais
+              currentEditData = itemData; 
               populateEditForm(type, itemData);
 
           } catch (error) {
               console.error("Erro ao buscar dados para edição:", error);
               fieldsDiv.innerHTML = `<p style="color: red;">Erro ao carregar dados: ${error.message}</p>`;
-              // Opcional: Fechar modal ou permitir fechar manualmente
-              // closeModal(); 
           }
       }
 
       function populateEditForm(type, data) {
           const fieldsDiv = document.getElementById('editFormFields');
-          fieldsDiv.innerHTML = ''; // Limpa
+          fieldsDiv.innerHTML = ''; 
+          const title = document.getElementById('modalTitle');
 
           if (type === 'receita') {
+              title.textContent = "Editar Receita";
               fieldsDiv.innerHTML = `
                   <label for="editNome">Nome:</label>
                   <input type="text" id="editNome" value="${data.nome || ''}">
@@ -1330,23 +1281,15 @@
                   <input type="number" id="editValor" value="${data.valor || ''}">
               `;
           } else if (type === 'conta') {
-              // Extrai número total de parcelas do formato X/Y ou N
+              title.textContent = "Editar Conta";
               let totalParcelas = 1;
               if (data.parcelas) {
                   const parcelasStr = String(data.parcelas);
                   const parcelasMatch = parcelasStr.match(/\/(\d+)$/);
-                  if (parcelasMatch) {
-                      totalParcelas = parseInt(parcelasMatch[1], 10) || 1;
-                  } else if (!parcelasStr.includes('/') && !isNaN(parseInt(parcelasStr, 10))) {
-                      totalParcelas = parseInt(parcelasStr, 10) || 1;
-                  }
+                  if (parcelasMatch) totalParcelas = parseInt(parcelasMatch[1], 10) || 1;
+                  else if (!parcelasStr.includes('/') && !isNaN(parseInt(parcelasStr, 10))) totalParcelas = parseInt(parcelasStr, 10) || 1;
               }
-              // O valor no modal deve ser o VALOR TOTAL ORIGINAL, não o da parcela
-              // Precisamos buscar o valor total original se 'data' for uma parcela
-              // Assumindo que 'data.valor' já é o valor total (precisa corrigir busca no openEditModal)
-              const valorTotalOriginal = data.valor * totalParcelas; // Estimativa se data.valor for da parcela
-              // Ideal: buscar o registro original completo no backend
-
+              // **AJUSTE PARCELAS**: O valor em 'data' já é o da parcela
               fieldsDiv.innerHTML = `
                   <label for="editTipo">Tipo:</label>
                   <select id="editTipo">
@@ -1355,8 +1298,8 @@
                   </select>
                   <label for="editNome">Nome:</label>
                   <input type="text" id="editNome" value="${data.nome || ''}">
-                  <label for="editValor">Valor Total:</label>
-                  <input type="number" id="editValor" value="${data.valor || ''}"> <!-- CORRIGIR: Precisa ser o valor total original -->
+                  <label for="editValor">Valor da Parcela:</label>
+                  <input type="number" id="editValor" value="${data.valor || ''}">
                   <label for="editParcelas">Nº Total Parcelas:</label>
                   <input type="number" id="editParcelas" value="${totalParcelas}" min="1">
                   <label for="editPago">Pago:</label>
@@ -1366,19 +1309,16 @@
                   </select>
               `;
           } else if (type === 'compra') {
+              title.textContent = "Editar Compra";
               let totalParcelas = 1;
               if (data.parcelas) {
                   const parcelasStr = String(data.parcelas);
                   const parcelasMatch = parcelasStr.match(/\/(\d+)$/);
-                  if (parcelasMatch) {
-                      totalParcelas = parseInt(parcelasMatch[1], 10) || 1;
-                  } else if (!parcelasStr.includes('/') && !isNaN(parseInt(parcelasStr, 10))) {
-                      totalParcelas = parseInt(parcelasStr, 10) || 1;
-                  }
+                  if (parcelasMatch) totalParcelas = parseInt(parcelasMatch[1], 10) || 1;
+                  else if (!parcelasStr.includes('/') && !isNaN(parseInt(parcelasStr, 10))) totalParcelas = parseInt(parcelasStr, 10) || 1;
               }
-              // Mesma questão do valor total para compras
-              const valorTotalOriginal = data.valor * totalParcelas; // Estimativa
-
+              // **AJUSTE PARCELAS**: O valor em 'data' já é o da parcela
+              // **AJUSTE CARTÕES**: Limitar opções no select
               fieldsDiv.innerHTML = `
                   <label for="editResponsavel">Responsável:</label>
                   <select id="editResponsavel">
@@ -1393,15 +1333,11 @@
                       <option value="Santander" ${data.cartao === 'Santander' ? 'selected' : ''}>Santander</option>
                       <option value="Mercado Pago" ${data.cartao === 'Mercado Pago' ? 'selected' : ''}>Mercado Pago</option>
                       <option value="Amazon" ${data.cartao === 'Amazon' ? 'selected' : ''}>Amazon</option>
-                      <option value="C6" ${data.cartao === 'C6' ? 'selected' : ''}>C6</option>
-                      <option value="Itaú" ${data.cartao === 'Itaú' ? 'selected' : ''}>Itaú</option>
-                      <option value="Bradesco" ${data.cartao === 'Bradesco' ? 'selected' : ''}>Bradesco</option>
-                      <option value="Inter" ${data.cartao === 'Inter' ? 'selected' : ''}>Inter</option>
                   </select>
                   <label for="editNome">Nome:</label>
                   <input type="text" id="editNome" value="${data.nome || ''}">
-                  <label for="editValor">Valor Total:</label>
-                  <input type="number" id="editValor" value="${data.valor || ''}"> <!-- CORRIGIR: Precisa ser o valor total original -->
+                  <label for="editValor">Valor da Parcela:</label>
+                  <input type="number" id="editValor" value="${data.valor || ''}">
                   <label for="editParcelas">Nº Total Parcelas:</label>
                   <input type="number" id="editParcelas" value="${totalParcelas}" min="1">
                    <label for="editPago">Pago:</label>
@@ -1415,7 +1351,7 @@
 
       function closeModal() {
           document.getElementById('editModal').style.display = 'none';
-          currentEditData = null; // Limpa dados ao fechar
+          currentEditData = null; 
       }
 
       async function saveEdit() {
@@ -1439,11 +1375,12 @@
                   updatedData = {
                       tipo: document.getElementById('editTipo').value,
                       nome: document.getElementById('editNome').value.trim(),
-                      valor: parseFloat(document.getElementById('editValor').value), // Envia o valor total digitado
-                      parcelas: newTotalParcelas, // Envia apenas o número total
+                      // **AJUSTE PARCELAS**: Envia valor da parcela
+                      valor: parseFloat(document.getElementById('editValor').value), 
+                      parcelas: newTotalParcelas, 
                       pago: document.getElementById('editPago').value
                   };
-                  if (!updatedData.nome || isNaN(updatedData.valor)) throw new Error("Nome e valor da conta são obrigatórios.");
+                  if (!updatedData.nome || isNaN(updatedData.valor)) throw new Error("Nome e valor da parcela são obrigatórios.");
               } else if (type === 'compra') {
                   action = 'updateCompra';
                   const newTotalParcelas = parseInt(document.getElementById('editParcelas').value);
@@ -1452,8 +1389,9 @@
                       responsavel: document.getElementById('editResponsavel').value,
                       cartao: document.getElementById('editCartao').value,
                       nome: document.getElementById('editNome').value.trim(),
-                      valor: parseFloat(document.getElementById('editValor').value), // Envia o valor total digitado
-                      parcelas: newTotalParcelas, // Envia apenas o número total
+                      // **AJUSTE PARCELAS**: Envia valor da parcela
+                      valor: parseFloat(document.getElementById('editValor').value), 
+                      parcelas: newTotalParcelas, 
                       pago: document.getElementById('editPago').value
                   };
                    if (!updatedData.responsavel || !updatedData.cartao || !updatedData.nome || isNaN(updatedData.valor)) throw new Error("Todos os campos da compra são obrigatórios.");
@@ -1483,31 +1421,27 @@
           currentYear++;
         }
         updateMonthDisplay();
-        fetchAllData(); // Recarrega todos os dados
+        fetchAllData(); 
       }
 
       async function fetchAllData() {
         console.log(`Atualizando dados para ${currentMonth + 1}/${currentYear}`);
-        // Mostra loading inicial
         displayLoading("listaReceitas");
         displayLoading("listaContasFixas");
         displayLoading("listaContasVariaveis");
         displayLoading("cartoesGrid");
         displayLoading("responsaveisContainer");
-        // Reseta totais enquanto carrega
         updateTotalsDisplay({ receitas: 0, despesasAbertas: 0, saldoReal: 0 });
 
         try {
-            // Executa todas as buscas em paralelo
             const [receitas, contas, cartoesData, responsaveisData, totais] = await Promise.all([
-                fetchBackend('getReceitas'), // Assumindo que receitas não filtram por mês/ano
+                fetchBackend('getReceitas'), 
                 fetchBackend('getContas'),
                 fetchBackend('getComprasPorCartao'),
                 fetchBackend('getComprasPorResponsavel'),
                 fetchBackend('getTotais')
             ]);
 
-            // Atualiza a interface com os dados recebidos
             displayReceitas(receitas);
             displayContas(contas);
             displayComprasPorCartao(cartoesData);
@@ -1518,7 +1452,6 @@
 
         } catch (error) {
             console.error("Erro ao buscar todos os dados:", error);
-            // Exibe erro em todas as seções relevantes
             displayError("listaReceitas", error.message);
             displayError("listaContasFixas", error.message);
             displayError("listaContasVariaveis", error.message);
@@ -1534,31 +1467,25 @@
         updateMonthDisplay();
         fetchAllData();
 
-        // Listeners dos botões de navegação
         document.getElementById("prevMonthBtn").addEventListener("click", () => changeMonth(-1));
         document.getElementById("nextMonthBtn").addEventListener("click", () => changeMonth(1));
 
-        // Listeners dos botões de adicionar
         document.getElementById("addReceitaBtn").addEventListener("click", addReceita);
         document.getElementById("addContaBtn").addEventListener("click", addConta);
         document.getElementById("addCompraBtn").addEventListener("click", addCompraCartao);
 
-        // Listeners dos checkboxes "Marcar Todos"
         document.getElementById("checkAllContasFixas").addEventListener("change", (e) => markAllContasAsPaidFront('Fixa', e.target.checked));
         document.getElementById("checkAllContasVariaveis").addEventListener("change", (e) => markAllContasAsPaidFront('Variável', e.target.checked));
-        // Listener para marcar todos os cartões é adicionado dinamicamente em displayComprasPorCartao
+        // Listener para marcar todos os cartões é adicionado dinamicamente
 
-        // Listener do botão Salvar do Modal
         document.getElementById('saveEditBtn').addEventListener('click', saveEdit);
 
-        // Fechar modal clicando fora
         window.onclick = function(event) {
             const modal = document.getElementById('editModal');
             if (event.target == modal) {
                 closeModal();
             }
         }
-        // Fechar modal com tecla Esc
         window.onkeydown = function(event) {
             const modal = document.getElementById('editModal');
             if (event.key === "Escape" && modal.style.display === "block") {
