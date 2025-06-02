@@ -132,13 +132,12 @@
       .saldo-bar {
         height: 100%;
         width: 0%; /* Inicia em 0, será ajustada via JS */
-        background-color: green; /* Cor para saldo positivo */
+        background-color: green; /* Cor padrão inicial */
         border-radius: 5px;
         transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out;
       }
-      .saldo-bar.negative {
-        background-color: red; /* Cor para saldo negativo */
-      }
+      /* Remover classe negative se não for mais usada diretamente */
+      /* .saldo-bar.negative { background-color: red; } */
       .saldo-label {
         position: absolute;
         top: 0;
@@ -151,6 +150,7 @@
         color: white;
         font-weight: bold;
         text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        font-size: 0.9em; /* Ajustar tamanho se necessário */
       }
 
       /* SEÇÃO DE CATEGORIAS (Receitas, Contas Fixas, Variáveis) */
@@ -255,11 +255,6 @@
       .cartao-box.santander { background-color: #ffebee; border: 1px solid #ef9a9a; }
       .cartao-box.mercadopago { background-color: #e3f2fd; border: 1px solid #90caf9; } /* M.Pago */
       .cartao-box.amazon { background-color: #fff3e0; border: 1px solid #ffcc80; }
-      /* Remover outras cores se não forem mais usadas */
-      /* .cartao-box.c6 { background-color: #e0e0e0; border: 1px solid #bdbdbd; } */
-      /* .cartao-box.itaú { background-color: #fff3e0; border: 1px solid #ffb74d; } */
-      /* .cartao-box.bradesco { background-color: #ffebee; border: 1px solid #e57373; } */
-      /* .cartao-box.inter { background-color: #ffecb3; border: 1px solid #ffca28; } */
 
       .cartao-box h3 {
         margin-top: 0;
@@ -615,7 +610,6 @@
               <option value="Marília">Marília</option>
               <option value="Nosso ❤️">Nosso ❤️</option>
             </select>
-            <!-- **AJUSTE CARTÕES**: Limitar opções aos 4 cartões -->
             <select id="cartaoCompra">
               <option value="">Cartão</option>
               <option value="Nubank">Nubank</option>
@@ -626,7 +620,6 @@
           </div>
           <input type="text" id="nomeCompra" placeholder="Nome da Compra" />
           <div class="row">
-            <!-- **AJUSTE PARCELAS**: Placeholder indica valor da parcela -->
             <input type="number" id="valorCompra" placeholder="Valor da Parcela" />
             <input type="number" id="parcelasCompra" placeholder="Nº Parcelas (1 = à vista)" value="1" min="1"/>
           </div>
@@ -642,7 +635,6 @@
           </select>
           <input type="text" id="nomeConta" placeholder="Nome da Conta" />
           <div class="row">
-             <!-- **AJUSTE PARCELAS**: Placeholder indica valor da parcela -->
              <input type="number" id="valorConta" placeholder="Valor da Parcela" />
              <input type="number" id="parcelasConta" placeholder="Nº Parcelas (1 = única)" value="1" min="1"/>
           </div>
@@ -707,7 +699,6 @@
           "Marília": "compra-bg-marilia",
           "Nosso ❤️": "compra-bg-nosso"
       };
-      // **AJUSTE CARTÕES**: Definir os 4 cartões principais e suas classes
       const cartoesPrincipais = ["Nubank", "Santander", "Mercado Pago", "Amazon"];
       const cartaoClasses = {
           "Nubank": "nubank",
@@ -754,13 +745,15 @@
                 throw new Error(`Erro no backend: ${result.message}`);
             }
             
+            // Retorna result.data se existir, senão o próprio result
             return result && result.hasOwnProperty('data') ? result.data : result;
 
         } catch (error) {
             console.error(`Falha na requisição (${action}):`, error);
             alert(`Erro ao comunicar com o servidor para a ação '${action}'. Verifique o console para detalhes.`);
+            // Retorna um valor padrão seguro para evitar quebrar as funções de display
             if (action.startsWith("get")) return action.includes("Por") || action === 'getTotais' ? {} : []; 
-            return { status: 'error', message: error.message }; 
+            return { status: 'error', message: error.message }; // Para ações de escrita
         }
       }
 
@@ -791,36 +784,53 @@
           }
       }
 
-      // **AJUSTE TERMÔMETRO**: A lógica de cálculo agora está no backend (calculateTotals)
-      // Esta função apenas exibe os valores recebidos.
+      // **AJUSTE TERMÔMETRO v3**: Lógica baseada em Dinheiro Disponível vs. Despesas Abertas
       function updateTotalsDisplay(totals) {
           const totalReceitas = totals.receitas || 0;
           const totalDespesasAbertas = totals.despesasAbertas || 0;
-          const saldoReal = totals.saldoReal || 0; // Saldo = Receitas - Despesas Abertas
+          const totalPago = totals.totalPago || 0; // **NOVO** vindo do backend
+          const dinheiroDisponivel = totalReceitas - totalPago;
 
           document.getElementById("totalReceitas").textContent = `Total de Receitas: ${formatCurrency(totalReceitas)}`;
           document.getElementById("totalDespesasAbertas").textContent = `Total de Despesas (Abertas): ${formatCurrency(totalDespesasAbertas)}`;
-          document.getElementById("saldoLabel").textContent = `Saldo: ${formatCurrency(saldoReal)}`;
+          
+          // Atualiza o rótulo do termômetro
+          document.getElementById("saldoLabel").textContent = `Disponível: ${formatCurrency(dinheiroDisponivel)} / Falta Pagar: ${formatCurrency(totalDespesasAbertas)}`;
 
           const saldoBar = document.getElementById("saldoBar");
+          const saldoBarContainer = saldoBar.parentElement; 
+
           let percentage = 0;
-          if (totalReceitas > 0) {
-              // Percentual do saldo em relação às receitas
-              percentage = Math.max(0, Math.min(100, (saldoReal / totalReceitas) * 100));
-          } else if (saldoReal < 0) {
-              // Sem receita, mas com despesa -> 100% vermelho
-              percentage = 100;
+          let barColor = '#cccccc'; // Cor cinza padrão (neutro)
+
+          if (totalDespesasAbertas > 0) {
+              // Calcula a porcentagem do dinheiro disponível em relação ao que falta pagar
+              percentage = Math.max(0, Math.min(100, (dinheiroDisponivel / totalDespesasAbertas) * 100));
+              
+              if (dinheiroDisponivel >= totalDespesasAbertas) {
+                  barColor = '#4CAF50'; // Verde: Suficiente
+              } else if (dinheiroDisponivel > 0) {
+                  barColor = '#ff9800'; // Laranja: Insuficiente, mas positivo
+              } else {
+                  barColor = '#f44336'; // Vermelho: Sem dinheiro ou negativo
+                  percentage = 0; // Se não tem dinheiro, a barra fica vazia
+              }
+          } else {
+              // Se não há despesas abertas
+              if (dinheiroDisponivel >= 0) {
+                  percentage = 100; // Tudo pago, barra cheia
+                  barColor = '#4CAF50'; // Verde
+              } else {
+                  percentage = 0; // Saldo negativo, mesmo sem despesas abertas
+                  barColor = '#f44336'; // Vermelho
+              }
           }
           
           saldoBar.style.width = `${percentage}%`;
-          if (saldoReal < 0) {
-              saldoBar.classList.add("negative");
-              // Se negativo, a barra representa o "excesso" de despesa
-              const deficitPercentage = totalReceitas > 0 ? Math.min(100, (Math.abs(saldoReal) / totalReceitas) * 100) : 100;
-              saldoBar.style.width = `${deficitPercentage}%`; 
-          } else {
-              saldoBar.classList.remove("negative");
-          }
+          saldoBar.style.backgroundColor = barColor; 
+          
+          // Remover classe 'negative' antiga se existir (não mais necessária)
+          saldoBar.classList.remove("negative"); 
       }
 
       function displayReceitas(receitas) {
@@ -870,7 +880,6 @@
 
           contas.forEach(item => {
               const isPago = String(item.pago).toLowerCase() === 'sim';
-              // **AJUSTE PARCELAS**: Valor já é da parcela
               const valor = parseFloat(item.valor || 0);
               const div = document.createElement("div");
               div.className = `list-item ${isPago ? 'item-pago' : ''}`;
@@ -908,7 +917,6 @@
           if (listaVariaveis.children.length === 0) displayEmpty("listaContasVariaveis", "Nenhuma conta variável para este mês.");
       }
 
-      // **AJUSTE CARTÕES**: Exibe sempre os 4 cartões principais, sem checkbox individual
       function displayComprasPorCartao(cartoesData) {
           const gridElement = document.getElementById("cartoesGrid");
           if (typeof cartoesData !== 'object' || cartoesData === null) {
@@ -916,11 +924,9 @@
               return;
           }
 
-          gridElement.innerHTML = ""; // Limpa grid
+          gridElement.innerHTML = ""; 
 
-          // Itera sobre os 4 cartões principais definidos
           cartoesPrincipais.forEach(nomeCartao => {
-              // Pega os dados do cartão atual, ou um objeto vazio se não existir
               const cartao = cartoesData[nomeCartao] || { total: 0, compras: [] }; 
               
               const cartaoDiv = document.createElement("div");
@@ -930,12 +936,11 @@
               const listaCompras = document.createElement("div");
               listaCompras.className = "cartao-list";
               let totalCartaoAberto = 0;
-              let allComprasPaid = cartao.compras.length > 0; // Assume true se houver compras
+              let allComprasPaid = cartao.compras.length > 0; 
 
               if (cartao.compras && cartao.compras.length > 0) {
                   cartao.compras.forEach(compra => {
                       const isPago = String(compra.pago).toLowerCase() === 'sim';
-                      // **AJUSTE PARCELAS**: Valor já é da parcela
                       const valor = parseFloat(compra.valor || 0);
                       const responsavel = compra.responsavel || '';
                       const bgClass = responsavelBgClasses[responsavel] || ''; 
@@ -943,7 +948,6 @@
 
                       const compraDiv = document.createElement("div");
                       compraDiv.className = `compra ${isPago ? 'item-pago' : ''} ${bgClass}`;
-                      // **AJUSTE CARTÕES**: Remove checkbox individual
                       compraDiv.innerHTML = `
                           <div class="list-item-content">
                               <span>${compra.nome || 'Compra sem nome'} (${compra.parcelas || '1/1'}) - ${formatCurrency(valor)}</span>
@@ -956,12 +960,12 @@
                       listaCompras.appendChild(compraDiv);
                       if (!isPago) {
                           totalCartaoAberto += valor;
-                          allComprasPaid = false; // Se alguma não está paga, marca como false
+                          allComprasPaid = false; 
                       }
                   });
               } else {
                   listaCompras.innerHTML = "<p>Nenhuma compra neste cartão para este mês.</p>";
-                  allComprasPaid = false; // Sem compras, não estão todas pagas
+                  allComprasPaid = false; 
               }
 
               cartaoDiv.innerHTML = `<h3>${nomeCartao}</h3>`;
@@ -1009,7 +1013,6 @@
               if (responsavel.compras && responsavel.compras.length > 0) {
                   responsavel.compras.forEach(compra => {
                       const isPago = String(compra.pago).toLowerCase() === 'sim';
-                      // **AJUSTE PARCELAS**: Valor já é da parcela
                       const valor = parseFloat(compra.valor || 0);
                       const itemDiv = document.createElement("div");
                       itemDiv.className = `compra-item ${isPago ? 'item-pago' : ''}`;
@@ -1026,7 +1029,6 @@
 
               const totalP = document.createElement("p");
               totalP.className = "total-responsavel";
-              // **AJUSTE PARCELAS**: Total já vem calculado com valor da parcela no backend
               totalP.textContent = `Total (Mês): ${formatCurrency(responsavel.total || 0)}`;
               responsavelDiv.appendChild(totalP);
 
@@ -1056,7 +1058,6 @@
       async function addConta() {
           const tipo = document.getElementById("tipoConta").value;
           const nome = document.getElementById("nomeConta").value.trim();
-          // **AJUSTE PARCELAS**: Valor é da parcela
           const valorParcela = document.getElementById("valorConta").value.trim();
           const parcelasInput = document.getElementById("parcelasConta").value.trim();
           
@@ -1068,7 +1069,7 @@
           const dataToSend = {
               tipo,
               nome,
-              valor: parseFloat(valorParcela), // Envia valor da parcela
+              valor: parseFloat(valorParcela), 
               parcelas: parcelas 
           };
 
@@ -1087,7 +1088,6 @@
           const responsavel = document.getElementById("responsavelCompra").value;
           const cartao = document.getElementById("cartaoCompra").value;
           const nome = document.getElementById("nomeCompra").value.trim();
-          // **AJUSTE PARCELAS**: Valor é da parcela
           const valorParcela = document.getElementById("valorCompra").value.trim();
           const parcelasInput = document.getElementById("parcelasCompra").value.trim();
 
@@ -1100,7 +1100,7 @@
               responsavel,
               cartao,
               nome,
-              valor: parseFloat(valorParcela), // Envia valor da parcela
+              valor: parseFloat(valorParcela), 
               parcelas: parcelas 
           };
 
@@ -1186,12 +1186,7 @@
               console.error("Div do cartão não encontrado para:", nomeCartao);
               return;
           }
-
-          // Precisa encontrar os IDs dos itens *visíveis* neste cartão para marcar
-          // A forma mais segura é buscar os dados novamente e marcar no backend
-          // Ou, iterar pelos elementos DOM para pegar os IDs (menos robusto)
           
-          // Abordagem 1: Buscar dados e marcar no backend (mais seguro)
           try {
               const cartoesData = await fetchBackend('getComprasPorCartao');
               const cartaoAtual = cartoesData[nomeCartao];
@@ -1199,7 +1194,6 @@
               if (cartaoAtual && cartaoAtual.compras) {
                   cartaoAtual.compras.forEach(compra => {
                       const itemId = compra.originalId || compra.id;
-                      // Marca apenas se o estado for diferente
                       if ((String(compra.pago).toLowerCase() === 'sim') !== isPaid) {
                           promises.push(fetchBackend('markCompraAsPaid', { pago: isPaid ? 'Sim' : 'Não' }, itemId));
                       }
@@ -1229,16 +1223,10 @@
 
           let itemData = null;
           try {
-              // Ação para buscar item específico (idealmente)
-              // Como não temos, buscamos todos e filtramos
-              // IMPORTANTE: Isso busca os dados do MÊS ATUAL. Se o item original
-              // foi criado em outro mês, pode não encontrar ou pegar dados errados.
-              // A solução ideal é ter getContaById, getCompraById no backend.
-              
               let actionGet = '';
               if (type === 'receita') actionGet = 'getReceitas';
               else if (type === 'conta') actionGet = 'getContas';
-              else if (type === 'compra') actionGet = 'getComprasPorCartao'; // Retorna objeto
+              else if (type === 'compra') actionGet = 'getComprasPorCartao'; 
               else throw new Error("Tipo de item inválido para edição");
 
               const allItemsResult = await fetchBackend(actionGet);
@@ -1246,16 +1234,13 @@
               if (type === 'compra') {
                   Object.values(allItemsResult).forEach(cartao => allItems.push(...cartao.compras));
               } else {
-                  allItems = allItemsResult; // Receitas ou Contas (já é array)
+                  allItems = allItemsResult; 
               }
 
               itemData = allItems.find(item => (item.originalId || item.id) === id);
 
               if (!itemData) {
-                  // Tentar buscar sem filtro de mês (solução paliativa)
-                  console.warn("Item não encontrado no mês atual, tentando buscar todos...");
-                  // Precisaria de ações getContasAll, getComprasAll no backend
-                  throw new Error("Item não encontrado para edição. Funcionalidade de busca completa não implementada.");
+                  throw new Error("Item não encontrado para edição. Verifique se o item pertence ao mês/ano atual.");
               }
               
               currentEditData = itemData; 
@@ -1289,7 +1274,6 @@
                   if (parcelasMatch) totalParcelas = parseInt(parcelasMatch[1], 10) || 1;
                   else if (!parcelasStr.includes('/') && !isNaN(parseInt(parcelasStr, 10))) totalParcelas = parseInt(parcelasStr, 10) || 1;
               }
-              // **AJUSTE PARCELAS**: O valor em 'data' já é o da parcela
               fieldsDiv.innerHTML = `
                   <label for="editTipo">Tipo:</label>
                   <select id="editTipo">
@@ -1317,8 +1301,6 @@
                   if (parcelasMatch) totalParcelas = parseInt(parcelasMatch[1], 10) || 1;
                   else if (!parcelasStr.includes('/') && !isNaN(parseInt(parcelasStr, 10))) totalParcelas = parseInt(parcelasStr, 10) || 1;
               }
-              // **AJUSTE PARCELAS**: O valor em 'data' já é o da parcela
-              // **AJUSTE CARTÕES**: Limitar opções no select
               fieldsDiv.innerHTML = `
                   <label for="editResponsavel">Responsável:</label>
                   <select id="editResponsavel">
@@ -1375,7 +1357,6 @@
                   updatedData = {
                       tipo: document.getElementById('editTipo').value,
                       nome: document.getElementById('editNome').value.trim(),
-                      // **AJUSTE PARCELAS**: Envia valor da parcela
                       valor: parseFloat(document.getElementById('editValor').value), 
                       parcelas: newTotalParcelas, 
                       pago: document.getElementById('editPago').value
@@ -1389,7 +1370,6 @@
                       responsavel: document.getElementById('editResponsavel').value,
                       cartao: document.getElementById('editCartao').value,
                       nome: document.getElementById('editNome').value.trim(),
-                      // **AJUSTE PARCELAS**: Envia valor da parcela
                       valor: parseFloat(document.getElementById('editValor').value), 
                       parcelas: newTotalParcelas, 
                       pago: document.getElementById('editPago').value
@@ -1431,27 +1411,30 @@
         displayLoading("listaContasVariaveis");
         displayLoading("cartoesGrid");
         displayLoading("responsaveisContainer");
-        updateTotalsDisplay({ receitas: 0, despesasAbertas: 0, saldoReal: 0 });
+        updateTotalsDisplay({ receitas: 0, despesasAbertas: 0, totalPago: 0 }); // Reset inicial
 
         try {
+            // Usar Promise.all para buscar dados em paralelo
             const [receitas, contas, cartoesData, responsaveisData, totais] = await Promise.all([
                 fetchBackend('getReceitas'), 
                 fetchBackend('getContas'),
                 fetchBackend('getComprasPorCartao'),
                 fetchBackend('getComprasPorResponsavel'),
-                fetchBackend('getTotais')
+                fetchBackend('getTotais') // Agora retorna { receitas, despesasAbertas, totalPago }
             ]);
 
+            // Atualizar a interface com os dados recebidos
             displayReceitas(receitas);
             displayContas(contas);
             displayComprasPorCartao(cartoesData);
             displayComprasPorResponsavel(responsaveisData);
-            updateTotalsDisplay(totais);
+            updateTotalsDisplay(totais); // Passa o objeto de totais para a função de display
 
             console.log("Todos os dados atualizados com sucesso.");
 
         } catch (error) {
             console.error("Erro ao buscar todos os dados:", error);
+            // Exibir mensagens de erro nas seções relevantes
             displayError("listaReceitas", error.message);
             displayError("listaContasFixas", error.message);
             displayError("listaContasVariaveis", error.message);
@@ -1467,19 +1450,24 @@
         updateMonthDisplay();
         fetchAllData();
 
+        // Botões de navegação de mês
         document.getElementById("prevMonthBtn").addEventListener("click", () => changeMonth(-1));
         document.getElementById("nextMonthBtn").addEventListener("click", () => changeMonth(1));
 
+        // Botões de adicionar
         document.getElementById("addReceitaBtn").addEventListener("click", addReceita);
         document.getElementById("addContaBtn").addEventListener("click", addConta);
         document.getElementById("addCompraBtn").addEventListener("click", addCompraCartao);
 
+        // Checkboxes de marcar todos (contas)
         document.getElementById("checkAllContasFixas").addEventListener("change", (e) => markAllContasAsPaidFront('Fixa', e.target.checked));
         document.getElementById("checkAllContasVariaveis").addEventListener("change", (e) => markAllContasAsPaidFront('Variável', e.target.checked));
-        // Listener para marcar todos os cartões é adicionado dinamicamente
+        // Listener para marcar todos os cartões é adicionado dinamicamente em displayComprasPorCartao
 
+        // Modal de edição
         document.getElementById('saveEditBtn').addEventListener('click', saveEdit);
 
+        // Fechar modal ao clicar fora ou pressionar ESC
         window.onclick = function(event) {
             const modal = document.getElementById('editModal');
             if (event.target == modal) {
