@@ -1017,13 +1017,12 @@
           }
           containerElement.innerHTML = ""; // Limpa container
           const responsavelNames = Object.keys(responsaveisData);
-
-          if (responsaveisNames.length === 0) {
+          if (responsavelNames.length === 0) {
               displayEmpty("responsaveisContainer", "Nenhuma compra encontrada.");
               return;
           }
 
-          responsaveisNames.forEach(nomeResponsavel => {
+          responsavelNames.forEach(nomeResponsavel => {
               const responsavel = responsaveisData[nomeResponsavel];
               // Pula se não houver dados ou se for um responsável sem compras
               if (!responsavel || typeof responsavel !== 'object' || (responsavel.total === 0 && responsavel.compras.length === 0)) return; 
