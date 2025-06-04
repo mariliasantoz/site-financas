@@ -9,15 +9,15 @@
     <style>
       /* CONFIGURAÇÃO GERAL */
       body {
-        font-family: Arial, sans-serif;
-        background-color: #f2f2f2;
+        font-family: Arial, sans-serif; /* [116] */
+        background-color: #f2f2f2; /* [116] */
         margin: 0;
         padding: 20px;
         color: black; /* Texto padrão em preto */
       }
       .container {
-        max-width: 1200px;
-        margin: auto;
+        max-width: 1200px; /* [117] */
+        margin: auto; /* [117] */
         background-color: #fff;
         padding: 20px;
         border-radius: 8px;
@@ -25,317 +25,316 @@
       /* Caixas (exceto o container principal) */
       .totals-section,
       .categorias-section,
-      .form-sections-wrapper, /* Aplicar ao wrapper dos forms */
-      .form-section, /* Aplicar a cada form individual */
+      .form-sections-wrapper, /* Aplicar ao wrapper dos forms */ /* [118] */
+      .form-section, /* Aplicar a cada form individual */ /* [118] */
       .cartoes-section,
       .compras-responsaveis,
       .categoria-box,
       .responsavel-box,
       .cartao-box {
-        background-color: #e3f2fd;
-        border: 1px solid #90caf9;
+        background-color: #e3f2fd; /* [118] */
+        border: 1px solid #90caf9; /* [118] */
         border-radius: 5px;
-        margin-bottom: 20px; /* Espaçamento entre seções */
-        padding: 15px;
+        margin-bottom: 20px; /* Espaçamento entre seções */ /* [118] */
+        padding: 15px; /* [119] */
       }
 
       /* BOTÕES */
       button {
-        background-color: #4caf50;
-        color: #fff;
+        background-color: #4caf50; /* [120] */
+        color: #fff; /* [120] */
         border: none;
         border-radius: 5px;
         padding: 8px 12px;
         cursor: pointer;
         font-size: 0.9em;
-        transition: background-color 0.3s ease;
+        transition: background-color 0.3s ease; /* [121] */
       }
       button:hover {
-        background-color: #45a049;
+        background-color: #45a049; /* [122] */
       }
       button.delete-button {
-        background-color: #f44336;
-        margin-left: 5px;
+        background-color: #f44336; /* [123] */
+        margin-left: 5px; /* [123] */
       }
       button.delete-button:hover {
-        background-color: #da190b;
+        background-color: #da190b; /* [124] */
       }
       button.edit-button {
-        background-color: #ff9800;
-        margin-left: 5px;
+        background-color: #ff9800; /* [125] */
+        margin-left: 5px; /* [125] */
       }
       button.edit-button:hover {
-        background-color: #e68a00;
+        background-color: #e68a00; /* [126] */
       }
 
       /* CABEÇALHO */
       header {
-        text-align: center;
-        margin-bottom: 20px;
+        text-align: center; /* [127] */
+        margin-bottom: 20px; /* [127] */
         position: relative;
       }
       header h1 {
-        color: #333;
-        margin-bottom: 10px;
+        color: #333; /* [128] */
+        margin-bottom: 10px; /* [128] */
       }
       header h2 {
-        color: #555;
-        margin-top: 0;
+        color: #555; /* [129] */
+        margin-top: 0; /* [129] */
         /* Adicionado para centralizar melhor com botões */
-        display: inline-block;
-        position: relative;
-        padding: 0 120px; /* Espaço para os botões não sobreporem */
+        display: inline-block; /* [130] */
+        position: relative; /* [130] */
+        padding: 0 120px; /* Espaço para os botões não sobreporem */ /* [130] */
       }
       .nav-buttons {
-          position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
+          position: absolute; /* [131] */
+          top: 50%; /* [131] */
+          transform: translateY(-50%); /* [131] */
           width: 100%;
           display: flex;
           justify-content: space-between;
           padding: 0 20px;
-          box-sizing: border-box;
+          box-sizing: border-box; /* [132] */
           /* Ajuste para alinhar com o H2 */
-          left: 0;
+          left: 0; /* [133] */
       }
       .nav-buttons button {
-          background-color: #007bff;
-          color: white;
+          background-color: #007bff; /* [134] */
+          color: white; /* [134] */
           padding: 5px 10px;
           border: none;
           border-radius: 5px;
           cursor: pointer;
-          font-size: 1em;
+          font-size: 1em; /* [135] */
       }
       .nav-buttons button:hover {
-          background-color: #0056b3;
+          background-color: #0056b3; /* [136] */
       }
 
       /* SEÇÃO DE TOTAIS */
       .totals-section {
-        /* padding: 15px; */ /* Removido pois já está na regra geral */
-        /* margin-bottom: 20px; */ /* Removido pois já está na regra geral */
+        /* padding: 15px; */ /* [137] */ /* Removido pois já está na regra geral */
+        /* margin-bottom: 20px; */ /* [138] */ /* Removido pois já está na regra geral */
       }
       .totals-wrapper {
-        display: flex;
-        justify-content: space-around;
+        display: flex; /* [139] */
+        justify-content: space-around; /* [139] */
         margin-bottom: 15px;
         font-weight: bold;
         color: #333;
       }
       .saldo-bar-container {
-        background-color: #ddd;
-        border-radius: 5px;
+        background-color: #ddd; /* [140] */
+        border-radius: 5px; /* [140] */
         height: 25px;
         margin-top: 10px;
-        overflow: hidden; /* Garante que a barra não vaze */
-        position: relative;
+        overflow: hidden; /* Garante que a barra não vaze */ /* [141] */
+        position: relative; /* [141] */
       }
       .saldo-bar {
         height: 100%;
-        width: 0%; /* Inicia em 0, será ajustada via JS */
-        background-color: green; /* Cor padrão inicial */
-        border-radius: 5px;
-        transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out;
+        width: 0%; /* [142] */ /* Inicia em 0, será ajustada via JS */
+        background-color: green; /* [143] */ /* Cor padrão inicial */
+        border-radius: 5px; /* [144] */
+        transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out; /* [144] */
       }
       /* Remover classe negative se não for mais usada diretamente */
-      /* .saldo-bar.negative { background-color: red; } */
+      /* .saldo-bar.negative { background-color: red; */ /* [145] */ /* } */
       .saldo-label {
-        position: absolute;
-        top: 0;
-        left: 0;
+        position: absolute; /* [146] */
+        top: 0; /* [146] */
+        left: 0; /* [146] */
         width: 100%;
         height: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
-        font-weight: bold;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        font-weight: bold; /* [147] */
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* [147] */
         font-size: 0.9em; /* Ajustar tamanho se necessário */
       }
 
       /* SEÇÃO DE CATEGORIAS (Receitas, Contas Fixas, Variáveis) */
       .categorias-section {
-        /* padding: 15px; */
-        /* margin-bottom: 20px; */
+        /* padding: 15px; */ /* [148] */
+        /* margin-bottom: 20px; */ /* [149] */
       }
       .categorias-columns {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        display: grid; /* [150] */
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* [150] */
         gap: 20px;
       }
       .categoria-box {
-        /* padding: 15px; */
+        /* padding: 15px; */ /* [151] */
         text-align: center;
-        display: flex;
-        flex-direction: column;
+        display: flex; /* [152] */
+        flex-direction: column; /* [152] */
       }
       .categoria-box h3 {
         margin-top: 0;
-        color: #333;
+        color: #333; /* [153] */
       }
       .categoria-list {
         text-align: left;
-        margin-bottom: 10px;
-        flex-grow: 1; /* Permite que a lista ocupe o espaço disponível */
-        min-height: 50px; /* Altura mínima para evitar colapso */
+        margin-bottom: 10px; /* [154] */
+        flex-grow: 1; /* Permite que a lista ocupe o espaço disponível */ /* [154] */
+        min-height: 50px; /* [155] */ /* Altura mínima para evitar colapso */
       }
       .categoria-list p {
-        margin: 5px 0;
-        color: #555;
+        margin: 5px 0; /* [156] */
+        color: #555; /* [156] */
       }
       .list-item {
-        display: flex;
-        justify-content: space-between;
+        display: flex; /* [157] */
+        justify-content: space-between; /* [157] */
         align-items: center;
         padding: 5px 0;
-        border-bottom: 1px dashed #c0c0c0;
+        border-bottom: 1px dashed #c0c0c0; /* [158] */
       }
       .list-item:last-child {
-        border-bottom: none;
+        border-bottom: none; /* [159] */
       }
       .list-item span {
         flex-grow: 1;
-        text-align: left;
-        margin-right: 10px; /* Espaço antes dos botões */
+        text-align: left; /* [160] */
+        margin-right: 10px; /* Espaço antes dos botões */ /* [160] */
       }
       .list-item-controls {
-          display: flex;
-          justify-content: flex-end;
+          display: flex; /* [161] */
+          justify-content: flex-end; /* [161] */
           align-items: center;
           flex-shrink: 0; /* Impede que os controles encolham */
       }
       .list-item-controls button {
-          margin-left: 5px;
-          padding: 4px 8px;
+          margin-left: 5px; /* [162] */
+          padding: 4px 8px; /* [162] */
           font-size: 0.8em;
       }
       .list-item-controls input[type="checkbox"] {
-          margin-left: 5px;
-          width: 16px;
-          height: 16px;
+          margin-left: 5px; /* [163] */
+          width: 16px; /* [163] */
+          height: 16px; /* [163] */
       }
       .categoria-box .total-categoria {
-        font-weight: bold;
-        margin-top: 10px;
+        font-weight: bold; /* [164] */
+        margin-top: 10px; /* [164] */
         padding-top: 10px;
         border-top: 1px solid #c0c0c0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        display: flex; /* [165] */
+        justify-content: space-between; /* [165] */
+        align-items: center; /* [165] */
       }
 
       /* Checkbox de pago para o total da categoria */
       .total-categoria .checkbox-pago-total {
-          margin-left: 10px;
-          width: 20px; /* Ajuste o tamanho conforme necessário */
-          height: 20px;
-          cursor: pointer;
+          margin-left: 10px; /* [166] */
+          width: 20px; /* Ajuste o tamanho conforme necessário */ /* [166] */
+          height: 20px; /* [167] */
+          cursor: pointer; /* [167] */
       }
 
       /* SEÇÃO DE CARTÕES */
       .cartoes-section {
-        /* padding: 15px; */
-        /* margin-bottom: 20px; */
+        /* padding: 15px; */ /* [168] */
+        /* margin-bottom: 20px; */ /* [169] */
       }
       .cartoes-grid {
-        display: grid;
-        /* Ajuste para garantir 4 colunas quando possível */
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
-        gap: 20px;
+        display: grid; /* [170] */ /* Ajuste para garantir 4 colunas quando possível */
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* [171] */
+        gap: 20px; /* [171] */
       }
       .cartao-box {
-        border-radius: 5px;
-        padding: 15px;
+        border-radius: 5px; /* [172] */
+        padding: 15px; /* [172] */
         text-align: center;
         display: flex;
         flex-direction: column;
       }
       /* Cores específicas por cartão */
-      .cartao-box.nubank { background-color: #f3e5f5; border: 1px solid #ce93d8; }
-      .cartao-box.santander { background-color: #ffebee; border: 1px solid #ef9a9a; }
-      .cartao-box.mercadopago { background-color: #e3f2fd; border: 1px solid #90caf9; } /* M.Pago */
-      .cartao-box.amazon { background-color: #fff3e0; border: 1px solid #ffcc80; }
+      .cartao-box.nubank { background-color: #f3e5f5; /* [173] */ border: 1px solid #ce93d8; } /* [173] */
+      .cartao-box.santander { background-color: #ffebee; border: 1px solid #ef9a9a; /* [174] */ }
+      .cartao-box.mercadopago { background-color: #e3f2fd; border: 1px solid #90caf9; /* [175] */ } /* M.Pago */ /* [175] */
+      .cartao-box.amazon { background-color: #fff3e0; border: 1px solid #ffcc80; /* [176] */ }
 
       .cartao-box h3 {
         margin-top: 0;
-        color: #333;
+        color: #333; /* [177] */
       }
       .cartao-list {
         text-align: left;
-        margin-bottom: 10px;
-        flex-grow: 1;
+        margin-bottom: 10px; /* [178] */
+        flex-grow: 1; /* [178] */
         min-height: 50px; /* Altura mínima */
       }
       .cartao-list p {
-        margin: 5px 0;
-        color: #555;
+        margin: 5px 0; /* [179] */
+        color: #555; /* [179] */
       }
       .cartao-box .total-cartao {
-        font-weight: bold;
-        margin-top: 10px;
+        font-weight: bold; /* [180] */
+        margin-top: 10px; /* [180] */
         padding-top: 10px;
         border-top: 1px solid #a7d9f7; /* Manter uma cor neutra para a linha */
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        display: flex; /* [181] */
+        justify-content: space-between; /* [181] */
+        align-items: center; /* [181] */
       }
       .cartao-box .total-cartao .checkbox-pago-total {
-          margin-left: 10px;
-          width: 20px;
-          height: 20px;
+          margin-left: 10px; /* [182] */
+          width: 20px; /* [182] */
+          height: 20px; /* [182] */
           cursor: pointer;
       }
       .compra {
-        display: flex;
-        justify-content: space-between;
+        display: flex; /* [183] */
+        justify-content: space-between; /* [183] */
         align-items: center;
         padding: 5px;
         border-bottom: 1px dashed #c0c0c0;
-        border-radius: 3px; /* Leve arredondamento */
-        margin-bottom: 3px; /* Pequeno espaço entre compras */
+        border-radius: 3px; /* [184] */ /* Leve arredondamento */
+        margin-bottom: 3px; /* [185] */ /* Pequeno espaço entre compras */
       }
       .compra:last-child {
-        border-bottom: none;
+        border-bottom: none; /* [186] */
       }
       .compra .list-item-content {
-          flex-grow: 1;
-          display: flex;
+          flex-grow: 1; /* [187] */
+          display: flex; /* [187] */
           justify-content: space-between;
           align-items: center;
           margin-right: 5px; /* Espaço antes dos controles */
       }
       .compra .list-item-content span {
-          flex-grow: 1;
-          text-align: left;
+          flex-grow: 1; /* [188] */
+          text-align: left; /* [188] */
           font-size: 0.9em;
       }
       .compra .list-item-controls {
-          flex-shrink: 0;
+          flex-shrink: 0; /* [189] */
       }
 
       /* SEÇÃO DE FORMULÁRIOS */
       .form-sections-wrapper {
-        display: flex;
-        gap: 20px;
+        display: flex; /* [190] */
+        gap: 20px; /* [190] */
       }
       .form-section {
-        flex: 1;
-        text-align: center;
+        flex: 1; /* [191] */
+        text-align: center; /* [191] */
         padding: 0; 
         margin-bottom: 0;
         border: none; 
-        background-color: transparent; 
+        background-color: transparent; /* [192] */
       }
       .form-section h2 {
         margin-top: 0;
-        margin-bottom: 15px; 
-        color: #333;
+        margin-bottom: 15px; /* [193] */
+        color: #333; /* [193] */
       }
       .form-section label { 
-        display: block;
-        margin-bottom: 5px;
+        display: block; /* [194] */
+        margin-bottom: 5px; /* [194] */
         text-align: left;
         font-weight: bold;
         font-size: 0.9em;
@@ -343,183 +342,183 @@
       .form-section input[type="text"],
       .form-section input[type="number"],
       .form-section select {
-        width: 100%; 
-        padding: 8px;
+        width: 100%; /* [195] */
+        padding: 8px; /* [195] */
         margin-bottom: 10px;
         border: 1px solid #ccc;
         border-radius: 4px;
-        box-sizing: border-box;
+        box-sizing: border-box; /* [196] */
       }
       .form-section .row {
         display: flex;
-        gap: 10px;
-        margin-bottom: 10px;
+        gap: 10px; /* [197] */
+        margin-bottom: 10px; /* [197] */
         align-items: center; 
       }
       .form-section .row input,
       .form-section .row select {
-        flex-grow: 1;
-        margin-bottom: 0; 
+        flex-grow: 1; /* [198] */
+        margin-bottom: 0; /* [198] */
       }
       .form-section button {
-        width: 100%; 
-        margin-top: 10px; 
+        width: 100%; /* [199] */
+        margin-top: 10px; /* [199] */
       }
 
       /* SEÇÃO DE COMPRAS POR RESPONSÁVEL */
       .compras-responsaveis {
-        text-align: center;
+        text-align: center; /* [200] */
       }
       .compras-responsaveis h2 {
         margin-top: 0;
-        color: #333;
+        color: #333; /* [201] */
       }
       .responsaveis-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+        display: grid; /* [202] */
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* [202] */
         gap: 20px;
         margin-top: 15px;
       }
       .responsavel-box {
-        text-align: center;
+        text-align: center; /* [203] */
       }
       .responsavel-box h3 {
         margin-bottom: 10px;
-        font-size: 1.2em;
-        padding: 5px;
+        font-size: 1.2em; /* [204] */
+        padding: 5px; /* [204] */
         border-radius: 3px;
-        display: inline-block; 
+        display: inline-block; /* [204] */
       }
       .responsavel-box p.total-responsavel {
-        margin: 10px 0 5px 0;
-        font-size: 1em;
+        margin: 10px 0 5px 0; /* [205] */
+        font-size: 1em; /* [205] */
         font-weight: bold;
-        border-top: 1px solid #ccc;
-        padding-top: 10px;
+        border-top: 1px solid #ccc; /* [206] */
+        padding-top: 10px; /* [206] */
       }
       .responsavel-list {
-          text-align: left;
-          font-size: 0.9em;
-          max-height: 150px; 
-          overflow-y: auto; 
-          padding-right: 5px; 
-          margin-top: 10px; 
+          text-align: left; /* [207] */
+          font-size: 0.9em; /* [207] */
+          max-height: 150px; /* [208] */
+          overflow-y: auto; /* [208] */
+          padding-right: 5px; /* [208] */
+          margin-top: 10px; /* [208] */
       }
        .responsavel-list .compra-item {
-          display: flex;
-          justify-content: space-between;
+          display: flex; /* [209] */
+          justify-content: space-between; /* [209] */
           padding: 3px 0;
           border-bottom: 1px dotted #eee;
        }
        .responsavel-list .compra-item:last-child {
-           border-bottom: none;
+           border-bottom: none; /* [210] */
        }
        .responsavel-list .compra-nome {
-           flex-grow: 1;
-           margin-right: 10px;
+           flex-grow: 1; /* [211] */
+           margin-right: 10px; /* [211] */
            white-space: nowrap;
            overflow: hidden;
            text-overflow: ellipsis;
        }
        .responsavel-list .compra-detalhes {
-           flex-shrink: 0;
-           white-space: nowrap;
+           flex-shrink: 0; /* [212] */
+           white-space: nowrap; /* [212] */
        }
 
       /* Cores para Responsáveis */
-      .responsavel-liana { background-color: #add8e6; } 
-      .responsavel-stefany { background-color: #ffb347; }
+      .responsavel-liana { background-color: #add8e6; /* [213] */ } 
+      .responsavel-stefany { background-color: #ffb347; /* [214] */ }
       .responsavel-marilia { background-color: #dda0dd; }
-      .responsavel-nosso { background-color: #ffc0cb; }
+      .responsavel-nosso { background-color: #ffc0cb; /* [215] */ }
 
       /* Cores para background de itens de compra */
-      .compra-bg-liana { background-color: rgba(173, 216, 230, 0.3); } 
-      .compra-bg-stefany { background-color: rgba(255, 179, 71, 0.3); } 
-      .compra-bg-marilia { background-color: rgba(221, 160, 221, 0.3); } 
-      .compra-bg-nosso { background-color: rgba(255, 192, 203, 0.3); } 
+      .compra-bg-liana { background-color: rgba(173, 216, 230, 0.3); /* [216] */ } 
+      .compra-bg-stefany { background-color: rgba(255, 179, 71, 0.3); /* [217] */ } 
+      .compra-bg-marilia { background-color: rgba(221, 160, 221, 0.3); /* [218] */ } 
+      .compra-bg-nosso { background-color: rgba(255, 192, 203, 0.3); /* [219] */ } 
 
       /* RODAPÉ */
       footer {
-        text-align: center;
-        margin-top: 20px;
+        text-align: center; /* [220] */
+        margin-top: 20px; /* [220] */
         padding-top: 20px;
         border-top: 1px solid #ccc;
       }
       footer p span {
-        margin: 0 5px;
-        font-weight: bold;
+        margin: 0 5px; /* [221] */
+        font-weight: bold; /* [221] */
         padding: 4px 8px;
         border-radius: 3px;
       }
       /* Aplicar cores da legenda diretamente */
-      footer .liana { background-color: #add8e6; }
-      footer .stefany { background-color: #ffb347; }
-      footer .marilia { background-color: #dda0dd; }
-      footer .nosso { background-color: #ffc0cb; }
+      footer .liana { background-color: #add8e6; /* [222] */ }
+      footer .stefany { background-color: #ffb347; /* [223] */ }
+      footer .marilia { background-color: #dda0dd; /* [224] */ }
+      footer .nosso { background-color: #ffc0cb; /* [225] */ }
 
       /* Estilo para item pago */
       .item-pago {
-          text-decoration: line-through;
-          color: grey;
+          text-decoration: line-through; /* [226] */
+          color: grey; /* [226] */
           opacity: 0.7;
       }
 
       /* Modal Styles */
       .modal {
-          display: none; 
-          position: fixed; 
+          display: none; /* [227] */
+          position: fixed;  /* [227] */
           z-index: 1000; 
           left: 0;
           top: 0;
           width: 100%; 
           height: 100%; 
           overflow: auto; 
-          background-color: rgba(0,0,0,0.4); 
+          background-color: rgba(0,0,0,0.4); /* [228] */
       }
       .modal-content {
-          background-color: #fefefe;
-          margin: 15% auto; 
+          background-color: #fefefe; /* [229] */
+          margin: 15% auto;  /* [229] */
           padding: 20px;
           border: 1px solid #888;
           width: 80%; 
           max-width: 500px;
           border-radius: 8px;
-          position: relative;
+          position: relative; /* [230] */
       }
       .close-button {
-          color: #aaa;
-          position: absolute;
-          top: 10px;
-          right: 15px;
+          color: #aaa; /* [231] */
+          position: absolute; /* [231] */
+          top: 10px; /* [231] */
+          right: 15px; /* [231] */
           font-size: 28px;
-          font-weight: bold;
+          font-weight: bold; /* [232] */
       }
       .close-button:hover,
       .close-button:focus {
-          color: black;
-          text-decoration: none;
+          color: black; /* [233] */
+          text-decoration: none; /* [233] */
           cursor: pointer;
       }
       .modal h2 {
-          margin-top: 0;
+          margin-top: 0; /* [234] */
       }
       .modal label {
-          display: block;
-          margin-bottom: 5px;
+          display: block; /* [235] */
+          margin-bottom: 5px; /* [235] */
       }
       .modal input[type="text"],
       .modal input[type="number"],
       .modal select {
-          width: 100%;
-          padding: 8px;
+          width: 100%; /* [236] */
+          padding: 8px; /* [236] */
           margin-bottom: 15px;
           border: 1px solid #ccc;
           border-radius: 4px;
-          box-sizing: border-box;
+          box-sizing: border-box; /* [237] */
       }
       .modal button {
-          width: 100%;
-          padding: 10px;
+          width: 100%; /* [238] */
+          padding: 10px; /* [238] */
       }
 
     </style>
@@ -530,140 +529,111 @@
         <h1>Painel Financeiro</h1>
         <h2>Carregando...</h2>
         <div class="nav-buttons">
-          <button id="prevMonthBtn">&laquo; Mês Anterior</button>
-          <button id="nextMonthBtn">Mês Seguinte &raquo;</button>
+          <button id="prevMonthBtn">&laquo; Mês Anterior</button> <button id="nextMonthBtn">Mês Seguinte &raquo;</button>
         </div>
       </header>
 
-      <!-- Seção de Totais e Saldo -->
       <div class="totals-section">
         <div class="totals-wrapper">
           <span id="totalReceitas">Total de Receitas: R$ 0.00</span>
-          <!-- **AJUSTE TERMÔMETRO v4**: ID alterado para refletir o total de despesas do mês -->
-          <span id="totalDespesasMes">Total de Despesas: R$ 0.00</span> 
-        </div>
+          <span id="totalDespesasMes">Total de Despesas: R$ 0.00</span> </div>
         <div class="saldo-bar-container">
           <div class="saldo-bar" id="saldoBar"></div>
           <div class="saldo-label" id="saldoLabel">Saldo: R$ 0.00</div>
         </div>
       </div>
 
-      <!-- Seção de Resumo do Mês (Receitas, Contas Fixas, Variáveis) -->
       <div class="categorias-section">
-        <h2>Resumo do Mês</h2>
-        <div class="categorias-columns">
-          <!-- Receitas -->
+        <h2>Resumo do Mês</h2> <div class="categorias-columns">
           <div class="categoria-box receitas">
             <h3>Receitas</h3>
             <div class="categoria-list" id="listaReceitas">
               <p>Carregando...</p>
             </div>
-            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ccc;">
-              <input type="text" id="nomeReceita" placeholder="Nome da Receita" style="width: calc(100% - 22px); margin-bottom: 5px;">
-              <input type="number" id="valorReceita" placeholder="Valor" style="width: calc(100% - 22px); margin-bottom: 5px;">
-              <button onclick="submitReceita()">Adicionar Receita</button>
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ccc;"> <input type="text" id="nomeReceita" placeholder="Nome da Receita" style="width: calc(100% - 22px); margin-bottom: 5px;"> <input type="number" id="valorReceita" placeholder="Valor" style="width: calc(100% - 22px); margin-bottom: 5px;"> <button onclick="submitReceita()">Adicionar Receita</button>
             </div>
           </div>
 
-          <!-- Contas Fixas -->
           <div class="categoria-box contas-fixas">
             <h3>Contas Fixas</h3>
             <div class="categoria-list" id="listaContasFixas">
-              <p>Carregando...</p>
-            </div>
+              <p>Carregando...</p> </div>
             <div class="total-categoria">
               <span id="totalContasFixas">Total Aberto: R$ 0.00</span>
               <input type="checkbox" class="checkbox-pago-total" id="checkAllContasFixas" title="Marcar/Desmarcar todas as contas fixas como pagas">
             </div>
           </div>
 
-          <!-- Contas Variáveis -->
           <div class="categoria-box contas-variaveis">
             <h3>Contas Variáveis</h3>
             <div class="categoria-list" id="listaContasVariaveis">
               <p>Carregando...</p>
             </div>
             <div class="total-categoria">
-              <span id="totalContasVariaveis">Total Aberto: R$ 0.00</span>
-              <input type="checkbox" class="checkbox-pago-total" id="checkAllContasVariaveis" title="Marcar/Desmarcar todas as contas variáveis como pagas">
+              <span id="totalContasVariaveis">Total Aberto: R$ 0.00</span> <input type="checkbox" class="checkbox-pago-total" id="checkAllContasVariaveis" title="Marcar/Desmarcar todas as contas variáveis como pagas">
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Seção de Cartões -->
       <div class="cartoes-section">
         <h2>Cartões</h2>
         <div class="cartoes-grid" id="cartoesGrid">
-          <!-- Cartões serão adicionados aqui dinamicamente -->
           <p>Carregando...</p>
         </div>
       </div>
 
-      <!-- Seção de Formulários -->
       <div class="form-sections-wrapper">
-        <!-- Adicionar Compra no Cartão -->
         <div class="form-section add-compra">
           <h2>Adicionar Compra no Cartão</h2>
-          <div class="row">
-            <select id="responsavelCompra">
+          <div class="row"> <select id="responsavelCompra">
               <option value="Liana">Liana</option>
               <option value="Stefany">Stefany</option>
               <option value="Marília">Marília</option>
               <option value="Nosso ❤️">Nosso ❤️</option>
             </select>
-            <select id="cartaoCompra">
-              <option value="Nubank">Nubank</option>
+            <select id="cartaoCompra"> <option value="Nubank">Nubank</option>
               <option value="Santander">Santander</option>
               <option value="Mercado Pago">Mercado Pago</option>
               <option value="Amazon">Amazon</option>
             </select>
           </div>
-          <input type="text" id="nomeCompra" placeholder="Nome da Compra">
-          <div class="row">
+          <input type="text" id="nomeCompra" placeholder="Nome da Compra"> <div class="row">
             <input type="number" id="valorCompra" placeholder="Valor da Parcela">
             <input type="number" id="parcelasCompra" placeholder="Parcelas (ex: 1)" value="1">
           </div>
           <button onclick="submitCompra()">Adicionar Compra</button>
         </div>
 
-        <!-- Adicionar Conta -->
         <div class="form-section add-conta">
-          <h2>Adicionar Conta</h2>
-          <select id="tipoConta">
+          <h2>Adicionar Conta</h2> <select id="tipoConta">
             <option value="Fixa">Fixa</option>
             <option value="Variável">Variável</option>
           </select>
           <input type="text" id="nomeConta" placeholder="Nome da Conta">
           <div class="row">
             <input type="number" id="valorConta" placeholder="Valor da Parcela">
-            <input type="number" id="parcelasConta" placeholder="Parcelas (ex: 1)" value="1">
-          </div>
+            <input type="number" id="parcelasConta" placeholder="Parcelas (ex: 1)" value="1"> </div>
           <button onclick="submitConta()">Adicionar Conta</button>
         </div>
       </div>
 
-      <!-- Seção de Compras por Responsável -->
       <div class="compras-responsaveis">
         <h2>Total de Compras por Responsável (Mês)</h2>
         <div class="responsaveis-container" id="responsaveisContainer">
-          <!-- Responsáveis serão adicionados aqui -->
           <p>Carregando...</p>
         </div>
       </div>
 
-      <!-- Rodapé com Legenda -->
       <footer>
         <p>Legenda Responsáveis: 
           <span class="liana">Liana</span> 
           <span class="stefany">Stefany</span> 
           <span class="marilia">Marília</span> 
-          <span class="nosso">Nosso ❤️</span>
-        </p>
+          <span class="nosso">Nosso ❤️</span> </p>
       </footer>
     </div>
 
-    <!-- Modal de Edição -->
     <div id="editModal" class="modal">
       <div class="modal-content">
         <span class="close-button" onclick="closeModal()">&times;</span>
@@ -671,42 +641,31 @@
         <input type="hidden" id="editItemId">
         <input type="hidden" id="editItemType">
         
-        <label for="editNome">Nome:</label>
-        <input type="text" id="editNome">
+        <label for="editNome">Nome:</label> <input type="text" id="editNome">
         
         <label for="editValor">Valor:</label>
         <input type="number" id="editValor">
         
-        <!-- Campos específicos para Compras -->
         <div id="editCompraFields" style="display: none;">
           <label for="editParcelasCompra">Parcelas (ex: 1/12):</label>
-          <input type="text" id="editParcelasCompra" disabled> <!-- Parcelas não editáveis por simplicidade -->
-          
-          <label for="editResponsavelCompra">Responsável:</label>
+          <input type="text" id="editParcelasCompra" disabled> <label for="editResponsavelCompra">Responsável:</label>
           <select id="editResponsavelCompra">
             <option value="Liana">Liana</option>
             <option value="Stefany">Stefany</option>
             <option value="Marília">Marília</option>
             <option value="Nosso ❤️">Nosso ❤️</option>
-          </select>
-          
-          <label for="editCartaoCompra">Cartão:</label>
+          </select> <label for="editCartaoCompra">Cartão:</label>
           <select id="editCartaoCompra">
             <option value="Nubank">Nubank</option>
             <option value="Santander">Santander</option>
             <option value="Mercado Pago">Mercado Pago</option>
             <option value="Amazon">Amazon</option>
-          </select>
-        </div>
+          </select> </div>
         
-        <!-- Campos específicos para Contas -->
         <div id="editContaFields" style="display: none;">
           <label for="editParcelasConta">Parcelas (ex: 1/12):</label>
-          <input type="text" id="editParcelasConta" disabled> <!-- Parcelas não editáveis -->
-          
-          <label for="editTipoConta">Tipo:</label>
-          <select id="editTipoConta">
-            <option value="Fixa">Fixa</option>
+          <input type="text" id="editParcelasConta" disabled> <label for="editTipoConta">Tipo:</label>
+          <select id="editTipoConta"> <option value="Fixa">Fixa</option>
             <option value="Variável">Variável</option>
           </select>
         </div>
@@ -717,40 +676,36 @@
 
     <script>
       // URL do seu Cloudflare Worker (Proxy)
-      const API_URL = "https://painel-financas-proxy.mariliaedua.workers.dev/";
-
+      const API_URL = "https://painel-financas-proxy.mariliaedua.workers.dev/"; /* [261] */
       // Mês e ano atuais (começa com o mês atual)
-      let currentMonth = new Date().getMonth(); // 0-11
-      let currentYear = new Date().getFullYear();
-
+      let currentMonth = new Date().getMonth(); /* [262] */ // 0-11
+      let currentYear = new Date().getFullYear(); /* [263] */
       // Mapeamento de meses para nomes em português
       const monthNames = [
         "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
         "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
-      ];
-
+      ]; /* [264] */
       // Mapeamento de responsáveis para classes CSS
       const responsavelClasses = {
         "Liana": "responsavel-liana",
         "Stefany": "responsavel-stefany",
         "Marília": "responsavel-marilia",
         "Nosso ❤️": "responsavel-nosso"
-      };
+      }; /* [265] */
       const compraBgClasses = {
         "Liana": "compra-bg-liana",
         "Stefany": "compra-bg-stefany",
         "Marília": "compra-bg-marilia",
         "Nosso ❤️": "compra-bg-nosso"
-      };
-
+      }; /* [266] */
       // Função para formatar valores como moeda brasileira
       function formatCurrency(value) {
-        return `R$ ${Number(value).toFixed(2).replace(".", ",")}`;
+        return `R$ ${Number(value).toFixed(2).replace(".", ",")}`; /* [267] */
       }
 
       // Função genérica para fazer requisições à API via Cloudflare Worker
       async function fetchData(action, data = {}, recordId = null, method = "POST") {
-        console.log(`Enviando payload:`, { action, data, recordId, month: currentMonth + 1, year: currentYear });
+        console.log(`Enviando payload:`, { action, data, recordId, month: currentMonth + 1, year: currentYear }); /* [268] */
         try {
           const payload = {
             action: action,
@@ -759,36 +714,33 @@
             month: currentMonth + 1, // Envia 1-12 para o backend
             year: currentYear
           };
-
-          const response = await fetch(API_URL, {
+          const response = await fetch(API_URL, { /* [269] */
             method: method,
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify(payload),
-          });
-
+          }); /* [270] */
           if (!response.ok) {
-            const errorText = await response.text();
-            console.error(`Erro HTTP (${response.status}) para ${action}:`, errorText);
-            throw new Error(`Erro na requisição (${action}): ${response.status} ${response.statusText}`);
+            const errorText = await response.text(); /* [271] */
+            console.error(`Erro HTTP (${response.status}) para ${action}:`, errorText); /* [271] */
+            throw new Error(`Erro na requisição (${action}): ${response.status} ${response.statusText}`); /* [272] */
           }
 
           const result = await response.json();
-          console.log(`Resposta recebida (${action}):`, result);
-
+          console.log(`Resposta recebida (${action}):`, result); /* [273] */
           if (result.status === "error") {
-            console.error(`Erro retornado pela API (${action}):`, result.message);
-            throw new Error(result.message);
+            console.error(`Erro retornado pela API (${action}):`, result.message); /* [274] */
+            throw new Error(result.message); /* [274] */
           }
           
           // Retorna os dados principais, seja diretamente ou dentro de um objeto { data: ... }
-          return result.data !== undefined ? result.data : result;
+          return result.data !== undefined ? result.data : result; /* [275] */
 
         } catch (error) {
-          console.error(`Falha na requisição (${action}):`, error);
-          alert(`Erro ao comunicar com o servidor para a ação '${action}'. Verifique o console para detalhes.`);
-          throw error; // Re-lança o erro para que a chamada saiba que falhou
+          console.error(`Falha na requisição (${action}):`, error); /* [276] */
+          alert(`Erro ao comunicar com o servidor para a ação '${action}'. Verifique o console para detalhes.`); /* [276] */
+          throw error; /* [277] */ // Re-lança o erro para que a chamada saiba que falhou
         }
       }
 
@@ -796,49 +748,54 @@
 
       // Atualiza o título do mês/ano
       function updateMonthDisplay() {
-        const headerTitle = document.querySelector("header h2");
-        headerTitle.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+        const headerTitle = document.querySelector("header h2"); /* [278] */
+        headerTitle.textContent = `${monthNames[currentMonth]} ${currentYear}`; /* [278] */
       }
 
       // **AJUSTE TERMÔMETRO v4**: Atualiza os totais e a barra de saldo
+      // >>> INÍCIO DA FUNÇÃO MODIFICADA: updateTotalsDisplay <<<
       function updateTotalsDisplay(data) {
-        const totalReceitasEl = document.getElementById("totalReceitas");
-        const totalDespesasMesEl = document.getElementById("totalDespesasMes"); // ID ajustado
-        const saldoBarEl = document.getElementById("saldoBar");
-        const saldoLabelEl = document.getElementById("saldoLabel");
+        const totalReceitasEl = document.getElementById("totalReceitas"); /* [279] */
+        const totalDespesasMesEl = document.getElementById("totalDespesasMes"); // ID ajustado /* [279] */
+        const saldoBarEl = document.getElementById("saldoBar"); /* [280] */
+        const saldoLabelEl = document.getElementById("saldoLabel"); /* [280] */
 
         const totalReceitas = data.totalReceitas || 0;
-        const totalDespesasMes = data.totalDespesasMes || 0;
-        const totalPago = data.totalPago || 0;
+        const totalDespesasMes = data.totalDespesasMes || 0; /* [281] */
+        const totalPago = data.totalPago || 0; /* [281] */
 
         // Exibe os totais fixos
-        totalReceitasEl.textContent = `Total de Receitas: ${formatCurrency(totalReceitas)}`;
-        totalDespesasMesEl.textContent = `Total de Despesas: ${formatCurrency(totalDespesasMes)}`;
+        totalReceitasEl.textContent = `Total de Receitas: ${formatCurrency(totalReceitas)}`; /* [282] */
+        totalDespesasMesEl.textContent = `Total de Despesas: ${formatCurrency(totalDespesasMes)}`; /* [282] */
 
         // Calcula o saldo atual
-        const saldoAtual = totalReceitas - totalPago;
-        saldoLabelEl.textContent = `Saldo: ${formatCurrency(saldoAtual)}`;
+        const saldoAtual = totalReceitas - totalPago; /* [283] */
+        // Calcula o valor que falta pagar
+        const faltaPagar = totalDespesasMes - totalPago;
+
+        saldoLabelEl.textContent = `Saldo: ${formatCurrency(saldoAtual)} | Falta Pagar: ${formatCurrency(faltaPagar)}`; /* MODIFICADO */
 
         // Calcula a porcentagem paga das despesas totais
-        const percentPago = totalDespesasMes > 0 ? (totalPago / totalDespesasMes) * 100 : 0;
-        saldoBarEl.style.width = `${Math.min(100, Math.max(0, percentPago))}%`; // Garante que fique entre 0 e 100
+        const percentPago = totalDespesasMes > 0 ? (totalPago / totalDespesasMes) * 100 : 0; /* [284] */
+        saldoBarEl.style.width = `${Math.min(100, Math.max(0, percentPago))}%`; /* [285] */ // Garante que fique entre 0 e 100
 
         // Define a cor da barra com base no saldo atual
         if (saldoAtual < 0) {
-          saldoBarEl.style.backgroundColor = "red";
+          saldoBarEl.style.backgroundColor = "red"; /* [286] */
         } else {
-          saldoBarEl.style.backgroundColor = "green";
+          saldoBarEl.style.backgroundColor = "green"; /* [287] */
         }
       }
+      // >>> FIM DA FUNÇÃO MODIFICADA: updateTotalsDisplay <<<
 
       // Exibe a lista de receitas
       function displayReceitas(receitas) {
-        const listaReceitasEl = document.getElementById("listaReceitas");
-        listaReceitasEl.innerHTML = ""; // Limpa a lista
+        const listaReceitasEl = document.getElementById("listaReceitas"); /* [288] */
+        listaReceitasEl.innerHTML = ""; // Limpa a lista /* [288] */
 
         if (!receitas || receitas.length === 0) {
-          listaReceitasEl.innerHTML = "<p>Nenhuma receita para este mês.</p>";
-          return;
+          listaReceitasEl.innerHTML = "<p>Nenhuma receita para este mês.</p>"; /* [289] */
+          return; /* [289] */
         }
 
         receitas.forEach((receita) => {
@@ -848,35 +805,33 @@
             <span>${receita.nome} - ${formatCurrency(receita.valor)}</span>
             <div class="list-item-controls">
               <button class="edit-button" onclick="openEditModal(\'receita\', \'${receita.id}\')">Edit</button>
-              <button class="delete-button" onclick="deleteItem(\'receita\', \'${receita.id}\')">X</button>
-            </div>
+              <button class="delete-button" onclick="deleteItem(\'receita\', \'${receita.id}\')">X</button> </div>
           `;
-          listaReceitasEl.appendChild(itemEl);
+          listaReceitasEl.appendChild(itemEl); /* [291] */
         });
       }
 
       // Exibe a lista de contas (Fixas ou Variáveis)
       function displayContas(contas, tipo) {
-        const listaElId = tipo === "Fixa" ? "listaContasFixas" : "listaContasVariaveis";
-        const totalElId = tipo === "Fixa" ? "totalContasFixas" : "totalContasVariaveis";
-        const checkAllElId = tipo === "Fixa" ? "checkAllContasFixas" : "checkAllContasVariaveis";
+        const listaElId = tipo === "Fixa" ? "listaContasFixas" : "listaContasVariaveis"; /* [292] */
+        const totalElId = tipo === "Fixa" ? "totalContasFixas" : "totalContasVariaveis"; /* [292] */
+        const checkAllElId = tipo === "Fixa" ? "checkAllContasFixas" : "checkAllContasVariaveis"; /* [293] */
 
         const listaEl = document.getElementById(listaElId);
         const totalEl = document.getElementById(totalElId);
         const checkAllEl = document.getElementById(checkAllElId);
-        listaEl.innerHTML = ""; // Limpa a lista
+        listaEl.innerHTML = ""; /* [294] */ // Limpa a lista
 
         let totalAberto = 0;
-        let todasPagas = true;
-
-        const contasFiltradas = contas.filter(conta => conta.tipo === tipo);
+        let todasPagas = true; /* [295] */
+        const contasFiltradas = contas.filter(conta => conta.tipo === tipo); /* [295] */
 
         if (contasFiltradas.length === 0) {
-          listaEl.innerHTML = `<p>Nenhuma conta ${tipo.toLowerCase()} para este mês.</p>`;
-          totalEl.textContent = `Total Aberto: ${formatCurrency(0)}`;
+          listaEl.innerHTML = `<p>Nenhuma conta ${tipo.toLowerCase()} para este mês.</p>`; /* [296] */
+          totalEl.textContent = `Total Aberto: ${formatCurrency(0)}`; /* [296] */
           checkAllEl.checked = false;
           checkAllEl.disabled = true;
-          return;
+          return; /* [297] */
         }
 
         contasFiltradas.forEach((conta) => {
@@ -886,35 +841,33 @@
           if (isPago) {
             itemEl.classList.add("item-pago");
           } else {
-            totalAberto += parseFloat(conta.valor || 0);
-            todasPagas = false;
+            totalAberto += parseFloat(conta.valor || 0); /* [298] */
+            todasPagas = false; /* [298] */
           }
 
           itemEl.innerHTML = `
             <span>${conta.nome} (${conta.parcelas}) - ${formatCurrency(conta.valor)}</span>
             <div class="list-item-controls">
               <button class="edit-button" onclick="openEditModal(\'conta\', \'${conta.originalId || conta.id}\')">Edit</button>
-              <button class="delete-button" onclick="deleteItem(\'conta\', \'${conta.originalId || conta.id}\')">X</button>
-              <input type="checkbox" ${isPago ? "checked" : ""} onchange="markAsPaid(\'conta\', \'${conta.originalId || conta.id}\', this.checked)">
+              <button class="delete-button" onclick="deleteItem(\'conta\', \'${conta.originalId || conta.id}\')">X</button> <input type="checkbox" ${isPago ? "checked" : ""} onchange="markAsPaid(\'conta\', \'${conta.originalId || conta.id}\', this.checked)">
             </div>
-          `;
+          `; /* [300] */
           listaEl.appendChild(itemEl);
         });
 
         totalEl.textContent = `Total Aberto: ${formatCurrency(totalAberto)}`;
         checkAllEl.checked = todasPagas;
-        checkAllEl.disabled = false;
+        checkAllEl.disabled = false; /* [301] */
         // Adiciona listener para marcar/desmarcar todos
-        checkAllEl.onchange = () => markAllCategoriaAsPaid(tipo, checkAllEl.checked);
+        checkAllEl.onchange = () => markAllCategoriaAsPaid(tipo, checkAllEl.checked); /* [302] */
       }
 
       // Exibe os cartões e suas compras
       function displayCartoes(cartoesData) {
-        const cartoesGridEl = document.getElementById("cartoesGrid");
-        cartoesGridEl.innerHTML = ""; // Limpa o grid
+        const cartoesGridEl = document.getElementById("cartoesGrid"); /* [303] */
+        cartoesGridEl.innerHTML = ""; // Limpa o grid /* [303] */
 
-        const cartoesOrdenados = ["Nubank", "Santander", "Mercado Pago", "Amazon"];
-
+        const cartoesOrdenados = ["Nubank", "Santander", "Mercado Pago", "Amazon"]; /* [304] */
         cartoesOrdenados.forEach(nomeCartao => {
           const cartao = cartoesData[nomeCartao] || { total: 0, compras: [] }; // Garante que o cartão exista
           const cartaoBoxEl = document.createElement("div");
@@ -924,26 +877,26 @@
           const listaComprasEl = document.createElement("div");
           listaComprasEl.classList.add("cartao-list");
 
-          let totalAbertoCartao = 0;
+          let totalAbertoCartao = 0; /* [305] */
           let todasComprasPagas = true;
 
           if (cartao.compras.length === 0) {
             listaComprasEl.innerHTML = "<p>Nenhuma compra neste cartão para este mês.</p>";
             todasComprasPagas = false; // Se não há compras, não estão todas pagas
           } else {
-            cartao.compras.forEach(compra => {
+            cartao.compras.forEach(compra => { /* [306] */
               const compraEl = document.createElement("div");
-              compraEl.classList.add("compra");
-              const isPago = String(compra.pago).toLowerCase() === "sim";
+              compraEl.classList.add("compra"); /* [307] */
+              const isPago = String(compra.pago).toLowerCase() === "sim"; /* [307] */
               if (isPago) {
-                compraEl.classList.add("item-pago");
+                compraEl.classList.add("item-pago"); /* [308] */
               } else {
-                totalAbertoCartao += parseFloat(compra.valor || 0);
-                todasComprasPagas = false;
+                totalAbertoCartao += parseFloat(compra.valor || 0); /* [309] */
+                todasComprasPagas = false; /* [309] */
               }
               // Aplica cor de fundo do responsável
-              const bgClass = compraBgClasses[compra.responsavel] || ",";
-              compraEl.classList.add(bgClass);
+              const bgClass = compraBgClasses[compra.responsavel] || ""; /* [310] */
+              compraEl.classList.add(bgClass); /* [310] */
 
               compraEl.innerHTML = `
                 <div class="list-item-content">
@@ -951,10 +904,8 @@
                 </div>
                 <div class="list-item-controls">
                    <button class="edit-button" onclick="openEditModal(\'compra\', \'${compra.originalId || compra.id}\')">Edit</button>
-                   <button class="delete-button" onclick="deleteItem(\'compra\', \'${compra.originalId || compra.id}\')">X</button>
-                   <!-- Checkbox individual removido -->
-                </div>
-              `;
+                   <button class="delete-button" onclick="deleteItem(\'compra\', \'${compra.originalId || compra.id}\')">X</button> </div>
+              `; /* [312] */
               listaComprasEl.appendChild(compraEl);
             });
           }
@@ -963,74 +914,71 @@
             <h3>${nomeCartao.toUpperCase()}</h3>
             <div class="total-cartao">
               <span>Total Fatura: ${formatCurrency(cartao.total)}</span>
-              <input type="checkbox" class="checkbox-pago-total" id="checkAll${cartaoClass}" title="Marcar/Desmarcar todas as compras do ${nomeCartao}" ${todasComprasPagas && cartao.compras.length > 0 ? "checked" : ""} ${cartao.compras.length === 0 ? "disabled" : ""}>
-            </div>
-          `;
-          cartaoBoxEl.appendChild(listaComprasEl); // Adiciona a lista depois do total
-          cartoesGridEl.appendChild(cartaoBoxEl);
-
+              <input type="checkbox" class="checkbox-pago-total" id="checkAll${cartaoClass}" title="Marcar/Desmarcar todas as compras do ${nomeCartao}" ${todasComprasPagas && cartao.compras.length > 0 ? "checked" : ""} ${cartao.compras.length === 0 ? "disabled" : ""}> </div>
+          `; /* [314] */
+          cartaoBoxEl.appendChild(listaComprasEl); // Adiciona a lista depois do total /* [314] */
+          cartoesGridEl.appendChild(cartaoBoxEl); /* [315] */
           // Adiciona listener para o checkbox total do cartão
-          const checkAllCartaoEl = document.getElementById(`checkAll${cartaoClass}`);
+          const checkAllCartaoEl = document.getElementById(`checkAll${cartaoClass}`); /* [316] */
           if (checkAllCartaoEl) {
-            checkAllCartaoEl.onchange = () => markAllCartaoAsPaidFront(nomeCartao, checkAllCartaoEl.checked);
+            checkAllCartaoEl.onchange = () => markAllCartaoAsPaidFront(nomeCartao, checkAllCartaoEl.checked); /* [317] */
           }
         });
       }
 
       // Exibe o total de compras por responsável
+      // >>> INÍCIO DA FUNÇÃO MODIFICADA: displayComprasPorResponsavel <<<
       function displayComprasPorResponsavel(responsaveisData) {
-        const containerEl = document.getElementById("responsaveisContainer");
-        containerEl.innerHTML = ""; // Limpa
+        const containerEl = document.getElementById("responsaveisContainer"); /* [318] */
+        containerEl.innerHTML = ""; // Limpa /* [318] */
 
-        const responsaveisOrdenados = ["Liana", "Stefany", "Marília", "Nosso ❤️"];
-
+        const responsaveisOrdenados = ["Liana", "Stefany", "Marília", "Nosso ❤️"]; /* [319] */
         responsaveisOrdenados.forEach(nomeResponsavel => {
           const responsavel = responsaveisData[nomeResponsavel] || { total: 0, compras: [] };
           const responsavelBoxEl = document.createElement("div");
           responsavelBoxEl.classList.add("responsavel-box");
 
-          const responsavelListEl = document.createElement("div");
-          responsavelListEl.classList.add("responsavel-list");
-
+          let comprasHtml = "";
           if (responsavel.compras.length > 0) {
-              responsavel.compras.forEach(compra => {
-                  const itemEl = document.createElement("div");
-                  itemEl.classList.add("compra-item");
-                  itemEl.innerHTML = `
-                      <span class="compra-nome">${compra.nome}</span>
-                      <span class="compra-detalhes">(${compra.parcelas}) - ${formatCurrency(compra.valor)}</span>
-                  `;
-                  responsavelListEl.appendChild(itemEl);
-              });
+            responsavel.compras.forEach(compra => { /* [320] */
+              comprasHtml += `
+                <div class="compra-item">
+                  <span class="compra-nome">${compra.nome}</span>
+                  <span class="compra-detalhes">(${compra.parcelas}) - ${formatCurrency(compra.valor)}</span>
+                </div>
+              `; /* Inspirado em [320, 321] */
+            });
           } else {
-              responsavelListEl.innerHTML = "<p>Nenhuma compra este mês.</p>";
+            comprasHtml = "<p>Nenhuma compra este mês.</p>"; /* [322] */
           }
 
           responsavelBoxEl.innerHTML = `
             <h3 class="${responsaveisClasses[nomeResponsavel] || ""}">${nomeResponsavel}</h3>
-          `;
-          responsavelBoxEl.appendChild(responsavelListEl); // Adiciona a lista
-          responsavelBoxEl.innerHTML += `
+            <div class="responsavel-list">
+              ${comprasHtml}
+            </div>
             <p class="total-responsavel">Total (Mês): ${formatCurrency(responsavel.total)}</p>
-          `;
-
-          containerEl.appendChild(responsavelBoxEl);
+          `; /* Inspirado em [323] */
+          
+          containerEl.appendChild(responsavelBoxEl); /* [324] */
         });
       }
+      // >>> FIM DA FUNÇÃO MODIFICADA: displayComprasPorResponsavel <<<
+
 
       // --- Funções de Ação ---
 
       // Adiciona Receita
       async function submitReceita() {
-        const nome = document.getElementById("nomeReceita").value.trim();
-        const valor = document.getElementById("valorReceita").value;
+        const nome = document.getElementById("nomeReceita").value.trim(); /* [325] */
+        const valor = document.getElementById("valorReceita").value; /* [325] */
         if (!nome || !valor || parseFloat(valor) <= 0) {
-          alert("Por favor, preencha o nome e um valor válido para a receita.");
-          return;
+          alert("Por favor, preencha o nome e um valor válido para a receita."); /* [326] */
+          return; /* [326] */
         }
         try {
-          await fetchData("addReceita", { nome, valor: parseFloat(valor) });
-          document.getElementById("nomeReceita").value = "";
+          await fetchData("addReceita", { nome, valor: parseFloat(valor) }); /* [327] */
+          document.getElementById("nomeReceita").value = ""; /* [327] */
           document.getElementById("valorReceita").value = "";
           fetchAllData(); // Recarrega todos os dados
         } catch (error) {
@@ -1040,15 +988,14 @@
 
       // Adiciona Compra
       async function submitCompra() {
-        const nome = document.getElementById("nomeCompra").value.trim();
-        const valor = document.getElementById("valorCompra").value;
-        const parcelas = document.getElementById("parcelasCompra").value || "1";
-        const responsavel = document.getElementById("responsavelCompra").value;
-        const cartao = document.getElementById("cartaoCompra").value;
-
-        if (!nome || !valor || parseFloat(valor) <= 0 || parseInt(parcelas) <= 0) {
-          alert("Preencha nome, valor da parcela (>0) e número de parcelas (>0) válidos.");
-          return;
+        const nome = document.getElementById("nomeCompra").value.trim(); /* [328] */
+        const valor = document.getElementById("valorCompra").value; /* [328] */
+        const parcelas = document.getElementById("parcelasCompra").value || "1"; /* [328] */
+        const responsavel = document.getElementById("responsavelCompra").value; /* [328] */
+        const cartao = document.getElementById("cartaoCompra").value; /* [328] */
+        if (!nome || !valor || parseFloat(valor) <= 0 || parseInt(parcelas) <= 0) { /* [329] */
+          alert("Preencha nome, valor da parcela (>0) e número de parcelas (>0) válidos."); /* [330] */
+          return; /* [330] */
         }
 
         try {
@@ -1058,11 +1005,11 @@
             parcelas: parseInt(parcelas),
             responsavel,
             cartao
-          });
+          }); /* [331] */
           // Limpa campos
-          document.getElementById("nomeCompra").value = "";
-          document.getElementById("valorCompra").value = "";
-          document.getElementById("parcelasCompra").value = "1";
+          document.getElementById("nomeCompra").value = ""; /* [331] */
+          document.getElementById("valorCompra").value = ""; /* [332] */
+          document.getElementById("parcelasCompra").value = "1"; /* [332] */
           fetchAllData();
         } catch (error) {
           // Erro tratado em fetchData
@@ -1071,14 +1018,13 @@
 
       // Adiciona Conta
       async function submitConta() {
-        const nome = document.getElementById("nomeConta").value.trim();
-        const valor = document.getElementById("valorConta").value;
-        const parcelas = document.getElementById("parcelasConta").value || "1";
-        const tipo = document.getElementById("tipoConta").value;
-
-        if (!nome || !valor || parseFloat(valor) <= 0 || parseInt(parcelas) <= 0) {
-          alert("Preencha nome, valor da parcela (>0) e número de parcelas (>0) válidos.");
-          return;
+        const nome = document.getElementById("nomeConta").value.trim(); /* [333] */
+        const valor = document.getElementById("valorConta").value; /* [333] */
+        const parcelas = document.getElementById("parcelasConta").value || "1"; /* [333] */
+        const tipo = document.getElementById("tipoConta").value; /* [333] */
+        if (!nome || !valor || parseFloat(valor) <= 0 || parseInt(parcelas) <= 0) { /* [334] */
+          alert("Preencha nome, valor da parcela (>0) e número de parcelas (>0) válidos."); /* [335] */
+          return; /* [335] */
         }
 
         try {
@@ -1087,11 +1033,11 @@
             valor: parseFloat(valor),
             parcelas: parseInt(parcelas),
             tipo
-          });
+          }); /* [336] */
           // Limpa campos
-          document.getElementById("nomeConta").value = "";
-          document.getElementById("valorConta").value = "";
-          document.getElementById("parcelasConta").value = "1";
+          document.getElementById("nomeConta").value = ""; /* [336] */
+          document.getElementById("valorConta").value = ""; /* [337] */
+          document.getElementById("parcelasConta").value = "1"; /* [337] */
           fetchAllData();
         } catch (error) {
           // Erro tratado em fetchData
@@ -1100,11 +1046,11 @@
 
       // Marca um item (conta ou compra) como pago/não pago
       async function markAsPaid(type, id, isChecked) {
-        const action = type === "conta" ? "markContaAsPaid" : "markCompraAsPaid";
-        const pagoStatus = isChecked ? "Sim" : "Não";
+        const action = type === "conta" ? "markContaAsPaid" : "markCompraAsPaid"; /* [338] */
+        const pagoStatus = isChecked ? "Sim" : "Não"; /* [339] */
         try {
-          await fetchData(action, { pago: pagoStatus }, id);
-          fetchAllData(); // Recarrega tudo para atualizar totais e barra
+          await fetchData(action, { pago: pagoStatus }, id); /* [339] */
+          fetchAllData(); /* [340] */ // Recarrega tudo para atualizar totais e barra
         } catch (error) {
           // Erro tratado em fetchData
         }
@@ -1112,154 +1058,148 @@
 
       // Marca todas as contas de uma categoria (Fixa/Variável) como pagas/não pagas
       async function markAllCategoriaAsPaid(tipo, isChecked) {
-        const pagoStatus = isChecked ? "Sim" : "Não";
+        const pagoStatus = isChecked ? "Sim" : "Não"; /* [341] */
         try {
           // 1. Buscar todas as contas do mês atual
-          const todasContas = await fetchData("getContas");
-          const contasDaCategoria = todasContas.filter(c => c.tipo === tipo);
+          const todasContas = await fetchData("getContas"); /* [342] */
+          const contasDaCategoria = todasContas.filter(c => c.tipo === tipo); /* [342] */
           
           // 2. Criar promessas para atualizar cada conta da categoria
           const updatePromises = contasDaCategoria.map(conta => 
             fetchData("markContaAsPaid", { pago: pagoStatus }, conta.originalId || conta.id)
-          );
-          
+          ); /* [343] */
           // 3. Aguardar todas as atualizações
-          await Promise.all(updatePromises);
-          
+          await Promise.all(updatePromises); /* [344] */
           // 4. Recarregar todos os dados
-          fetchAllData();
+          fetchAllData(); /* [345] */
         } catch (error) {
-          alert(`Erro ao marcar todas as contas ${tipo.toLowerCase()}s. Verifique o console.`);
+          alert(`Erro ao marcar todas as contas ${tipo.toLowerCase()}s. Verifique o console.`); /* [346] */
         }
       }
 
       // Marca todas as compras de um cartão como pagas/não pagas (Ação no Frontend)
       async function markAllCartaoAsPaidFront(nomeCartao, isChecked) {
-          const pagoStatus = isChecked ? "Sim" : "Não";
+          const pagoStatus = isChecked ? "Sim" : "Não"; /* [347] */
           try {
               // 1. Buscar os dados atuais das compras por cartão
-              const cartoesData = await fetchData("getComprasPorCartao");
+              const cartoesData = await fetchData("getComprasPorCartao"); /* [348] */
               const cartao = cartoesData[nomeCartao];
 
               if (!cartao || !cartao.compras || cartao.compras.length === 0) {
-                  console.log(`Nenhuma compra encontrada para o cartão ${nomeCartao} para marcar.`);
-                  return; // Nada a fazer
+                  console.log(`Nenhuma compra encontrada para o cartão ${nomeCartao} para marcar.`); /* [349] */
+                  return; // Nada a fazer /* [349] */
               }
 
               // 2. Criar promessas para atualizar cada compra do cartão
               const updatePromises = cartao.compras.map(compra =>
                   fetchData("markCompraAsPaid", { pago: pagoStatus }, compra.originalId || compra.id)
-              );
-
+              ); /* [350] */
               // 3. Aguardar todas as atualizações
-              await Promise.all(updatePromises);
-
+              await Promise.all(updatePromises); /* [351] */
               // 4. Recarregar todos os dados para refletir as mudanças
-              fetchAllData();
+              fetchAllData(); /* [352] */
           } catch (error) {
-              alert(`Erro ao marcar todas as compras do cartão ${nomeCartao}. Verifique o console.`);
+              alert(`Erro ao marcar todas as compras do cartão ${nomeCartao}. Verifique o console.`); /* [353] */
           }
       }
 
       // Abre o modal de edição
       async function openEditModal(type, id) {
-        const modal = document.getElementById("editModal");
-        const titleEl = document.getElementById("modalTitle");
+        const modal = document.getElementById("editModal"); /* [354] */
+        const titleEl = document.getElementById("modalTitle"); /* [354] */
         const idInput = document.getElementById("editItemId");
         const typeInput = document.getElementById("editItemType");
-        const nomeInput = document.getElementById("editNome");
-        const valorInput = document.getElementById("editValor");
-        const compraFields = document.getElementById("editCompraFields");
-        const contaFields = document.getElementById("editContaFields");
+        const nomeInput = document.getElementById("editNome"); /* [355] */
+        const valorInput = document.getElementById("editValor"); /* [355] */
+        const compraFields = document.getElementById("editCompraFields"); /* [355] */
+        const contaFields = document.getElementById("editContaFields"); /* [356] */
 
         // Limpa e esconde campos específicos
-        compraFields.style.display = "none";
-        contaFields.style.display = "none";
+        compraFields.style.display = "none"; /* [356] */
+        contaFields.style.display = "none"; /* [356] */
 
         idInput.value = id;
         typeInput.value = type;
 
         try {
           let itemData;
-          if (type === "receita") {
-            titleEl.textContent = "Editar Receita";
-            const todasReceitas = await fetchData("getReceitas");
-            itemData = todasReceitas.find(r => r.id === id);
+          if (type === "receita") { /* [357] */
+            titleEl.textContent = "Editar Receita"; /* [358] */
+            const todasReceitas = await fetchData("getReceitas"); /* [358] */
+            itemData = todasReceitas.find(r => r.id === id); /* [359] */
           } else if (type === "compra") {
-            titleEl.textContent = "Editar Compra";
-            compraFields.style.display = "block";
-            const todasCompras = await fetchData("getCompras"); 
-            itemData = todasCompras.find(c => (c.originalId || c.id) === id);
+            titleEl.textContent = "Editar Compra"; /* [360] */
+            compraFields.style.display = "block"; /* [360] */
+            const todasCompras = await fetchData("getCompras");  /* [360] */
+            itemData = todasCompras.find(c => (c.originalId || c.id) === id); /* [361] */
           } else if (type === "conta") {
-            titleEl.textContent = "Editar Conta";
-            contaFields.style.display = "block";
-            const todasContas = await fetchData("getContas");
-            itemData = todasContas.find(c => (c.originalId || c.id) === id);
+            titleEl.textContent = "Editar Conta"; /* [362] */
+            contaFields.style.display = "block"; /* [362] */
+            const todasContas = await fetchData("getContas"); /* [362] */
+            itemData = todasContas.find(c => (c.originalId || c.id) === id); /* [363] */
           }
 
           if (!itemData) {
-            alert("Item não encontrado para edição.");
-            return;
+            alert("Item não encontrado para edição."); /* [364] */
+            return; /* [364] */
           }
 
           // Preenche campos comuns
-          nomeInput.value = itemData.nome || "";
-          valorInput.value = itemData.valor || "";
+          nomeInput.value = itemData.nome || ""; /* [365] */
+          valorInput.value = itemData.valor || ""; /* [365] */
 
           // Preenche campos específicos
           if (type === "compra") {
-            document.getElementById("editParcelasCompra").value = itemData.parcelas || "1/1";
-            document.getElementById("editResponsavelCompra").value = itemData.responsavel || "Liana";
-            document.getElementById("editCartaoCompra").value = itemData.cartao || "Nubank";
+            document.getElementById("editParcelasCompra").value = itemData.parcelas || "1/1"; /* [366] */
+            document.getElementById("editResponsavelCompra").value = itemData.responsavel || "Liana"; /* [367] */
+            document.getElementById("editCartaoCompra").value = itemData.cartao || "Nubank"; /* [367] */
           } else if (type === "conta") {
-            document.getElementById("editParcelasConta").value = itemData.parcelas || "1/1";
-            document.getElementById("editTipoConta").value = itemData.tipo || "Fixa";
+            document.getElementById("editParcelasConta").value = itemData.parcelas || "1/1"; /* [368] */
+            document.getElementById("editTipoConta").value = itemData.tipo || "Fixa"; /* [368] */
           }
 
-          modal.style.display = "block";
-
+          modal.style.display = "block"; /* [369] */
         } catch (error) {
-          alert("Erro ao buscar dados para edição. Verifique o console.");
+          alert("Erro ao buscar dados para edição. Verifique o console."); /* [370] */
         }
       }
 
       // Fecha o modal
       function closeModal() {
-        document.getElementById("editModal").style.display = "none";
+        document.getElementById("editModal").style.display = "none"; /* [371] */
       }
 
       // Envia os dados editados
       async function submitEdit() {
-        const id = document.getElementById("editItemId").value;
-        const type = document.getElementById("editItemType").value;
-        const nome = document.getElementById("editNome").value.trim();
-        const valor = document.getElementById("editValor").value;
-
-        if (!nome || !valor || parseFloat(valor) <= 0) {
-          alert("Nome e valor válido são obrigatórios.");
-          return;
+        const id = document.getElementById("editItemId").value; /* [372] */
+        const type = document.getElementById("editItemType").value; /* [372] */
+        const nome = document.getElementById("editNome").value.trim(); /* [372] */
+        const valor = document.getElementById("editValor").value; /* [373] */
+        if (!nome || !valor || parseFloat(valor) <= 0) { /* [373] */
+          alert("Nome e valor válido são obrigatórios."); /* [374] */
+          return; /* [374] */
         }
 
-        let action = "";
-        let dataToUpdate = { nome, valor: parseFloat(valor) };
+        let action = ""; /* [375] */
+        let dataToUpdate = { nome, valor: parseFloat(valor) }; /* [375] */
 
         if (type === "receita") {
-          action = "updateReceita";
+          action = "updateReceita"; /* [376] */
         } else if (type === "compra") {
-          action = "updateCompra";
-          dataToUpdate.responsavel = document.getElementById("editResponsavelCompra").value;
-          dataToUpdate.cartao = document.getElementById("editCartaoCompra").value;
+          action = "updateCompra"; /* [377] */
+          dataToUpdate.responsavel = document.getElementById("editResponsavelCompra").value; /* [377] */
+          dataToUpdate.cartao = document.getElementById("editCartaoCompra").value; /* [377] */
           // Não atualizamos parcelas aqui
         } else if (type === "conta") {
-          action = "updateConta";
-          dataToUpdate.tipo = document.getElementById("editTipoConta").value;
+          action = "updateConta"; /* [378] */
+          dataToUpdate.tipo = document.getElementById("editTipoConta").value; /* [378] */
           // Não atualizamos parcelas aqui
         }
 
         try {
-          await fetchData(action, dataToUpdate, id);
-          closeModal();
-          fetchAllData(); // Recarrega tudo
+          await fetchData(action, dataToUpdate, id); /* [379] */
+          closeModal(); /* [379] */
+          fetchAllData(); // Recarrega tudo /* [379] */
         } catch (error) {
           // Erro tratado em fetchData
         }
@@ -1268,16 +1208,15 @@
       // Deleta um item
       async function deleteItem(type, id) {
         if (!confirm("Tem certeza que deseja excluir este item?")) {
-          return;
+          return; /* [380] */
         }
         let action = "";
-        if (type === "receita") action = "deleteReceita";
-        else if (type === "compra") action = "deleteCompra";
-        else if (type === "conta") action = "deleteConta";
-
+        if (type === "receita") action = "deleteReceita"; /* [381] */
+        else if (type === "compra") action = "deleteCompra"; /* [381] */
+        else if (type === "conta") action = "deleteConta"; /* [382] */
         try {
-          await fetchData(action, {}, id);
-          fetchAllData(); // Recarrega tudo
+          await fetchData(action, {}, id); /* [382] */
+          fetchAllData(); /* [383] */ // Recarrega tudo
         } catch (error) {
           // Erro tratado em fetchData
         }
@@ -1285,16 +1224,15 @@
 
       // Busca todos os dados necessários para o painel
       async function fetchAllData() {
-        console.log(`Atualizando dados para ${currentMonth + 1}/${currentYear}`);
+        console.log(`Atualizando dados para ${currentMonth + 1}/${currentYear}`); /* [384] */
         try {
           // Mostra indicador de carregamento (opcional)
-          document.querySelector("header h2").textContent = "Carregando...";
-          document.getElementById("listaReceitas").innerHTML = "<p>Carregando...</p>";
-          document.getElementById("listaContasFixas").innerHTML = "<p>Carregando...</p>";
-          document.getElementById("listaContasVariaveis").innerHTML = "<p>Carregando...</p>";
-          document.getElementById("cartoesGrid").innerHTML = "<p>Carregando...</p>";
-          document.getElementById("responsaveisContainer").innerHTML = "<p>Carregando...</p>";
-
+          document.querySelector("header h2").textContent = "Carregando..."; /* [385] */
+          document.getElementById("listaReceitas").innerHTML = "<p>Carregando...</p>"; /* [385] */
+          document.getElementById("listaContasFixas").innerHTML = "<p>Carregando...</p>"; /* [385] */
+          document.getElementById("listaContasVariaveis").innerHTML = "<p>Carregando...</p>"; /* [385] */
+          document.getElementById("cartoesGrid").innerHTML = "<p>Carregando...</p>"; /* [385] */
+          document.getElementById("responsaveisContainer").innerHTML = "<p>Carregando...</p>"; /* [386] */
           // Faz todas as requisições em paralelo
           const [receitas, contas, comprasCartao, comprasResp, totais] = await Promise.all([
             fetchData("getReceitas"),
@@ -1302,23 +1240,22 @@
             fetchData("getComprasPorCartao"),
             fetchData("getComprasPorResponsavel"),
             fetchData("getTotais")
-          ]);
-
+          ]); /* [387] */
           // Atualiza a exibição com os dados recebidos
           updateMonthDisplay();
-          updateTotalsDisplay(totais); // Passa o objeto de totais
-          displayReceitas(receitas);
-          displayContas(contas, "Fixa");
-          displayContas(contas, "Variável");
-          displayCartoes(comprasCartao);
-          displayComprasPorResponsavel(comprasResp);
+          updateTotalsDisplay(totais); /* [388] */ // Passa o objeto de totais
+          displayReceitas(receitas); /* [388] */
+          displayContas(contas, "Fixa"); /* [388] */
+          displayContas(contas, "Variável"); /* [389] */
+          displayCartoes(comprasCartao); /* [389] */
+          displayComprasPorResponsavel(comprasResp); /* [389] */
 
           console.log("Todos os dados atualizados com sucesso.");
 
         } catch (error) {
-          console.error("Erro ao buscar todos os dados:", error);
+          console.error("Erro ao buscar todos os dados:", error); /* [390] */
           // Poderia mostrar uma mensagem de erro mais persistente aqui
-          document.querySelector("header h2").textContent = "Erro ao carregar";
+          document.querySelector("header h2").textContent = "Erro ao carregar"; /* [391] */
         } finally {
           // Esconde indicador de carregamento (se houver)
         }
@@ -1330,7 +1267,7 @@
         fetchAllData(); // Busca os dados iniciais
 
         // Botões de navegação de mês
-        document.getElementById("prevMonthBtn").addEventListener("click", () => {
+        document.getElementById("prevMonthBtn").addEventListener("click", () => { /* [392] */
           currentMonth--;
           if (currentMonth < 0) {
             currentMonth = 11;
@@ -1340,7 +1277,7 @@
         });
 
         document.getElementById("nextMonthBtn").addEventListener("click", () => {
-          currentMonth++;
+          currentMonth++; /* [393] */
           if (currentMonth > 11) {
             currentMonth = 0;
             currentYear++;
@@ -1350,15 +1287,14 @@
 
         // Fechar modal ao clicar fora
         window.onclick = function(event) {
-          const modal = document.getElementById("editModal");
+          const modal = document.getElementById("editModal"); /* [394] */
           if (event.target == modal) {
-            closeModal();
+            closeModal(); /* [395] */
           }
         }
-        console.log("Painel inicializado e listeners adicionados.");
+        console.log("Painel inicializado e listeners adicionados."); /* [396] */
       });
 
     </script>
   </body>
 </html>
-
