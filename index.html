@@ -673,7 +673,7 @@
       }
 
       async function fetchData(action, data = {}, recordId = null, method = "POST") {
-        console.log(`Enviando payload:`, { action, data, recordId, month: currentMonth + 1, year: currentYear });
+        console.log(`[fetchData] Enviando payload para ${action}:`, { action, data, recordId, month: currentMonth + 1, year: currentYear });
         try {
           const payload = { action: action, data: data, recordId: recordId, month: currentMonth + 1, year: currentYear };
           const response = await fetch(API_URL, {
@@ -683,18 +683,18 @@
           });
           if (!response.ok) {
             const errorText = await response.text();
-            console.error(`Erro HTTP (${response.status}) para ${action}:`, errorText);
+            console.error(`[fetchData] Erro HTTP (${response.status}) para ${action}:`, errorText);
             throw new Error(`Erro na requisição (${action}): ${response.status} ${response.statusText}`);
           }
           const result = await response.json();
-          console.log(`Resposta recebida (${action}):`, result);
+          console.log(`[fetchData] Resposta recebida para ${action}:`, result);
           if (result.status === "error") {
-            console.error(`Erro retornado pela API (${action}):`, result.message);
+            console.error(`[fetchData] Erro retornado pela API (${action}):`, result.message);
             throw new Error(result.message);
           }
           return result.data !== undefined ? result.data : result;
         } catch (error) {
-          console.error(`Falha na requisição (${action}):`, error);
+          console.error(`[fetchData] Falha na requisição (${action}):`, error);
           alert(`Erro ao comunicar com o servidor para a ação '${action}'. Verifique o console para detalhes.`);
           throw error;
         }
@@ -703,9 +703,11 @@
       function updateMonthDisplay() {
         const headerTitle = document.querySelector("header h2");
         headerTitle.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+        console.log(`[updateMonthDisplay] Mês exibido: ${monthNames[currentMonth]} ${currentYear}`);
       }
 
       function updateTotalsDisplay(data) {
+        console.log("[updateTotalsDisplay] Dados de totais recebidos:", data);
         const totalReceitasEl = document.getElementById("totalReceitas");
         const totalDespesasMesEl = document.getElementById("totalDespesasMes");
         const saldoBarEl = document.getElementById("saldoBar");
@@ -735,6 +737,7 @@
       }
 
       function displayReceitas(receitas) {
+        console.log("[displayReceitas] Receitas recebidas:", receitas);
         const listaReceitasEl = document.getElementById("listaReceitas");
         listaReceitasEl.innerHTML = "";
         if (!receitas || receitas.length === 0) {
@@ -747,13 +750,14 @@
           itemEl.innerHTML = `
             <span>${receita.nome} - ${formatCurrency(receita.valor)}</span>
             <div class="list-item-controls">
-              <button class="edit-button" onclick="openEditModal('receita', '${receita.id}')">Edit</button>
-              <button class="delete-button" onclick="deleteItem('receita', '${receita.id}')">X</button> </div>`;
+              <button class="edit-button" onclick="openEditModal(\'receita\', \'${receita.id}\')">Edit</button>
+              <button class="delete-button" onclick="deleteItem(\'receita\', \'${receita.id}\')">X</button> </div>`;
           listaReceitasEl.appendChild(itemEl);
         });
       }
 
       function displayContas(contas, tipo) {
+        console.log(`[displayContas] Contas (${tipo}) recebidas:`, contas);
         const listaElId = tipo === "Fixa" ? "listaContasFixas" : "listaContasVariaveis";
         const totalElId = tipo === "Fixa" ? "totalContasFixas" : "totalContasVariaveis";
         const checkAllElId = tipo === "Fixa" ? "checkAllContasFixas" : "checkAllContasVariaveis";
@@ -780,8 +784,8 @@
           itemEl.innerHTML = `
             <span>${conta.nome} (${conta.parcelas}) - ${formatCurrency(conta.valor)}</span>
             <div class="list-item-controls">
-              <button class="edit-button" onclick="openEditModal('conta', '${conta.originalId || conta.id}')">Edit</button>
-              <button class="delete-button" onclick="deleteItem('conta', '${conta.originalId || conta.id}')">X</button> <input type="checkbox" ${isPago ? "checked" : ""} onchange="markAsPaid('conta', '${conta.originalId || conta.id}', this.checked)">
+              <button class="edit-button" onclick="openEditModal(\'conta\', \'${conta.originalId || conta.id}\')">Edit</button>
+              <button class="delete-button" onclick="deleteItem(\'conta\', \'${conta.originalId || conta.id}\')">X</button> <input type="checkbox" ${isPago ? "checked" : ""} onchange="markAsPaid(\'conta\', \'${conta.originalId || conta.id}\', this.checked)">
             </div>`;
           listaEl.appendChild(itemEl);
         });
@@ -792,6 +796,7 @@
       }
 
       function displayCartoes(cartoesData) {
+        console.log("[displayCartoes] Dados de cartões recebidos:", cartoesData);
         const cartoesGridEl = document.getElementById("cartoesGrid");
         cartoesGridEl.innerHTML = "";
         const cartoesOrdenados = ["Nubank", "Santander", "Mercado Pago", "Amazon"];
@@ -820,8 +825,8 @@
                   <span>${compra.nome} (${compra.parcelas}) - ${formatCurrency(compra.valor)}</span>
                 </div>
                 <div class="list-item-controls">
-                   <button class="edit-button" onclick="openEditModal('compra', '${compra.originalId || compra.id}')">Edit</button>
-                   <button class="delete-button" onclick="deleteItem('compra', '${compra.originalId || compra.id}')">X</button> </div>`;
+                   <button class="edit-button" onclick="openEditModal(\'compra\', \'${compra.originalId || compra.id}\')">Edit</button>
+                   <button class="delete-button" onclick="deleteItem(\'compra\', \'${compra.originalId || compra.id}\')">X</button> </div>`;
               listaComprasEl.appendChild(compraEl);
             });
           }
@@ -840,7 +845,7 @@
       }
 
       function displayComprasPorResponsavel(responsaveisData) {
-        console.log("Dados recebidos para compras por responsável:", responsaveisData);
+        console.log("[displayComprasPorResponsavel] Dados recebidos para compras por responsável:", responsaveisData);
         const containerEl = document.getElementById("responsaveisContainer");
         containerEl.innerHTML = ""; // Limpa
 
@@ -857,6 +862,8 @@
 
           let comprasHtml = "";
           if (responsavel.compras && responsavel.compras.length > 0) {
+            // Ordena as compras por nome para exibição consistente
+            responsavel.compras.sort((a, b) => a.nome.localeCompare(b.nome));
             responsavel.compras.forEach(compra => {
               comprasHtml += `
                 <div class="compra-item">
@@ -1003,7 +1010,7 @@
       }
 
       async function fetchAllData() {
-        console.log(`Atualizando dados para ${currentMonth + 1}/${currentYear}`);
+        console.log(`[fetchAllData] Atualizando dados para ${currentMonth + 1}/${currentYear}`);
         try {
           // Atualiza o nome do mês ANTES de fazer as requisições
           updateMonthDisplay();
@@ -1028,9 +1035,9 @@
           displayContas(contas, "Variável");
           displayCartoes(comprasCartao);
           displayComprasPorResponsavel(comprasResp);
-          console.log("Todos os dados atualizados com sucesso.");
+          console.log("[fetchAllData] Todos os dados atualizados com sucesso.");
         } catch (error) {
-          console.error("Erro ao buscar todos os dados:", error);
+          console.error("[fetchAllData] Erro ao buscar todos os dados:", error);
           document.querySelector("header h2").textContent = "Erro ao carregar";
         }
       }
