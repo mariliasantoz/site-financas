@@ -661,69 +661,69 @@
     </div>
 
     <script>
-      const API_URL = "https://painel-financas-proxy.mariliaedua.workers.dev/"; /* [261] */
-      let currentMonth = new Date().getMonth(); /* [262] */
-      let currentYear = new Date().getFullYear(); /* [263] */
-      const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]; /* [264] */
-      const responsavelClasses = { "Liana": "responsavel-liana", "Stefany": "responsavel-stefany", "Marília": "responsavel-marilia", "Nosso ❤️": "responsavel-nosso" }; /* [265] */
-      const compraBgClasses = { "Liana": "compra-bg-liana", "Stefany": "compra-bg-stefany", "Marília": "compra-bg-marilia", "Nosso ❤️": "compra-bg-nosso" }; /* [266] */
+      const API_URL = "https://painel-financas-proxy.mariliaedua.workers.dev/";
+      let currentMonth = new Date().getMonth();
+      let currentYear = new Date().getFullYear();
+      const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+      const responsavelClasses = { "Liana": "responsavel-liana", "Stefany": "responsavel-stefany", "Marília": "responsavel-marilia", "Nosso ❤️": "responsavel-nosso" };
+      const compraBgClasses = { "Liana": "compra-bg-liana", "Stefany": "compra-bg-stefany", "Marília": "compra-bg-marilia", "Nosso ❤️": "compra-bg-nosso" };
       
       function formatCurrency(value) {
-        return `R$ ${Number(value).toFixed(2).replace(".", ",")}`; /* [267] */
+        return `R$ ${Number(value).toFixed(2).replace(".", ",")}`;
       }
 
       async function fetchData(action, data = {}, recordId = null, method = "POST") {
-        console.log(`Enviando payload:`, { action, data, recordId, month: currentMonth + 1, year: currentYear }); /* [268] */
+        console.log(`Enviando payload:`, { action, data, recordId, month: currentMonth + 1, year: currentYear });
         try {
           const payload = { action: action, data: data, recordId: recordId, month: currentMonth + 1, year: currentYear };
-          const response = await fetch(API_URL, { /* [269] */
+          const response = await fetch(API_URL, {
             method: method,
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
-          }); /* [270] */
+          });
           if (!response.ok) {
-            const errorText = await response.text(); /* [271] */
-            console.error(`Erro HTTP (${response.status}) para ${action}:`, errorText); /* [271] */
-            throw new Error(`Erro na requisição (${action}): ${response.status} ${response.statusText}`); /* [272] */
+            const errorText = await response.text();
+            console.error(`Erro HTTP (${response.status}) para ${action}:`, errorText);
+            throw new Error(`Erro na requisição (${action}): ${response.status} ${response.statusText}`);
           }
           const result = await response.json();
-          console.log(`Resposta recebida (${action}):`, result); /* [273] */
+          console.log(`Resposta recebida (${action}):`, result);
           if (result.status === "error") {
-            console.error(`Erro retornado pela API (${action}):`, result.message); /* [274] */
-            throw new Error(result.message); /* [274] */
+            console.error(`Erro retornado pela API (${action}):`, result.message);
+            throw new Error(result.message);
           }
-          return result.data !== undefined ? result.data : result; /* [275] */
+          return result.data !== undefined ? result.data : result;
         } catch (error) {
-          console.error(`Falha na requisição (${action}):`, error); /* [276] */
-          alert(`Erro ao comunicar com o servidor para a ação '${action}'. Verifique o console para detalhes.`); /* [276] */
-          throw error; /* [277] */
+          console.error(`Falha na requisição (${action}):`, error);
+          alert(`Erro ao comunicar com o servidor para a ação '${action}'. Verifique o console para detalhes.`);
+          throw error;
         }
       }
 
       function updateMonthDisplay() {
-        const headerTitle = document.querySelector("header h2"); /* [278] */
-        headerTitle.textContent = `${monthNames[currentMonth]} ${currentYear}`; /* [278] */
+        const headerTitle = document.querySelector("header h2");
+        headerTitle.textContent = `${monthNames[currentMonth]} ${currentYear}`;
       }
 
       function updateTotalsDisplay(data) {
-        const totalReceitasEl = document.getElementById("totalReceitas"); /* [279] */
-        const totalDespesasMesEl = document.getElementById("totalDespesasMes"); /* [279] */
-        const saldoBarEl = document.getElementById("saldoBar"); /* [280] */
-        const saldoLabelEl = document.getElementById("saldoLabel"); /* [280] */
+        const totalReceitasEl = document.getElementById("totalReceitas");
+        const totalDespesasMesEl = document.getElementById("totalDespesasMes");
+        const saldoBarEl = document.getElementById("saldoBar");
+        const saldoLabelEl = document.getElementById("saldoLabel");
 
         const totalReceitas = data.totalReceitas || 0;
-        const totalDespesasMes = data.totalDespesasMes || 0; /* [281] */
-        const totalPago = data.totalPago || 0; /* [281] */
+        const totalDespesasMes = data.totalDespesasMes || 0;
+        const totalPago = data.totalPago || 0;
 
-        totalReceitasEl.textContent = `Total de Receitas: ${formatCurrency(totalReceitas)}`; /* [282] */
-        totalDespesasMesEl.textContent = `Total de Despesas: ${formatCurrency(totalDespesasMes)}`; /* [282] */
+        totalReceitasEl.textContent = `Total de Receitas: ${formatCurrency(totalReceitas)}`;
+        totalDespesasMesEl.textContent = `Total de Despesas: ${formatCurrency(totalDespesasMes)}`;
 
-        const saldoAtual = totalReceitas - totalPago; /* [283] */
+        const saldoAtual = totalReceitas - totalPago;
         const faltaPagar = totalDespesasMes - totalPago;
         saldoLabelEl.textContent = `Saldo: ${formatCurrency(saldoAtual)} | Falta Pagar: ${formatCurrency(faltaPagar)}`;
 
-        const percentPago = totalDespesasMes > 0 ? (totalPago / totalDespesasMes) * 100 : 0; /* [284] */
-        saldoBarEl.style.width = `${Math.min(100, Math.max(0, percentPago))}%`; /* [285] */
+        const percentPago = totalDespesasMes > 0 ? (totalPago / totalDespesasMes) * 100 : 0;
+        saldoBarEl.style.width = `${Math.min(100, Math.max(0, percentPago))}%`;
         
         // Lógica de cor da barra ajustada: baseada no orçamento do mês
         const orcamentoDoMes = totalReceitas - totalDespesasMes;
@@ -735,11 +735,11 @@
       }
 
       function displayReceitas(receitas) {
-        const listaReceitasEl = document.getElementById("listaReceitas"); /* [288] */
-        listaReceitasEl.innerHTML = ""; /* [288] */
+        const listaReceitasEl = document.getElementById("listaReceitas");
+        listaReceitasEl.innerHTML = "";
         if (!receitas || receitas.length === 0) {
-          listaReceitasEl.innerHTML = "<p>Nenhuma receita para este mês.</p>"; /* [289] */
-          return; /* [289] */
+          listaReceitasEl.innerHTML = "<p>Nenhuma receita para este mês.</p>";
+          return;
         }
         receitas.forEach((receita) => {
           const itemEl = document.createElement("div");
@@ -749,52 +749,52 @@
             <div class="list-item-controls">
               <button class="edit-button" onclick="openEditModal('receita', '${receita.id}')">Edit</button>
               <button class="delete-button" onclick="deleteItem('receita', '${receita.id}')">X</button> </div>`;
-          listaReceitasEl.appendChild(itemEl); /* [291] */
+          listaReceitasEl.appendChild(itemEl);
         });
       }
 
       function displayContas(contas, tipo) {
-        const listaElId = tipo === "Fixa" ? "listaContasFixas" : "listaContasVariaveis"; /* [292] */
-        const totalElId = tipo === "Fixa" ? "totalContasFixas" : "totalContasVariaveis"; /* [292] */
-        const checkAllElId = tipo === "Fixa" ? "checkAllContasFixas" : "checkAllContasVariaveis"; /* [293] */
+        const listaElId = tipo === "Fixa" ? "listaContasFixas" : "listaContasVariaveis";
+        const totalElId = tipo === "Fixa" ? "totalContasFixas" : "totalContasVariaveis";
+        const checkAllElId = tipo === "Fixa" ? "checkAllContasFixas" : "checkAllContasVariaveis";
         const listaEl = document.getElementById(listaElId);
         const totalEl = document.getElementById(totalElId);
         const checkAllEl = document.getElementById(checkAllElId);
-        listaEl.innerHTML = ""; /* [294] */
+        listaEl.innerHTML = "";
         let totalAberto = 0;
-        let todasPagas = true; /* [295] */
-        const contasFiltradas = contas.filter(conta => conta.tipo === tipo); /* [295] */
+        let todasPagas = true;
+        const contasFiltradas = contas.filter(conta => conta.tipo === tipo);
         if (contasFiltradas.length === 0) {
-          listaEl.innerHTML = `<p>Nenhuma conta ${tipo.toLowerCase()} para este mês.</p>`; /* [296] */
-          totalEl.textContent = `Total Aberto: ${formatCurrency(0)}`; /* [296] */
+          listaEl.innerHTML = `<p>Nenhuma conta ${tipo.toLowerCase()} para este mês.</p>`;
+          totalEl.textContent = `Total Aberto: ${formatCurrency(0)}`;
           checkAllEl.checked = false;
           checkAllEl.disabled = true;
-          return; /* [297] */
+          return;
         }
         contasFiltradas.forEach((conta) => {
           const itemEl = document.createElement("div");
           itemEl.classList.add("list-item");
           const isPago = String(conta.pago).toLowerCase() === "sim";
           if (isPago) { itemEl.classList.add("item-pago"); }
-          else { totalAberto += parseFloat(conta.valor || 0); todasPagas = false; } /* [298] */
+          else { totalAberto += parseFloat(conta.valor || 0); todasPagas = false; }
           itemEl.innerHTML = `
             <span>${conta.nome} (${conta.parcelas}) - ${formatCurrency(conta.valor)}</span>
             <div class="list-item-controls">
               <button class="edit-button" onclick="openEditModal('conta', '${conta.originalId || conta.id}')">Edit</button>
               <button class="delete-button" onclick="deleteItem('conta', '${conta.originalId || conta.id}')">X</button> <input type="checkbox" ${isPago ? "checked" : ""} onchange="markAsPaid('conta', '${conta.originalId || conta.id}', this.checked)">
-            </div>`; /* [300] */
+            </div>`;
           listaEl.appendChild(itemEl);
         });
         totalEl.textContent = `Total Aberto: ${formatCurrency(totalAberto)}`;
         checkAllEl.checked = todasPagas;
-        checkAllEl.disabled = false; /* [301] */
-        checkAllEl.onchange = () => markAllCategoriaAsPaid(tipo, checkAllEl.checked); /* [302] */
+        checkAllEl.disabled = false;
+        checkAllEl.onchange = () => markAllCategoriaAsPaid(tipo, checkAllEl.checked);
       }
 
       function displayCartoes(cartoesData) {
-        const cartoesGridEl = document.getElementById("cartoesGrid"); /* [303] */
-        cartoesGridEl.innerHTML = ""; /* [303] */
-        const cartoesOrdenados = ["Nubank", "Santander", "Mercado Pago", "Amazon"]; /* [304] */
+        const cartoesGridEl = document.getElementById("cartoesGrid");
+        cartoesGridEl.innerHTML = "";
+        const cartoesOrdenados = ["Nubank", "Santander", "Mercado Pago", "Amazon"];
         cartoesOrdenados.forEach(nomeCartao => {
           const cartao = cartoesData[nomeCartao] || { total: 0, compras: [] };
           const cartaoBoxEl = document.createElement("div");
@@ -802,26 +802,26 @@
           cartaoBoxEl.classList.add("cartao-box", cartaoClass);
           const listaComprasEl = document.createElement("div");
           listaComprasEl.classList.add("cartao-list");
-          let todasComprasPagas = true; /* [305] */
+          let todasComprasPagas = true;
           if (cartao.compras.length === 0) {
             listaComprasEl.innerHTML = "<p>Nenhuma compra neste cartão para este mês.</p>";
             todasComprasPagas = false;
           } else {
-            cartao.compras.forEach(compra => { /* [306] */
+            cartao.compras.forEach(compra => {
               const compraEl = document.createElement("div");
-              compraEl.classList.add("compra"); /* [307] */
-              const isPago = String(compra.pago).toLowerCase() === "sim"; /* [307] */
-              if (isPago) { compraEl.classList.add("item-pago"); } /* [308] */
-              else { todasComprasPagas = false; } /* [309] */
-              const bgClass = compraBgClasses[compra.responsavel] || ""; /* [310] */
-              compraEl.classList.add(bgClass); /* [310] */
+              compraEl.classList.add("compra");
+              const isPago = String(compra.pago).toLowerCase() === "sim";
+              if (isPago) { compraEl.classList.add("item-pago"); }
+              else { todasComprasPagas = false; }
+              const bgClass = compraBgClasses[compra.responsavel] || "";
+              compraEl.classList.add(bgClass);
               compraEl.innerHTML = `
                 <div class="list-item-content">
                   <span>${compra.nome} (${compra.parcelas}) - ${formatCurrency(compra.valor)}</span>
                 </div>
                 <div class="list-item-controls">
                    <button class="edit-button" onclick="openEditModal('compra', '${compra.originalId || compra.id}')">Edit</button>
-                   <button class="delete-button" onclick="deleteItem('compra', '${compra.originalId || compra.id}')">X</button> </div>`; /* [312] */
+                   <button class="delete-button" onclick="deleteItem('compra', '${compra.originalId || compra.id}')">X</button> </div>`;
               listaComprasEl.appendChild(compraEl);
             });
           }
@@ -829,38 +829,44 @@
             <h3>${nomeCartao.toUpperCase()}</h3>
             <div class="total-cartao">
               <span>Total Fatura: ${formatCurrency(cartao.total)}</span>
-              <input type="checkbox" class="checkbox-pago-total" id="checkAll${cartaoClass}" title="Marcar/Desmarcar todas as compras do ${nomeCartao}" ${todasComprasPagas && cartao.compras.length > 0 ? "checked" : ""} ${cartao.compras.length === 0 ? "disabled" : ""}> </div>`; /* [314] */
-          cartaoBoxEl.appendChild(listaComprasEl); /* [314] */
-          cartoesGridEl.appendChild(cartaoBoxEl); /* [315] */
-          const checkAllCartaoEl = document.getElementById(`checkAll${cartaoClass}`); /* [316] */
+              <input type="checkbox" class="checkbox-pago-total" id="checkAll${cartaoClass}" title="Marcar/Desmarcar todas as compras do ${nomeCartao}" ${todasComprasPagas && cartao.compras.length > 0 ? "checked" : ""} ${cartao.compras.length === 0 ? "disabled" : ""}> </div>`;
+          cartaoBoxEl.appendChild(listaComprasEl);
+          cartoesGridEl.appendChild(cartaoBoxEl);
+          const checkAllCartaoEl = document.getElementById(`checkAll${cartaoClass}`);
           if (checkAllCartaoEl) {
-            checkAllCartaoEl.onchange = () => markAllCartaoAsPaidFront(nomeCartao, checkAllCartaoEl.checked); /* [317] */
+            checkAllCartaoEl.onchange = () => markAllCartaoAsPaidFront(nomeCartao, checkAllCartaoEl.checked);
           }
         });
       }
 
       function displayComprasPorResponsavel(responsaveisData) {
-        const containerEl = document.getElementById("responsaveisContainer"); /* [318] */
-        containerEl.innerHTML = ""; // Limpa /* [318] */
+        console.log("Dados recebidos para compras por responsável:", responsaveisData);
+        const containerEl = document.getElementById("responsaveisContainer");
+        containerEl.innerHTML = ""; // Limpa
 
-        const responsaveisOrdenados = ["Liana", "Stefany", "Marília", "Nosso ❤️"]; /* [319] */
+        if (!responsaveisData || Object.keys(responsaveisData).length === 0) {
+          containerEl.innerHTML = "<p>Nenhuma compra encontrada para este mês.</p>";
+          return;
+        }
+
+        const responsaveisOrdenados = ["Liana", "Stefany", "Marília", "Nosso ❤️"];
         responsaveisOrdenados.forEach(nomeResponsavel => {
           const responsavel = responsaveisData[nomeResponsavel] || { total: 0, compras: [] };
           const responsavelBoxEl = document.createElement("div");
-          responsavelBoxEl.classList.add("responsavel-box"); // Esta classe já pega o estilo azul da regra geral
+          responsavelBoxEl.classList.add("responsavel-box");
 
           let comprasHtml = "";
-          if (responsavel.compras.length > 0) {
-            responsavel.compras.forEach(compra => { /* [320] */
+          if (responsavel.compras && responsavel.compras.length > 0) {
+            responsavel.compras.forEach(compra => {
               comprasHtml += `
                 <div class="compra-item">
                   <span class="compra-nome">${compra.nome}</span>
                   <span class="compra-detalhes">(${compra.parcelas}) - ${formatCurrency(compra.valor)}</span>
                 </div>
-              `; /* Inspirado em [320, 321] */
+              `;
             });
           } else {
-            comprasHtml = "<p>Nenhuma compra este mês.</p>"; /* [322] */
+            comprasHtml = "<p>Nenhuma compra este mês.</p>";
           }
 
           responsavelBoxEl.innerHTML = `
@@ -869,176 +875,180 @@
             <div class="responsavel-list">
               ${comprasHtml}
             </div>
-          `; /* Inspirado em [323] */
+          `;
           
-          containerEl.appendChild(responsavelBoxEl); /* [324] */
+          containerEl.appendChild(responsavelBoxEl);
         });
       }
 
       async function submitReceita() {
-        const nome = document.getElementById("nomeReceita").value.trim(); /* [325] */
-        const valor = document.getElementById("valorReceita").value; /* [325] */
-        if (!nome || !valor || parseFloat(valor) <= 0) { alert("Por favor, preencha o nome e um valor válido para a receita."); return; } /* [326] */
+        const nome = document.getElementById("nomeReceita").value.trim();
+        const valor = document.getElementById("valorReceita").value;
+        if (!nome || !valor || parseFloat(valor) <= 0) { alert("Por favor, preencha o nome e um valor válido para a receita."); return; }
         try {
-          await fetchData("addReceita", { nome, valor: parseFloat(valor) }); /* [327] */
-          document.getElementById("nomeReceita").value = ""; /* [327] */
+          await fetchData("addReceita", { nome, valor: parseFloat(valor) });
+          document.getElementById("nomeReceita").value = "";
           document.getElementById("valorReceita").value = "";
           fetchAllData();
         } catch (error) {}
       }
 
       async function submitCompra() {
-        const nome = document.getElementById("nomeCompra").value.trim(); /* [328] */
-        const valor = document.getElementById("valorCompra").value; /* [328] */
-        const parcelas = document.getElementById("parcelasCompra").value || "1"; /* [328] */
-        const responsavel = document.getElementById("responsavelCompra").value; /* [328] */
-        const cartao = document.getElementById("cartaoCompra").value; /* [328] */
-        if (!nome || !valor || parseFloat(valor) <= 0 || parseInt(parcelas) <= 0) { alert("Preencha nome, valor da parcela (>0) e número de parcelas (>0) válidos."); return; } /* [329, 330] */
+        const nome = document.getElementById("nomeCompra").value.trim();
+        const valor = document.getElementById("valorCompra").value;
+        const parcelas = document.getElementById("parcelasCompra").value || "1";
+        const responsavel = document.getElementById("responsavelCompra").value;
+        const cartao = document.getElementById("cartaoCompra").value;
+        if (!nome || !valor || parseFloat(valor) <= 0 || parseInt(parcelas) <= 0) { alert("Preencha nome, valor da parcela (>0) e número de parcelas (>0) válidos."); return; }
         try {
-          await fetchData("addCompraCartao", { nome, valor: parseFloat(valor), parcelas: parseInt(parcelas), responsavel, cartao }); /* [331] */
-          document.getElementById("nomeCompra").value = ""; /* [331] */
-          document.getElementById("valorCompra").value = ""; /* [332] */
-          document.getElementById("parcelasCompra").value = "1"; /* [332] */
+          await fetchData("addCompraCartao", { nome, valor: parseFloat(valor), parcelas: parseInt(parcelas), responsavel, cartao });
+          document.getElementById("nomeCompra").value = "";
+          document.getElementById("valorCompra").value = "";
+          document.getElementById("parcelasCompra").value = "1";
           fetchAllData();
         } catch (error) {}
       }
 
       async function submitConta() {
-        const nome = document.getElementById("nomeConta").value.trim(); /* [333] */
-        const valor = document.getElementById("valorConta").value; /* [333] */
-        const parcelas = document.getElementById("parcelasConta").value || "1"; /* [333] */
-        const tipo = document.getElementById("tipoConta").value; /* [333] */
-        if (!nome || !valor || parseFloat(valor) <= 0 || parseInt(parcelas) <= 0) { alert("Preencha nome, valor da parcela (>0) e número de parcelas (>0) válidos."); return; } /* [334, 335] */
+        const nome = document.getElementById("nomeConta").value.trim();
+        const valor = document.getElementById("valorConta").value;
+        const parcelas = document.getElementById("parcelasConta").value || "1";
+        const tipo = document.getElementById("tipoConta").value;
+        if (!nome || !valor || parseFloat(valor) <= 0 || parseInt(parcelas) <= 0) { alert("Preencha nome, valor da parcela (>0) e número de parcelas (>0) válidos."); return; }
         try {
-          await fetchData("addConta", { nome, valor: parseFloat(valor), parcelas: parseInt(parcelas), tipo }); /* [336] */
-          document.getElementById("nomeConta").value = ""; /* [336] */
-          document.getElementById("valorConta").value = ""; /* [337] */
-          document.getElementById("parcelasConta").value = "1"; /* [337] */
+          await fetchData("addConta", { nome, valor: parseFloat(valor), parcelas: parseInt(parcelas), tipo });
+          document.getElementById("nomeConta").value = "";
+          document.getElementById("valorConta").value = "";
+          document.getElementById("parcelasConta").value = "1";
           fetchAllData();
         } catch (error) {}
       }
 
       async function markAsPaid(type, id, isChecked) {
-        const action = type === "conta" ? "markContaAsPaid" : "markCompraAsPaid"; /* [338] */
-        const pagoStatus = isChecked ? "Sim" : "Não"; /* [339] */
-        try { await fetchData(action, { pago: pagoStatus }, id); fetchAllData(); } catch (error) {} /* [339, 340] */
+        const action = type === "conta" ? "markContaAsPaid" : "markCompraAsPaid";
+        const pagoStatus = isChecked ? "Sim" : "Não";
+        try { await fetchData(action, { pago: pagoStatus }, id); fetchAllData(); } catch (error) {}
       }
 
       async function markAllCategoriaAsPaid(tipo, isChecked) {
-        const pagoStatus = isChecked ? "Sim" : "Não"; /* [341] */
+        const pagoStatus = isChecked ? "Sim" : "Não";
         try {
-          const todasContas = await fetchData("getContas"); /* [342] */
-          const contasDaCategoria = todasContas.filter(c => c.tipo === tipo); /* [342] */
-          const updatePromises = contasDaCategoria.map(conta => fetchData("markContaAsPaid", { pago: pagoStatus }, conta.originalId || conta.id)); /* [343] */
-          await Promise.all(updatePromises); /* [344] */
-          fetchAllData(); /* [345] */
-        } catch (error) { alert(`Erro ao marcar todas as contas ${tipo.toLowerCase()}s. Verifique o console.`); } /* [346] */
+          const todasContas = await fetchData("getContas");
+          const contasDaCategoria = todasContas.filter(c => c.tipo === tipo);
+          const updatePromises = contasDaCategoria.map(conta => fetchData("markContaAsPaid", { pago: pagoStatus }, conta.originalId || conta.id));
+          await Promise.all(updatePromises);
+          fetchAllData();
+        } catch (error) { alert(`Erro ao marcar todas as contas ${tipo.toLowerCase()}s. Verifique o console.`); }
       }
 
       async function markAllCartaoAsPaidFront(nomeCartao, isChecked) {
-          const pagoStatus = isChecked ? "Sim" : "Não"; /* [347] */
+          const pagoStatus = isChecked ? "Sim" : "Não";
           try {
-              const cartoesData = await fetchData("getComprasPorCartao"); /* [348] */
+              const cartoesData = await fetchData("getComprasPorCartao");
               const cartao = cartoesData[nomeCartao];
-              if (!cartao || !cartao.compras || cartao.compras.length === 0) { console.log(`Nenhuma compra encontrada para o cartão ${nomeCartao} para marcar.`); return; } /* [349] */
-              const updatePromises = cartao.compras.map(compra => fetchData("markCompraAsPaid", { pago: pagoStatus }, compra.originalId || compra.id)); /* [350] */
-              await Promise.all(updatePromises); /* [351] */
-              fetchAllData(); /* [352] */
-          } catch (error) { alert(`Erro ao marcar todas as compras do cartão ${nomeCartao}. Verifique o console.`); } /* [353] */
+              if (!cartao || !cartao.compras || cartao.compras.length === 0) { console.log(`Nenhuma compra encontrada para o cartão ${nomeCartao} para marcar.`); return; }
+              const updatePromises = cartao.compras.map(compra => fetchData("markCompraAsPaid", { pago: pagoStatus }, compra.originalId || compra.id));
+              await Promise.all(updatePromises);
+              fetchAllData();
+          } catch (error) { alert(`Erro ao marcar todas as compras do cartão ${nomeCartao}. Verifique o console.`); }
       }
 
       async function openEditModal(type, id) {
-        const modal = document.getElementById("editModal"); /* [354] */
-        const titleEl = document.getElementById("modalTitle"); /* [354] */
+        const modal = document.getElementById("editModal");
+        const titleEl = document.getElementById("modalTitle");
         const idInput = document.getElementById("editItemId");
         const typeInput = document.getElementById("editItemType");
-        const nomeInput = document.getElementById("editNome"); /* [355] */
-        const valorInput = document.getElementById("editValor"); /* [355] */
-        const compraFields = document.getElementById("editCompraFields"); /* [355] */
-        const contaFields = document.getElementById("editContaFields"); /* [356] */
-        compraFields.style.display = "none"; /* [356] */
-        contaFields.style.display = "none"; /* [356] */
+        const nomeInput = document.getElementById("editNome");
+        const valorInput = document.getElementById("editValor");
+        const compraFields = document.getElementById("editCompraFields");
+        const contaFields = document.getElementById("editContaFields");
+        compraFields.style.display = "none";
+        contaFields.style.display = "none";
         idInput.value = id; typeInput.value = type;
         try {
           let itemData;
-          if (type === "receita") { titleEl.textContent = "Editar Receita"; const todasReceitas = await fetchData("getReceitas"); itemData = todasReceitas.find(r => r.id === id); } /* [357, 358, 359] */
-          else if (type === "compra") { titleEl.textContent = "Editar Compra"; compraFields.style.display = "block"; const todasCompras = await fetchData("getCompras"); itemData = todasCompras.find(c => (c.originalId || c.id) === id); } /* [360, 361] */
-          else if (type === "conta") { titleEl.textContent = "Editar Conta"; contaFields.style.display = "block"; const todasContas = await fetchData("getContas"); itemData = todasContas.find(c => (c.originalId || c.id) === id); } /* [362, 363] */
-          if (!itemData) { alert("Item não encontrado para edição."); return; } /* [364] */
-          nomeInput.value = itemData.nome || ""; valorInput.value = itemData.valor || ""; /* [365] */
-          if (type === "compra") { document.getElementById("editParcelasCompra").value = itemData.parcelas || "1/1"; document.getElementById("editResponsavelCompra").value = itemData.responsavel || "Liana"; document.getElementById("editCartaoCompra").value = itemData.cartao || "Nubank"; } /* [366, 367] */
-          else if (type === "conta") { document.getElementById("editParcelasConta").value = itemData.parcelas || "1/1"; document.getElementById("editTipoConta").value = itemData.tipo || "Fixa"; } /* [368] */
-          modal.style.display = "block"; /* [369] */
-        } catch (error) { alert("Erro ao buscar dados para edição. Verifique o console."); } /* [370] */
+          if (type === "receita") { titleEl.textContent = "Editar Receita"; const todasReceitas = await fetchData("getReceitas"); itemData = todasReceitas.find(r => r.id === id); }
+          else if (type === "compra") { titleEl.textContent = "Editar Compra"; compraFields.style.display = "block"; const todasCompras = await fetchData("getCompras"); itemData = todasCompras.find(c => (c.originalId || c.id) === id); }
+          else if (type === "conta") { titleEl.textContent = "Editar Conta"; contaFields.style.display = "block"; const todasContas = await fetchData("getContas"); itemData = todasContas.find(c => (c.originalId || c.id) === id); }
+          if (!itemData) { alert("Item não encontrado para edição."); return; }
+          nomeInput.value = itemData.nome || ""; valorInput.value = itemData.valor || "";
+          if (type === "compra") { document.getElementById("editParcelasCompra").value = itemData.parcelas || "1/1"; document.getElementById("editResponsavelCompra").value = itemData.responsavel || "Liana"; document.getElementById("editCartaoCompra").value = itemData.cartao || "Nubank"; }
+          else if (type === "conta") { document.getElementById("editParcelasConta").value = itemData.parcelas || "1/1"; document.getElementById("editTipoConta").value = itemData.tipo || "Fixa"; }
+          modal.style.display = "block";
+        } catch (error) { alert("Erro ao buscar dados para edição. Verifique o console."); }
       }
 
-      function closeModal() { document.getElementById("editModal").style.display = "none"; } /* [371] */
+      function closeModal() { document.getElementById("editModal").style.display = "none"; }
 
       async function submitEdit() {
-        const id = document.getElementById("editItemId").value; /* [372] */
-        const type = document.getElementById("editItemType").value; /* [372] */
-        const nome = document.getElementById("editNome").value.trim(); /* [372] */
-        const valor = document.getElementById("editValor").value; /* [373] */
-        if (!nome || !valor || parseFloat(valor) <= 0) { alert("Nome e valor válido são obrigatórios."); return; } /* [373, 374] */
-        let action = ""; let dataToUpdate = { nome, valor: parseFloat(valor) }; /* [375] */
-        if (type === "receita") { action = "updateReceita"; } /* [376] */
-        else if (type === "compra") { action = "updateCompra"; dataToUpdate.responsavel = document.getElementById("editResponsavelCompra").value; dataToUpdate.cartao = document.getElementById("editCartaoCompra").value; } /* [377] */
-        else if (type === "conta") { action = "updateConta"; dataToUpdate.tipo = document.getElementById("editTipoConta").value; } /* [378] */
-        try { await fetchData(action, dataToUpdate, id); closeModal(); fetchAllData(); } catch (error) {} /* [379] */
+        const id = document.getElementById("editItemId").value;
+        const type = document.getElementById("editItemType").value;
+        const nome = document.getElementById("editNome").value.trim();
+        const valor = document.getElementById("editValor").value;
+        if (!nome || !valor || parseFloat(valor) <= 0) { alert("Nome e valor válido são obrigatórios."); return; }
+        let action = ""; let dataToUpdate = { nome, valor: parseFloat(valor) };
+        if (type === "receita") { action = "updateReceita"; }
+        else if (type === "compra") { action = "updateCompra"; dataToUpdate.responsavel = document.getElementById("editResponsavelCompra").value; dataToUpdate.cartao = document.getElementById("editCartaoCompra").value; }
+        else if (type === "conta") { action = "updateConta"; dataToUpdate.tipo = document.getElementById("editTipoConta").value; }
+        try { await fetchData(action, dataToUpdate, id); closeModal(); fetchAllData(); } catch (error) {}
       }
 
       async function deleteItem(type, id) {
-        if (!confirm("Tem certeza que deseja excluir este item?")) { return; } /* [380] */
+        if (!confirm("Tem certeza que deseja excluir este item?")) { return; }
         let action = "";
-        if (type === "receita") action = "deleteReceita"; /* [381] */
-        else if (type === "compra") action = "deleteCompra"; /* [381] */
-        else if (type === "conta") action = "deleteConta"; /* [382] */
-        try { await fetchData(action, {}, id); fetchAllData(); } catch (error) {} /* [382, 383] */
+        if (type === "receita") action = "deleteReceita";
+        else if (type === "compra") action = "deleteCompra";
+        else if (type === "conta") action = "deleteConta";
+        try { await fetchData(action, {}, id); fetchAllData(); } catch (error) {}
       }
 
       async function fetchAllData() {
-        console.log(`Atualizando dados para ${currentMonth + 1}/${currentYear}`); /* [384] */
+        console.log(`Atualizando dados para ${currentMonth + 1}/${currentYear}`);
         try {
-          document.querySelector("header h2").textContent = "Carregando..."; /* [385] */
-          document.getElementById("listaReceitas").innerHTML = "<p>Carregando...</p>"; /* [385] */
-          document.getElementById("listaContasFixas").innerHTML = "<p>Carregando...</p>"; /* [385] */
-          document.getElementById("listaContasVariaveis").innerHTML = "<p>Carregando...</p>"; /* [385] */
-          document.getElementById("cartoesGrid").innerHTML = "<p>Carregando...</p>"; /* [385] */
-          document.getElementById("responsaveisContainer").innerHTML = "<p>Carregando...</p>"; /* [386] */
+          // Atualiza o nome do mês ANTES de fazer as requisições
+          updateMonthDisplay();
+          
+          document.getElementById("listaReceitas").innerHTML = "<p>Carregando...</p>";
+          document.getElementById("listaContasFixas").innerHTML = "<p>Carregando...</p>";
+          document.getElementById("listaContasVariaveis").innerHTML = "<p>Carregando...</p>";
+          document.getElementById("cartoesGrid").innerHTML = "<p>Carregando...</p>";
+          document.getElementById("responsaveisContainer").innerHTML = "<p>Carregando...</p>";
           
           const [receitas, contas, comprasCartao, comprasResp, totais] = await Promise.all([
-            fetchData("getReceitas"), fetchData("getContas"), fetchData("getComprasPorCartao"),
-            fetchData("getComprasPorResponsavel"), fetchData("getTotais")
-          ]); /* [387] */
+            fetchData("getReceitas"), 
+            fetchData("getContas"), 
+            fetchData("getComprasPorCartao"),
+            fetchData("getComprasPorResponsavel"), 
+            fetchData("getTotais")
+          ]);
           
-          updateMonthDisplay();
-          updateTotalsDisplay(totais); /* [388] */
-          displayReceitas(receitas); /* [388] */
-          displayContas(contas, "Fixa"); /* [388] */
-          displayContas(contas, "Variável"); /* [389] */
-          displayCartoes(comprasCartao); /* [389] */
-          displayComprasPorResponsavel(comprasResp); /* [389] */
+          updateTotalsDisplay(totais);
+          displayReceitas(receitas);
+          displayContas(contas, "Fixa");
+          displayContas(contas, "Variável");
+          displayCartoes(comprasCartao);
+          displayComprasPorResponsavel(comprasResp);
           console.log("Todos os dados atualizados com sucesso.");
         } catch (error) {
-          console.error("Erro ao buscar todos os dados:", error); /* [390] */
-          document.querySelector("header h2").textContent = "Erro ao carregar"; /* [391] */
+          console.error("Erro ao buscar todos os dados:", error);
+          document.querySelector("header h2").textContent = "Erro ao carregar";
         }
       }
 
       document.addEventListener("DOMContentLoaded", () => {
         console.log("DOM carregado. Iniciando painel...");
         fetchAllData();
-        document.getElementById("prevMonthBtn").addEventListener("click", () => { /* [392] */
+        document.getElementById("prevMonthBtn").addEventListener("click", () => {
           currentMonth--; if (currentMonth < 0) { currentMonth = 11; currentYear--; } fetchAllData();
         });
         document.getElementById("nextMonthBtn").addEventListener("click", () => {
-          currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; } fetchAllData(); /* [393] */
+          currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; } fetchAllData();
         });
         window.onclick = function(event) {
-          const modal = document.getElementById("editModal"); /* [394] */
-          if (event.target == modal) { closeModal(); } /* [395] */
+          const modal = document.getElementById("editModal");
+          if (event.target == modal) { closeModal(); }
         }
-        console.log("Painel inicializado e listeners adicionados."); /* [396] */
+        console.log("Painel inicializado e listeners adicionados.");
       });
 
     </script>
