@@ -851,7 +851,7 @@
         document.getElementById('markAllContasVariaveisPaid').checked = allVariaveisPaid && contasVariaveisList.children.length > 0;
       }
 
-      function displayCompras(compras) {
+      /*function displayCompras(compras) {
         const cartoesGrid = document.getElementById('cartoesGrid');
         cartoesGrid.innerHTML = '';
         const comprasPorCartao = {};
@@ -899,8 +899,68 @@
             listElement.appendChild(compraDiv);
           });
         }
-      }
+      }*/
+      function displayCompras(compras) {
+  const cartoesGrid = document.getElementById('cartoesGrid');
+  cartoesGrid.innerHTML = '';
+  const comprasPorCartao = {};
 
+  compras.forEach(compra => {
+    const cartao = compra.cartao || 'Outro';
+    if (!comprasPorCartao[cartao]) {
+      comprasPorCartao[cartao] = { total: 0, compras: [] };
+    }
+    comprasPorCartao[cartao].total += parseFloat(compra.valor || 0);
+    comprasPorCartao[cartao].compras.push(compra);
+  });
+
+  for (const cartao in comprasPorCartao) {
+    const cartaoBox = document.createElement('div');
+    cartaoBox.classList.add('cartao-box');
+    cartaoBox.classList.add(cartao.toLowerCase().replace(/ /g, ''));
+
+    cartaoBox.innerHTML = `
+      <h3>${cartao}</h3>
+      <div class="cartao-list" id="${cartao.replace(/ /g, '')}List"></div>
+      <div class="total-cartao">
+        <span>Total:</span>
+        <span id="total${cartao.replace(/ /g, '')}Cartao">${formatCurrency(comprasPorCartao[cartao].total)}</span>
+        <input type="checkbox" class="checkbox-pago-total" onchange="markCartaoAsPaid('${cartao}', this)">
+      </div>
+    `;
+    cartoesGrid.appendChild(cartaoBox);
+
+    const listElement = document.getElementById(`${cartao.replace(/ /g, '')}List`);
+    comprasPorCartao[cartao].compras.forEach(compra => {
+      const isPaid = String(compra.pago).toLowerCase() === 'sim';
+      const compraDiv = document.createElement('div');
+      compraDiv.classList.add('compra');
+      if (isPaid) compraDiv.classList.add('item-pago');
+      compraDiv.innerHTML = `
+        <div class="list-item-content">
+          <span>${compra.nome} (${compra.parcelas})</span>
+          <span>${formatCurrency(compra.valor)}</span>
+        </div>
+        <div class="list-item-controls">
+          <button class="edit-button" onclick="openEditCompraModal('${compra.originalId || compra.id}', '${compra.nome}', ${compra.valor}, '${compra.parcelas}', '${compra.cartao}', '${compra.responsavel}')">Editar</button>
+          <button class="delete-button" onclick="deleteRecord('Compra', '${compra.originalId || compra.id}')">Excluir</button>
+        </div>
+      `;
+      listElement.appendChild(compraDiv);
+    });
+  }
+}
+
+async function markCartaoAsPaid(cartao, checkbox) {
+  const status = checkbox.checked ? 'Sim' : 'Não';
+  const result = await sendRequest('markCartaoAsPaid', { cartao, pago: status });
+  if (result.status === 'success') {
+    fetchData();
+  } else {
+    checkbox.checked = !checkbox.checked;
+    alert('Erro ao marcar cartão como pago.');
+  }
+}
       function updateTotals(totals) {
         document.getElementById('totalReceitas').textContent = formatCurrency(totals.totalReceitas || 0);
         document.getElementById('totalDespesasMes').textContent = formatCurrency(totals.totalDespesasMes || 0);
