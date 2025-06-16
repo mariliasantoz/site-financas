@@ -500,647 +500,564 @@
       .modal select {
           width: 100%; /* [236] */
           padding: 8px; /* [236] */
-          margin-bottom: 10px;
+          margin-bottom: 15px;
           border: 1px solid #ccc;
           border-radius: 4px;
           box-sizing: border-box; /* [237] */
       }
       .modal button {
           width: 100%; /* [238] */
-          margin-top: 10px; /* [238] */
+          padding: 10px; /* [238] */
       }
+
     </style>
   </head>
   <body>
     <div class="container">
       <header>
-        <h1>Painel Financeiro Familiar</h1>
+        <h1>Painel Financeiro</h1>
+        <h2>Carregando...</h2>
         <div class="nav-buttons">
-            <button onclick="changeMonth(-1)">Mês Anterior</button>
-            <h2 id="currentMonthYear"></h2>
-            <button onclick="changeMonth(1)">Próximo Mês</button>
+          <button id="prevMonthBtn">&laquo; Mês Anterior</button> <button id="nextMonthBtn">Mês Seguinte &raquo;</button>
         </div>
       </header>
 
-      <section class="totals-section">
+      <div class="totals-section">
         <div class="totals-wrapper">
-          <div>Receitas: <span id="totalReceitas">R$ 0,00</span></div>
-          <div>Despesas: <span id="totalDespesasMes">R$ 0,00</span></div>
-          <div>Pago: <span id="totalPago">R$ 0,00</span></div>
-          <div>A Pagar: <span id="totalAPagar">R$ 0,00</span></div>
-        </div>
+          <span id="totalReceitas">Total de Receitas: R$ 0.00</span>
+          <span id="totalDespesasMes">Total de Despesas: R$ 0.00</span> </div>
         <div class="saldo-bar-container">
           <div class="saldo-bar" id="saldoBar"></div>
-          <div class="saldo-label" id="saldoLabel">Saldo: R$ 0,00</div>
+          <div class="saldo-label" id="saldoLabel">Saldo: R$ 0.00</div>
         </div>
-      </section>
+      </div>
 
-      <section class="categorias-section">
-        <h2>Resumo Mensal</h2>
-        <div class="categorias-columns">
-          <div class="categoria-box">
+      <div class="categorias-section">
+        <h2>Resumo do Mês</h2> <div class="categorias-columns">
+          <div class="categoria-box receitas">
             <h3>Receitas</h3>
-            <div id="receitasList" class="categoria-list"></div>
-            <div class="total-categoria">
-              <span>Total Receitas:</span>
-              <span id="totalReceitasCategoria">R$ 0,00</span>
+            <div class="categoria-list" id="listaReceitas">
+              <p>Carregando...</p>
+            </div>
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ccc;"> <input type="text" id="nomeReceita" placeholder="Nome da Receita" style="width: calc(100% - 22px); margin-bottom: 5px;"> <input type="number" id="valorReceita" placeholder="Valor" style="width: calc(100% - 22px); margin-bottom: 5px;"> <button onclick="submitReceita()">Adicionar Receita</button>
             </div>
           </div>
-          <div class="categoria-box">
+
+          <div class="categoria-box contas-fixas">
             <h3>Contas Fixas</h3>
-            <div id="contasFixasList" class="categoria-list"></div>
+            <div class="categoria-list" id="listaContasFixas">
+              <p>Carregando...</p> </div>
             <div class="total-categoria">
-              <span>Total Contas Fixas:</span>
-              <span id="totalContasFixasCategoria">R$ 0,00</span>
-              <input type="checkbox" id="markAllContasFixasPaid" class="checkbox-pago-total">
+              <span id="totalContasFixas">Total Aberto: R$ 0.00</span>
+              <input type="checkbox" class="checkbox-pago-total" id="checkAllContasFixas" title="Marcar/Desmarcar todas as contas fixas como pagas">
             </div>
           </div>
-          <div class="categoria-box">
-            <h3>Contas Variáveis</h3>
-            <div id="contasVariaveisList" class="categoria-list"></div>
+
+          <div class="categoria-box contas-variaveis"> <h3>Contas Variáveis</h3>
+            <div class="categoria-list" id="listaContasVariaveis">
+              <p>Carregando...</p>
+            </div>
             <div class="total-categoria">
-              <span>Total Contas Variáveis:</span>
-              <span id="totalContasVariaveisCategoria">R$ 0,00</span>
-              <input type="checkbox" id="markAllContasVariaveisPaid" class="checkbox-pago-total">
+              <span id="totalContasVariaveis">Total Aberto: R$ 0.00</span> <input type="checkbox" class="checkbox-pago-total" id="checkAllContasVariaveis" title="Marcar/Desmarcar todas as contas variáveis como pagas">
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <section class="cartoes-section">
-        <h2>Compras por Cartão</h2>
-        <div class="cartoes-grid" id="cartoesGrid"></div>
-      </section>
+      <div class="cartoes-section">
+        <h2>Cartões</h2>
+        <div class="cartoes-grid" id="cartoesGrid">
+          <p>Carregando...</p> </div>
+      </div>
 
-      <section class="form-sections-wrapper">
-        <div class="form-section">
-          <h2>Adicionar Receita</h2>
-          <form id="addReceitaForm">
-            <label for="receitaNome">Nome:</label>
-            <input type="text" id="receitaNome" required />
-            <label for="receitaValor">Valor:</label>
-            <input type="number" id="receitaValor" step="0.01" required />
-            <button type="submit">Adicionar Receita</button>
-          </form>
-        </div>
-
-        <div class="form-section">
-          <h2>Adicionar Compra (Cartão)</h2>
-          <form id="addCompraForm">
-            <label for="compraNome">Nome:</label>
-            <input type="text" id="compraNome" required />
-            <label for="compraValor">Valor:</label>
-            <input type="number" id="compraValor" step="0.01" required />
-            <div class="row">
-              <label for="compraParcelas">Parcelas:</label>
-              <input type="number" id="compraParcelas" value="1" min="1" required />
-              <label for="compraCartao">Cartão:</label>
-              <select id="compraCartao" required>
-                <option value="Nubank">Nubank</option>
-                <option value="Santander">Santander</option>
-                <option value="Mercado Pago">Mercado Pago</option>
-                <option value="Amazon">Amazon</option>
-                <option value="Outro">Outro</option>
-              </select>
-            </div>
-            <label for="compraResponsavel">Responsável:</label>
-            <select id="compraResponsavel" required>
+      <div class="form-sections-wrapper">
+        <div class="form-section add-compra">
+          <h2>Adicionar Compra no Cartão</h2>
+          <div class="row"> <select id="responsavelCompra">
               <option value="Liana">Liana</option>
               <option value="Stefany">Stefany</option>
               <option value="Marília">Marília</option>
               <option value="Nosso ❤️">Nosso ❤️</option>
             </select>
-            <button type="submit">Adicionar Compra</button>
-          </form>
-        </div>
-
-        <div class="form-section">
-          <h2>Adicionar Conta (Fixa/Variável)</h2>
-          <form id="addContaForm">
-            <label for="contaTipo">Tipo:</label>
-            <select id="contaTipo" required>
-              <option value="Fixa">Fixa</option>
-              <option value="Variável">Variável</option>
+            <select id="cartaoCompra"> <option value="Nubank">Nubank</option>
+              <option value="Santander">Santander</option>
+              <option value="Mercado Pago">Mercado Pago</option>
+              <option value="Amazon">Amazon</option>
             </select>
-            <label for="contaNome">Nome:</label>
-            <input type="text" id="contaNome" required />
-            <label for="contaValor">Valor:</label>
-            <input type="number" id="contaValor" step="0.01" required />
-            <label for="contaParcelas">Parcelas:</label>
-            <input type="number" id="contaParcelas" value="1" min="1" required />
-            <button type="submit">Adicionar Conta</button>
-          </form>
+          </div>
+          <input type="text" id="nomeCompra" placeholder="Nome da Compra"> <div class="row">
+            <input type="number" id="valorCompra" placeholder="Valor da Parcela">
+            <input type="number" id="parcelasCompra" placeholder="Parcelas (ex: 1)" value="1">
+          </div>
+          <button onclick="submitCompra()">Adicionar Compra</button>
         </div>
-      </section>
 
-      <section class="compras-responsaveis">
-        <h2>Compras por Responsável</h2>
-        <div class="responsaveis-container" id="responsaveisContainer"></div>
-      </section>
+        <div class="form-section add-conta">
+          <h2>Adicionar Conta</h2> <select id="tipoConta">
+            <option value="Fixa">Fixa</option>
+            <option value="Variável">Variável</option>
+          </select>
+          <input type="text" id="nomeConta" placeholder="Nome da Conta">
+          <div class="row">
+            <input type="number" id="valorConta" placeholder="Valor da Parcela">
+            <input type="number" id="parcelasConta" placeholder="Parcelas (ex: 1)" value="1"> </div>
+          <button onclick="submitConta()">Adicionar Conta</button>
+        </div>
+      </div>
+
+      <div class="compras-responsaveis">
+        <h2>Total de Compras por Responsável (Mês)</h2>
+        <div class="responsaveis-container" id="responsaveisContainer">
+          <p>Carregando...</p> </div>
+      </div>
 
       <footer>
-        <p>Desenvolvido com ❤️ por <span class="liana">Liana</span>, <span class="stefany">Stefany</span>, <span class="marilia">Marília</span> e <span class="nosso">Nosso ❤️</span></p>
+        <p>Legenda Responsáveis: 
+          <span class="liana">Liana</span> 
+          <span class="stefany">Stefany</span> 
+          <span class="marilia">Marília</span> 
+          <span class="nosso">Nosso ❤️</span> </p>
       </footer>
     </div>
 
-    <!-- Modais de Edição -->
-    <div id="editReceitaModal" class="modal">
+    <div id="editModal" class="modal">
       <div class="modal-content">
-        <span class="close-button">&times;</span>
-        <h2>Editar Receita</h2>
-        <form id="editReceitaForm">
-          <input type="hidden" id="editReceitaId">
-          <label for="editReceitaNome">Nome:</label>
-          <input type="text" id="editReceitaNome" required>
-          <label for="editReceitaValor">Valor:</label>
-          <input type="number" id="editReceitaValor" step="0.01" required>
-          <button type="submit">Salvar Alterações</button>
-        </form>
-      </div>
-    </div>
-
-    <div id="editCompraModal" class="modal">
-      <div class="modal-content">
-        <span class="close-button">&times;</span>
-        <h2>Editar Compra</h2>
-        <form id="editCompraForm">
-          <input type="hidden" id="editCompraId">
-          <label for="editCompraNome">Nome:</label>
-          <input type="text" id="editCompraNome" required>
-          <label for="editCompraValor">Valor:</label>
-          <input type="number" id="editCompraValor" step="0.01" required>
-          <label for="editCompraParcelas">Parcelas:</label>
-          <input type="text" id="editCompraParcelas" required>
-          <label for="editCompraCartao">Cartão:</label>
-          <select id="editCompraCartao" required>
-            <option value="Nubank">Nubank</option>
-            <option value="Santander">Santander</option>
-            <option value="Mercado Pago">Mercado Pago</option>
-            <option value="Amazon">Amazon</option>
-            <option value="Outro">Outro</option>
-          </select>
-          <label for="editCompraResponsavel">Responsável:</label>
-          <select id="editCompraResponsavel" required>
+        <span class="close-button" onclick="closeModal()">&times;</span>
+        <h2 id="modalTitle">Editar Item</h2>
+        <input type="hidden" id="editItemId">
+        <input type="hidden" id="editItemType">
+        
+        <label for="editNome">Nome:</label> <input type="text" id="editNome">
+        
+        <label for="editValor">Valor:</label>
+        <input type="number" id="editValor">
+        
+        <div id="editCompraFields" style="display: none;">
+          <label for="editParcelasCompra">Parcelas (ex: 1/12):</label>
+          <input type="text" id="editParcelasCompra" disabled> <label for="editResponsavelCompra">Responsável:</label>
+          <select id="editResponsavelCompra">
             <option value="Liana">Liana</option>
             <option value="Stefany">Stefany</option>
             <option value="Marília">Marília</option>
             <option value="Nosso ❤️">Nosso ❤️</option>
-          </select>
-          <button type="submit">Salvar Alterações</button>
-        </form>
-      </div>
-    </div>
-
-    <div id="editContaModal" class="modal">
-      <div class="modal-content">
-        <span class="close-button">&times;</span>
-        <h2>Editar Conta</h2>
-        <form id="editContaForm">
-          <input type="hidden" id="editContaId">
-          <label for="editContaTipo">Tipo:</label>
-          <select id="editContaTipo" required>
-            <option value="Fixa">Fixa</option>
+          </select> <label for="editCartaoCompra">Cartão:</label>
+          <select id="editCartaoCompra">
+            <option value="Nubank">Nubank</option>
+            <option value="Santander">Santander</option>
+            <option value="Mercado Pago">Mercado Pago</option>
+            <option value="Amazon">Amazon</option>
+          </select> </div>
+        
+        <div id="editContaFields" style="display: none;">
+          <label for="editParcelasConta">Parcelas (ex: 1/12):</label>
+          <input type="text" id="editParcelasConta" disabled>
+          <label for="editTipoConta">Tipo:</label>
+          <select id="editTipoConta"> <option value="Fixa">Fixa</option>
             <option value="Variável">Variável</option>
           </select>
-          <label for="editContaNome">Nome:</label>
-          <input type="text" id="editContaNome" required>
-          <label for="editContaValor">Valor:</label>
-          <input type="number" id="editContaValor" step="0.01" required>
-          <label for="editContaParcelas">Parcelas:</label>
-          <input type="number" id="editContaParcelas" required>
-          <button type="submit">Salvar Alterações</button>
-        </form>
+        </div>
+        <button onclick="submitEdit()">Salvar Alterações</button>
       </div>
     </div>
 
     <script>
-      // URL do seu Cloudflare Worker
-      const WORKER_URL = 'https://painel-financas-proxy.mariliaedua.workers.dev/'; // Substitua pela URL do seu Worker
+      const API_URL = "https://painel-financas-proxy.mariliaedua.workers.dev/";
+      let currentMonth = new Date().getMonth();
+      let currentYear = new Date().getFullYear();
+      const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+      const responsavelClasses = { "Liana": "responsavel-liana", "Stefany": "responsavel-stefany", "Marília": "responsavel-marilia", "Nosso ❤️": "responsavel-nosso" };
+      const compraBgClasses = { "Liana": "compra-bg-liana", "Stefany": "compra-bg-stefany", "Marília": "compra-bg-marilia", "Nosso ❤️": "compra-bg-nosso" };
+      
+      function formatCurrency(value) {
+        return `R$ ${Number(value).toFixed(2).replace(".", ",")}`;
+      }
 
-      let currentMonth = new Date().getMonth() + 1; // Mês atual (1-12)
-      let currentYear = new Date().getFullYear(); // Ano atual
-
-      document.addEventListener('DOMContentLoaded', () => {
-        updateMonthYearDisplay();
-        fetchData();
-      });
-
-      async function sendRequest(action, data = {}, recordId = null) {
-        const payload = { action, data, recordId, month: currentMonth, year: currentYear };
-        console.log('Enviando payload:', payload);
+      async function fetchData(action, data = {}, recordId = null, method = "POST") {
+        console.log(`[fetchData] Enviando payload para ${action}:`, { action, data, recordId, month: currentMonth + 1, year: currentYear });
         try {
-          const response = await fetch(WORKER_URL, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
+          const payload = { action: action, data: data, recordId: recordId, month: currentMonth + 1, year: currentYear };
+          const response = await fetch(API_URL, {
+            method: method,
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
           });
-          const result = await response.json();
-          console.log('Resposta do Worker:', result);
-          if (result.status === 'error') {
-            alert('Erro: ' + result.message);
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`[fetchData] Erro HTTP (${response.status}) para ${action}:`, errorText);
+            throw new Error(`Erro na requisição (${action}): ${response.status} ${response.statusText}`);
           }
-          return result;
+          const result = await response.json();
+          console.log(`[fetchData] Resposta recebida para ${action}:`, result);
+          if (result.status === "error") {
+            console.error(`[fetchData] Erro retornado pela API (${action}):`, result.message);
+            throw new Error(result.message);
+          }
+          return result.data !== undefined ? result.data : result;
         } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro de comunicação com o servidor. Verifique sua conexão ou tente novamente mais tarde.');
-          return { status: 'error', message: error.message };
+          console.error(`[fetchData] Falha na requisição (${action}):`, error);
+          alert(`Erro ao comunicar com o servidor para a ação '${action}'. Verifique o console para detalhes.`);
+          throw error;
         }
       }
 
-      function updateMonthYearDisplay() {
-        const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-        document.getElementById('currentMonthYear').textContent = `${monthNames[currentMonth - 1]} de ${currentYear}`;
+      function updateMonthDisplay() {
+        const headerTitle = document.querySelector("header h2");
+        headerTitle.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+        console.log(`[updateMonthDisplay] Mês exibido: ${monthNames[currentMonth]} ${currentYear}`);
       }
 
-      function changeMonth(delta) {
-        currentMonth += delta;
-        if (currentMonth > 12) {
-          currentMonth = 1;
-          currentYear++;
-        } else if (currentMonth < 1) {
-          currentMonth = 12;
-          currentYear--;
+      function updateTotalsDisplay(data) {
+        console.log("[updateTotalsDisplay] Dados de totais recebidos:", data);
+        const totalReceitasEl = document.getElementById("totalReceitas");
+        const totalDespesasMesEl = document.getElementById("totalDespesasMes");
+        const saldoBarEl = document.getElementById("saldoBar");
+        const saldoLabelEl = document.getElementById("saldoLabel");
+
+        const totalReceitas = data.totalReceitas || 0;
+        const totalDespesasMes = data.totalDespesasMes || 0;
+        const totalPago = data.totalPago || 0;
+
+        totalReceitasEl.textContent = `Total de Receitas: ${formatCurrency(totalReceitas)}`;
+        totalDespesasMesEl.textContent = `Total de Despesas: ${formatCurrency(totalDespesasMes)}`;
+
+        const saldoAtual = totalReceitas - totalPago;
+        const faltaPagar = totalDespesasMes - totalPago;
+        saldoLabelEl.textContent = `Saldo: ${formatCurrency(saldoAtual)} | Falta Pagar: ${formatCurrency(faltaPagar)}`;
+
+        const percentPago = totalDespesasMes > 0 ? (totalPago / totalDespesasMes) * 100 : 0;
+        saldoBarEl.style.width = `${Math.min(100, Math.max(0, percentPago))}%`;
+        
+        // Lógica de cor da barra ajustada: baseada no orçamento do mês
+        const orcamentoDoMes = totalReceitas - totalDespesasMes;
+        if (orcamentoDoMes < 0) { // Se despesas planejadas > receitas
+          saldoBarEl.style.backgroundColor = "red"; // Orçamento estourado
+        } else {
+          saldoBarEl.style.backgroundColor = "green"; // Orçamento equilibrado ou com sobra
         }
-        updateMonthYearDisplay();
-        fetchData();
-      }
-
-      async function fetchData() {
-        console.log(`Buscando dados para ${currentMonth}/${currentYear}`);
-        const [receitasRes, comprasRes, contasRes, totaisRes] = await Promise.all([
-          sendRequest('getReceitas'),
-          sendRequest('getCompras'),
-          sendRequest('getContas'),
-          sendRequest('getTotais')
-        ]);
-
-        displayReceitas(receitasRes.data || []);
-        displayContas(contasRes.data || []);
-        displayCompras(comprasRes.data || []);
-        updateTotals(totaisRes.data || {});
-        displayComprasPorResponsavel(comprasRes.data || []);
-      }
-
-      function formatCurrency(value) {
-        return parseFloat(value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
       }
 
       function displayReceitas(receitas) {
-        const receitasList = document.getElementById('receitasList');
-        receitasList.innerHTML = '';
-        let totalReceitas = 0;
-        receitas.forEach(receita => {
-          totalReceitas += parseFloat(receita.valor || 0);
-          const listItem = document.createElement('div');
-          listItem.classList.add('list-item');
-          listItem.innerHTML = `
+        console.log("[displayReceitas] Receitas recebidas:", receitas);
+        const listaReceitasEl = document.getElementById("listaReceitas");
+        listaReceitasEl.innerHTML = "";
+        if (!receitas || receitas.length === 0) {
+          listaReceitasEl.innerHTML = "<p>Nenhuma receita para este mês.</p>";
+          return;
+        }
+        receitas.forEach((receita) => {
+          const itemEl = document.createElement("div");
+          itemEl.classList.add("list-item");
+          itemEl.innerHTML = `
             <span>${receita.nome} - ${formatCurrency(receita.valor)}</span>
             <div class="list-item-controls">
-              <button class="edit-button" onclick="openEditReceitaModal('${receita.id}', '${receita.nome}', ${receita.valor})">Editar</button>
-              <button class="delete-button" onclick="deleteRecord('Receita', '${receita.id}')">Excluir</button>
-            </div>
-          `;
-          receitasList.appendChild(listItem);
+              <button class="edit-button" onclick="openEditModal(\'receita\', \'${receita.id}\')">Edit</button>
+              <button class="delete-button" onclick="deleteItem(\'receita\', \'${receita.id}\')">X</button> </div>`;
+          listaReceitasEl.appendChild(itemEl);
         });
-        document.getElementById('totalReceitasCategoria').textContent = formatCurrency(totalReceitas);
       }
 
-      function displayContas(contas) {
-        const contasFixasList = document.getElementById('contasFixasList');
-        const contasVariaveisList = document.getElementById('contasVariaveisList');
-        contasFixasList.innerHTML = '';
-        contasVariaveisList.innerHTML = '';
-        let totalContasFixas = 0;
-        let totalContasVariaveis = 0;
-        let allFixasPaid = true;
-        let allVariaveisPaid = true;
-
-        contas.forEach(conta => {
-          const isPaid = String(conta.pago).toLowerCase() === 'sim';
-          const listItem = document.createElement('div');
-          listItem.classList.add('list-item');
-          if (isPaid) listItem.classList.add('item-pago');
-
-          listItem.innerHTML = `
+      function displayContas(contas, tipo) {
+        console.log(`[displayContas] Contas (${tipo}) recebidas:`, contas);
+        const listaElId = tipo === "Fixa" ? "listaContasFixas" : "listaContasVariaveis";
+        const totalElId = tipo === "Fixa" ? "totalContasFixas" : "totalContasVariaveis";
+        const checkAllElId = tipo === "Fixa" ? "checkAllContasFixas" : "checkAllContasVariaveis";
+        const listaEl = document.getElementById(listaElId);
+        const totalEl = document.getElementById(totalElId);
+        const checkAllEl = document.getElementById(checkAllElId);
+        listaEl.innerHTML = "";
+        let totalAberto = 0;
+        let todasPagas = true;
+        const contasFiltradas = contas.filter(conta => conta.tipo === tipo);
+        if (contasFiltradas.length === 0) {
+          listaEl.innerHTML = `<p>Nenhuma conta ${tipo.toLowerCase()} para este mês.</p>`;
+          totalEl.textContent = `Total Aberto: ${formatCurrency(0)}`;
+          checkAllEl.checked = false;
+          checkAllEl.disabled = true;
+          return;
+        }
+        contasFiltradas.forEach((conta) => {
+          const itemEl = document.createElement("div");
+          itemEl.classList.add("list-item");
+          const isPago = String(conta.pago).toLowerCase() === "sim";
+          if (isPago) { itemEl.classList.add("item-pago"); }
+          else { totalAberto += parseFloat(conta.valor || 0); todasPagas = false; }
+          itemEl.innerHTML = `
             <span>${conta.nome} (${conta.parcelas}) - ${formatCurrency(conta.valor)}</span>
             <div class="list-item-controls">
-              <button class="edit-button" onclick="openEditContaModal('${conta.originalId || conta.id}', '${conta.tipo}', '${conta.nome}', ${conta.valor}, '${conta.parcelas}')">Editar</button>
-              <button class="delete-button" onclick="deleteRecord('Conta', '${conta.originalId || conta.id}')">Excluir</button>
-              <input type="checkbox" data-id="${conta.id}" data-original-id="${conta.originalId || conta.id}" data-sheet="Contas" ${isPaid ? 'checked' : ''} onchange="markAsPaid(this)">
-            </div>
-          `;
+              <button class="edit-button" onclick="openEditModal(\'conta\', \'${conta.originalId || conta.id}\')">Edit</button>
+              <button class="delete-button" onclick="deleteItem(\'conta\', \'${conta.originalId || conta.id}\')">X</button> <input type="checkbox" ${isPago ? "checked" : ""} onchange="markAsPaid(\'conta\', \'${conta.originalId || conta.id}\', this.checked)">
+            </div>`;
+          listaEl.appendChild(itemEl);
+        });
+        totalEl.textContent = `Total Aberto: ${formatCurrency(totalAberto)}`;
+        checkAllEl.checked = todasPagas;
+        checkAllEl.disabled = false;
+        checkAllEl.onchange = () => markAllCategoriaAsPaid(tipo, checkAllEl.checked);
+      }
 
-          if (conta.tipo === 'Fixa') {
-            contasFixasList.appendChild(listItem);
-            totalContasFixas += parseFloat(conta.valor || 0);
-            if (!isPaid) allFixasPaid = false;
+      function displayCartoes(cartoesData) {
+        console.log("[displayCartoes] Dados de cartões recebidos:", cartoesData);
+        const cartoesGridEl = document.getElementById("cartoesGrid");
+        cartoesGridEl.innerHTML = "";
+        const cartoesOrdenados = ["Nubank", "Santander", "Mercado Pago", "Amazon"];
+        cartoesOrdenados.forEach(nomeCartao => {
+          const cartao = cartoesData[nomeCartao] || { total: 0, compras: [] };
+          const cartaoBoxEl = document.createElement("div");
+          const cartaoClass = nomeCartao.toLowerCase().replace(" ", "");
+          cartaoBoxEl.classList.add("cartao-box", cartaoClass);
+          const listaComprasEl = document.createElement("div");
+          listaComprasEl.classList.add("cartao-list");
+          let todasComprasPagas = true;
+          if (cartao.compras.length === 0) {
+            listaComprasEl.innerHTML = "<p>Nenhuma compra neste cartão para este mês.</p>";
+            todasComprasPagas = false;
           } else {
-            contasVariaveisList.appendChild(listItem);
-            totalContasVariaveis += parseFloat(conta.valor || 0);
-            if (!isPaid) allVariaveisPaid = false;
+            cartao.compras.forEach(compra => {
+              const compraEl = document.createElement("div");
+              compraEl.classList.add("compra");
+              const isPago = String(compra.pago).toLowerCase() === "sim";
+              if (isPago) { compraEl.classList.add("item-pago"); }
+              else { todasComprasPagas = false; }
+              const bgClass = compraBgClasses[compra.responsavel] || "";
+              compraEl.classList.add(bgClass);
+              compraEl.innerHTML = `
+                <div class="list-item-content">
+                  <span>${compra.nome} (${compra.parcelas}) - ${formatCurrency(compra.valor)}</span>
+                </div>
+                <div class="list-item-controls">
+                   <button class="edit-button" onclick="openEditModal(\'compra\', \'${compra.originalId || compra.id}\')">Edit</button>
+                   <button class="delete-button" onclick="deleteItem(\'compra\', \'${compra.originalId || compra.id}\')">X</button> </div>`;
+              listaComprasEl.appendChild(compraEl);
+            });
+          }
+          cartaoBoxEl.innerHTML = `
+            <h3>${nomeCartao.toUpperCase()}</h3>
+            <div class="total-cartao">
+              <span>Total Fatura: ${formatCurrency(cartao.total)}</span>
+              <input type="checkbox" class="checkbox-pago-total" id="checkAll${cartaoClass}" title="Marcar/Desmarcar todas as compras do ${nomeCartao}" ${todasComprasPagas && cartao.compras.length > 0 ? "checked" : ""} ${cartao.compras.length === 0 ? "disabled" : ""}> </div>`;
+          cartaoBoxEl.appendChild(listaComprasEl);
+          cartoesGridEl.appendChild(cartaoBoxEl);
+          const checkAllCartaoEl = document.getElementById(`checkAll${cartaoClass}`);
+          if (checkAllCartaoEl) {
+            checkAllCartaoEl.onchange = () => markAllCartaoAsPaidFront(nomeCartao, checkAllCartaoEl.checked);
           }
         });
-
-        document.getElementById('totalContasFixasCategoria').textContent = formatCurrency(totalContasFixas);
-        document.getElementById('totalContasVariaveisCategoria').textContent = formatCurrency(totalContasVariaveis);
-        document.getElementById('markAllContasFixasPaid').checked = allFixasPaid && contasFixasList.children.length > 0;
-        document.getElementById('markAllContasVariaveisPaid').checked = allVariaveisPaid && contasVariaveisList.children.length > 0;
       }
 
-      function displayCompras(compras) {
-        const cartoesGrid = document.getElementById('cartoesGrid');
-        cartoesGrid.innerHTML = '';
-        const comprasPorCartao = {};
+      function displayComprasPorResponsavel(responsaveisData) {
+        console.log("[displayComprasPorResponsavel] Dados recebidos para compras por responsável:", responsaveisData);
+        const containerEl = document.getElementById("responsaveisContainer");
+        containerEl.innerHTML = ""; // Limpa
 
-        compras.forEach(compra => {
-          const cartao = compra.cartao || 'Outro';
-          if (!comprasPorCartao[cartao]) {
-            comprasPorCartao[cartao] = { total: 0, compras: [] };
+        if (!responsaveisData || Object.keys(responsaveisData).length === 0) {
+          containerEl.innerHTML = "<p>Nenhuma compra encontrada para este mês.</p>";
+          return;
+        }
+
+        const responsaveisOrdenados = ["Liana", "Stefany", "Marília", "Nosso ❤️"];
+        responsaveisOrdenados.forEach(nomeResponsavel => {
+          const responsavel = responsaveisData[nomeResponsavel] || { total: 0, compras: [] };
+          const responsavelBoxEl = document.createElement("div");
+          responsavelBoxEl.classList.add("responsavel-box");
+
+          let comprasHtml = "";
+          if (responsavel.compras && responsavel.compras.length > 0) {
+            // Ordena as compras por nome para exibição consistente
+            responsavel.compras.sort((a, b) => a.nome.localeCompare(b.nome));
+            responsavel.compras.forEach(compra => {
+              comprasHtml += `
+                <div class="compra-item">
+                  <span class="compra-nome">${compra.nome}</span>
+                  <span class="compra-detalhes">(${compra.parcelas}) - ${formatCurrency(compra.valor)}</span>
+                </div>
+              `;
+            });
+          } else {
+            comprasHtml = "<p>Nenhuma compra este mês.</p>";
           }
-          comprasPorCartao[cartao].total += parseFloat(compra.valor || 0);
-          comprasPorCartao[cartao].compras.push(compra);
-        });
 
-        for (const cartao in comprasPorCartao) {
-          const cartaoBox = document.createElement('div');
-          cartaoBox.classList.add('cartao-box');
-          cartaoBox.classList.add(cartao.toLowerCase().replace(/ /g, '')); // Adiciona classe para estilo
-          cartaoBox.innerHTML = `
-            <h3>${cartao}</h3>
-            <div class="cartao-list" id="${cartao.replace(/ /g, '')}List"></div>
-            <div class="total-cartao">
-              <span>Total:</span>
-              <span id="total${cartao.replace(/ /g, '')}Cartao">${formatCurrency(comprasPorCartao[cartao].total)}</span>
+          responsavelBoxEl.innerHTML = `
+            <h3 class="${responsavelClasses[nomeResponsavel] || ""}">${nomeResponsavel}</h3>
+            <p class="total-responsavel">Total (Mês): ${formatCurrency(responsavel.total)}</p>
+            <div class="responsavel-list">
+              ${comprasHtml}
             </div>
           `;
-          cartoesGrid.appendChild(cartaoBox);
-
-          const listElement = document.getElementById(`${cartao.replace(/ /g, '')}List`);
-          comprasPorCartao[cartao].compras.forEach(compra => {
-            const isPaid = String(compra.pago).toLowerCase() === 'sim';
-            const compraDiv = document.createElement('div');
-            compraDiv.classList.add('compra');
-            if (isPaid) compraDiv.classList.add('item-pago');
-            compraDiv.innerHTML = `
-              <div class="list-item-content">
-                <span>${compra.nome} (${compra.parcelas})</span>
-                <span>${formatCurrency(compra.valor)}</span>
-              </div>
-              <div class="list-item-controls">
-                <button class="edit-button" onclick="openEditCompraModal('${compra.originalId || compra.id}', '${compra.nome}', ${compra.valor}, '${compra.parcelas}', '${compra.cartao}', '${compra.responsavel}')">Editar</button>
-                <button class="delete-button" onclick="deleteRecord('Compra', '${compra.originalId || compra.id}')">Excluir</button>
-                <input type="checkbox" data-id="${compra.id}" data-original-id="${compra.originalId || compra.id}" data-sheet="Compras" ${isPaid ? 'checked' : ''} onchange="markAsPaid(this)">
-              </div>
-            `;
-            listElement.appendChild(compraDiv);
-          });
-        }
-      }
-
-      function updateTotals(totals) {
-        document.getElementById('totalReceitas').textContent = formatCurrency(totals.totalReceitas || 0);
-        document.getElementById('totalDespesasMes').textContent = formatCurrency(totals.totalDespesasMes || 0);
-        document.getElementById('totalPago').textContent = formatCurrency(totals.totalPago || 0);
-        const totalAPagar = (totals.totalDespesasMes || 0) - (totals.totalPago || 0);
-        document.getElementById('totalAPagar').textContent = formatCurrency(totalAPagar);
-
-        const saldo = (totals.totalReceitas || 0) - (totals.totalDespesasMes || 0);
-        const saldoBar = document.getElementById('saldoBar');
-        const saldoLabel = document.getElementById('saldoLabel');
-
-        let percentage = 0;
-        if (totals.totalReceitas > 0 || totals.totalDespesasMes > 0) {
-            percentage = (totals.totalPago / totals.totalDespesasMes) * 100;
-            if (isNaN(percentage)) percentage = 0; // Evita NaN se totalDespesasMes for 0
-            percentage = Math.min(percentage, 100); // Limita a 100%
-        }
-
-        saldoBar.style.width = `${percentage}%`;
-        if (saldo >= 0) {
-          saldoBar.style.backgroundColor = 'green';
-        } else {
-          saldoBar.style.backgroundColor = 'red';
-        }
-        saldoLabel.textContent = `Saldo: ${formatCurrency(saldo)}`;
-      }
-
-      function displayComprasPorResponsavel(compras) {
-        const responsaveisContainer = document.getElementById('responsaveisContainer');
-        responsaveisContainer.innerHTML = '';
-        const comprasPorResponsavel = {};
-
-        // Inicializa com todos os responsáveis esperados
-        ['Liana', 'Stefany', 'Marília', 'Nosso ❤️'].forEach(r => {
-            comprasPorResponsavel[r] = { total: 0, compras: [] };
+          
+          containerEl.appendChild(responsavelBoxEl);
         });
+      }
 
-        compras.forEach(compra => {
-          const responsavel = compra.responsavel || 'Outro';
-          if (!comprasPorResponsavel[responsavel]) {
-            comprasPorResponsavel[responsavel] = { total: 0, compras: [] };
-          }
-          comprasPorResponsavel[responsavel].total += parseFloat(compra.valor || 0);
-          comprasPorResponsavel[responsavel].compras.push(compra);
+      async function submitReceita() {
+        const nome = document.getElementById("nomeReceita").value.trim();
+        const valor = document.getElementById("valorReceita").value;
+        if (!nome || !valor || parseFloat(valor) <= 0) { alert("Por favor, preencha o nome e um valor válido para a receita."); return; }
+        try {
+          await fetchData("addReceita", { nome, valor: parseFloat(valor) });
+          document.getElementById("nomeReceita").value = "";
+          document.getElementById("valorReceita").value = "";
+          fetchAllData();
+        } catch (error) {}
+      }
+
+      async function submitCompra() {
+        const nome = document.getElementById("nomeCompra").value.trim();
+        const valor = document.getElementById("valorCompra").value;
+        const parcelas = document.getElementById("parcelasCompra").value || "1";
+        const responsavel = document.getElementById("responsavelCompra").value;
+        const cartao = document.getElementById("cartaoCompra").value;
+        if (!nome || !valor || parseFloat(valor) <= 0 || parseInt(parcelas) <= 0) { alert("Preencha nome, valor da parcela (>0) e número de parcelas (>0) válidos."); return; }
+        try {
+          await fetchData("addCompraCartao", { nome, valor: parseFloat(valor), parcelas: parseInt(parcelas), responsavel, cartao });
+          document.getElementById("nomeCompra").value = "";
+          document.getElementById("valorCompra").value = "";
+          document.getElementById("parcelasCompra").value = "1";
+          fetchAllData();
+        } catch (error) {}
+      }
+
+      async function submitConta() {
+        const nome = document.getElementById("nomeConta").value.trim();
+        const valor = document.getElementById("valorConta").value;
+        const parcelas = document.getElementById("parcelasConta").value || "1";
+        const tipo = document.getElementById("tipoConta").value;
+        if (!nome || !valor || parseFloat(valor) <= 0 || parseInt(parcelas) <= 0) { alert("Preencha nome, valor da parcela (>0) e número de parcelas (>0) válidos."); return; }
+        try {
+          await fetchData("addConta", { nome, valor: parseFloat(valor), parcelas: parseInt(parcelas), tipo });
+          document.getElementById("nomeConta").value = "";
+          document.getElementById("valorConta").value = "";
+          document.getElementById("parcelasConta").value = "1";
+          fetchAllData();
+        } catch (error) {}
+      }
+
+      async function markAsPaid(type, id, isChecked) {
+        const action = type === "conta" ? "markContaAsPaid" : "markCompraAsPaid";
+        const pagoStatus = isChecked ? "Sim" : "Não";
+        try { await fetchData(action, { pago: pagoStatus }, id); fetchAllData(); } catch (error) {}
+      }
+
+      async function markAllCategoriaAsPaid(tipo, isChecked) {
+        const pagoStatus = isChecked ? "Sim" : "Não";
+        try {
+          const todasContas = await fetchData("getContas");
+          const contasDaCategoria = todasContas.filter(c => c.tipo === tipo);
+          const updatePromises = contasDaCategoria.map(conta => fetchData("markContaAsPaid", { pago: pagoStatus }, conta.originalId || conta.id));
+          await Promise.all(updatePromises);
+          fetchAllData();
+        } catch (error) { alert(`Erro ao marcar todas as contas ${tipo.toLowerCase()}s. Verifique o console.`); }
+      }
+
+      async function markAllCartaoAsPaidFront(nomeCartao, isChecked) {
+          const pagoStatus = isChecked ? "Sim" : "Não";
+          try {
+              const cartoesData = await fetchData("getComprasPorCartao");
+              const cartao = cartoesData[nomeCartao];
+              if (!cartao || !cartao.compras || cartao.compras.length === 0) { console.log(`Nenhuma compra encontrada para o cartão ${nomeCartao} para marcar.`); return; }
+              const updatePromises = cartao.compras.map(compra => fetchData("markCompraAsPaid", { pago: pagoStatus }, compra.originalId || compra.id));
+              await Promise.all(updatePromises);
+              fetchAllData();
+          } catch (error) { alert(`Erro ao marcar todas as compras do cartão ${nomeCartao}. Verifique o console.`); }
+      }
+
+      async function openEditModal(type, id) {
+        const modal = document.getElementById("editModal");
+        const titleEl = document.getElementById("modalTitle");
+        const idInput = document.getElementById("editItemId");
+        const typeInput = document.getElementById("editItemType");
+        const nomeInput = document.getElementById("editNome");
+        const valorInput = document.getElementById("editValor");
+        const compraFields = document.getElementById("editCompraFields");
+        const contaFields = document.getElementById("editContaFields");
+        compraFields.style.display = "none";
+        contaFields.style.display = "none";
+        idInput.value = id; typeInput.value = type;
+        try {
+          let itemData;
+          if (type === "receita") { titleEl.textContent = "Editar Receita"; const todasReceitas = await fetchData("getReceitas"); itemData = todasReceitas.find(r => r.id === id); }
+          else if (type === "compra") { titleEl.textContent = "Editar Compra"; compraFields.style.display = "block"; const todasCompras = await fetchData("getCompras"); itemData = todasCompras.find(c => (c.originalId || c.id) === id); }
+          else if (type === "conta") { titleEl.textContent = "Editar Conta"; contaFields.style.display = "block"; const todasContas = await fetchData("getContas"); itemData = todasContas.find(c => (c.originalId || c.id) === id); }
+          if (!itemData) { alert("Item não encontrado para edição."); return; }
+          nomeInput.value = itemData.nome || ""; valorInput.value = itemData.valor || "";
+          if (type === "compra") { document.getElementById("editParcelasCompra").value = itemData.parcelas || "1/1"; document.getElementById("editResponsavelCompra").value = itemData.responsavel || "Liana"; document.getElementById("editCartaoCompra").value = itemData.cartao || "Nubank"; }
+          else if (type === "conta") { document.getElementById("editParcelasConta").value = itemData.parcelas || "1/1"; document.getElementById("editTipoConta").value = itemData.tipo || "Fixa"; }
+          modal.style.display = "block";
+        } catch (error) { alert("Erro ao buscar dados para edição. Verifique o console."); }
+      }
+
+      function closeModal() { document.getElementById("editModal").style.display = "none"; }
+
+      async function submitEdit() {
+        const id = document.getElementById("editItemId").value;
+        const type = document.getElementById("editItemType").value;
+        const nome = document.getElementById("editNome").value.trim();
+        const valor = document.getElementById("editValor").value;
+        if (!nome || !valor || parseFloat(valor) <= 0) { alert("Nome e valor válido são obrigatórios."); return; }
+        let action = ""; let dataToUpdate = { nome, valor: parseFloat(valor) };
+        if (type === "receita") { action = "updateReceita"; }
+        else if (type === "compra") { action = "updateCompra"; dataToUpdate.responsavel = document.getElementById("editResponsavelCompra").value; dataToUpdate.cartao = document.getElementById("editCartaoCompra").value; }
+        else if (type === "conta") { action = "updateConta"; dataToUpdate.tipo = document.getElementById("editTipoConta").value; }
+        try { await fetchData(action, dataToUpdate, id); closeModal(); fetchAllData(); } catch (error) {}
+      }
+
+      async function deleteItem(type, id) {
+        if (!confirm("Tem certeza que deseja excluir este item?")) { return; }
+        let action = "";
+        if (type === "receita") action = "deleteReceita";
+        else if (type === "compra") action = "deleteCompra";
+        else if (type === "conta") action = "deleteConta";
+        try { await fetchData(action, {}, id); fetchAllData(); } catch (error) {}
+      }
+
+      async function fetchAllData() {
+        console.log(`[fetchAllData] Atualizando dados para ${currentMonth + 1}/${currentYear}`);
+        try {
+          // Atualiza o nome do mês ANTES de fazer as requisições
+          updateMonthDisplay();
+          
+          document.getElementById("listaReceitas").innerHTML = "<p>Carregando...</p>";
+          document.getElementById("listaContasFixas").innerHTML = "<p>Carregando...</p>";
+          document.getElementById("listaContasVariaveis").innerHTML = "<p>Carregando...</p>";
+          document.getElementById("cartoesGrid").innerHTML = "<p>Carregando...</p>";
+          document.getElementById("responsaveisContainer").innerHTML = "<p>Carregando...</p>";
+          
+          const [receitas, contas, comprasCartao, comprasResp, totais] = await Promise.all([
+            fetchData("getReceitas"), 
+            fetchData("getContas"), 
+            fetchData("getComprasPorCartao"),
+            fetchData("getComprasPorResponsavel"), 
+            fetchData("getTotais")
+          ]);
+          
+          updateTotalsDisplay(totais);
+          displayReceitas(receitas);
+          displayContas(contas, "Fixa");
+          displayContas(contas, "Variável");
+          displayCartoes(comprasCartao);
+          displayComprasPorResponsavel(comprasResp);
+          console.log("[fetchAllData] Todos os dados atualizados com sucesso.");
+        } catch (error) {
+          console.error("[fetchAllData] Erro ao buscar todos os dados:", error);
+          document.querySelector("header h2").textContent = "Erro ao carregar";
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log("DOM carregado. Iniciando painel...");
+        fetchAllData();
+        document.getElementById("prevMonthBtn").addEventListener("click", () => {
+          currentMonth--; if (currentMonth < 0) { currentMonth = 11; currentYear--; } fetchAllData();
         });
-
-        for (const responsavel in comprasPorResponsavel) {
-          const responsavelBox = document.createElement('div');
-          responsavelBox.classList.add('responsavel-box');
-          responsavelBox.classList.add(`responsavel-${responsavel.toLowerCase().replace(/ /g, '').replace('❤️', '')}`);
-          responsavelBox.innerHTML = `
-            <h3>${responsavel}</h3>
-            <div class="responsavel-list"></div>
-            <p class="total-responsavel">Total: ${formatCurrency(comprasPorResponsavel[responsavel].total)}</p>
-          `;
-          responsaveisContainer.appendChild(responsavelBox);
-
-          const listElement = responsavelBox.querySelector('.responsavel-list');
-          comprasPorResponsavel[responsavel].compras.forEach(compra => {
-            const compraItem = document.createElement('div');
-            compraItem.classList.add('compra-item');
-            if (String(compra.pago).toLowerCase() === 'sim') compraItem.classList.add('item-pago');
-            compraItem.innerHTML = `
-              <span class="compra-nome">${compra.nome} (${compra.parcelas})</span>
-              <span class="compra-detalhes">${formatCurrency(compra.valor)}</span>
-            `;
-            listElement.appendChild(compraItem);
-          });
-        }
-      }
-
-      // Funções de Adição
-      document.getElementById('addReceitaForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const nome = document.getElementById('receitaNome').value;
-        const valor = parseFloat(document.getElementById('receitaValor').value);
-        if (isNaN(valor) || valor <= 0) { alert('Por favor, insira um valor válido para a receita.'); return; }
-        await sendRequest('addReceita', { nome, valor });
-        document.getElementById('addReceitaForm').reset();
-        fetchData();
-      });
-
-      document.getElementById('addCompraForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const nome = document.getElementById('compraNome').value;
-        const valor = parseFloat(document.getElementById('compraValor').value);
-        const parcelas = parseInt(document.getElementById('compraParcelas').value);
-        const cartao = document.getElementById('compraCartao').value;
-        const responsavel = document.getElementById('compraResponsavel').value;
-
-        if (isNaN(valor) || valor <= 0) { alert('Por favor, insira um valor válido para a compra.'); return; }
-        if (isNaN(parcelas) || parcelas <= 0) { alert('Por favor, insira um número válido de parcelas.'); return; }
-
-        await sendRequest('addCompraCartao', { nome, valor, parcelas, cartao, responsavel });
-        document.getElementById('addCompraForm').reset();
-        fetchData();
-      });
-
-      document.getElementById('addContaForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const tipo = document.getElementById('contaTipo').value;
-        const nome = document.getElementById('contaNome').value;
-        const valor = parseFloat(document.getElementById('contaValor').value);
-        const parcelas = parseInt(document.getElementById('contaParcelas').value);
-
-        if (isNaN(valor) || valor <= 0) { alert('Por favor, insira um valor válido para a conta.'); return; }
-        if (isNaN(parcelas) || parcelas <= 0) { alert('Por favor, insira um número válido de parcelas.'); return; }
-
-        await sendRequest('addConta', { tipo, nome, valor, parcelas });
-        document.getElementById('addContaForm').reset();
-        fetchData();
-      });
-
-      // Funções de Edição (Modais)
-      const editReceitaModal = document.getElementById('editReceitaModal');
-      const editCompraModal = document.getElementById('editCompraModal');
-      const editContaModal = document.getElementById('editContaModal');
-
-      document.querySelectorAll('.close-button').forEach(button => {
-        button.addEventListener('click', () => {
-          editReceitaModal.style.display = 'none';
-          editCompraModal.style.display = 'none';
-          editContaModal.style.display = 'none';
+        document.getElementById("nextMonthBtn").addEventListener("click", () => {
+          currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; } fetchAllData();
         });
-      });
-
-      window.addEventListener('click', (event) => {
-        if (event.target == editReceitaModal) {
-          editReceitaModal.style.display = 'none';
-        } else if (event.target == editCompraModal) {
-          editCompraModal.style.display = 'none';
-        } else if (event.target == editContaModal) {
-          editContaModal.style.display = 'none';
+        window.onclick = function(event) {
+          const modal = document.getElementById("editModal");
+          if (event.target == modal) { closeModal(); }
         }
+        console.log("Painel inicializado e listeners adicionados.");
       });
 
-      function openEditReceitaModal(id, nome, valor) {
-        document.getElementById('editReceitaId').value = id;
-        document.getElementById('editReceitaNome').value = nome;
-        document.getElementById('editReceitaValor').value = valor;
-        editReceitaModal.style.display = 'block';
-      }
-
-      document.getElementById('editReceitaForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const id = document.getElementById('editReceitaId').value;
-        const nome = document.getElementById('editReceitaNome').value;
-        const valor = parseFloat(document.getElementById('editReceitaValor').value);
-        if (isNaN(valor) || valor <= 0) { alert('Por favor, insira um valor válido para a receita.'); return; }
-        await sendRequest('updateReceita', { nome, valor }, id);
-        editReceitaModal.style.display = 'none';
-        fetchData();
-      });
-
-      function openEditCompraModal(id, nome, valor, parcelas, cartao, responsavel) {
-        document.getElementById('editCompraId').value = id;
-        document.getElementById('editCompraNome').value = nome;
-        document.getElementById('editCompraValor').value = valor;
-        document.getElementById('editCompraParcelas').value = parcelas;
-        document.getElementById('editCompraCartao').value = cartao;
-        document.getElementById('editCompraResponsavel').value = responsavel;
-        editCompraModal.style.display = 'block';
-      }
-
-      document.getElementById('editCompraForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const id = document.getElementById('editCompraId').value;
-        const nome = document.getElementById('editCompraNome').value;
-        const valor = parseFloat(document.getElementById('editCompraValor').value);
-        const parcelas = document.getElementById('editCompraParcelas').value;
-        const cartao = document.getElementById('editCompraCartao').value;
-        const responsavel = document.getElementById('editCompraResponsavel').value;
-
-        if (isNaN(valor) || valor <= 0) { alert('Por favor, insira um valor válido para a compra.'); return; }
-        // Parcelas pode ser string como '1/3', então não validar como int
-
-        await sendRequest('updateCompra', { nome, valor, parcelas, cartao, responsavel }, id);
-        editCompraModal.style.display = 'none';
-        fetchData();
-      });
-
-      function openEditContaModal(id, tipo, nome, valor, parcelas) {
-        document.getElementById('editContaId').value = id;
-        document.getElementById('editContaTipo').value = tipo;
-        document.getElementById('editContaNome').value = nome;
-        document.getElementById('editContaValor').value = valor;
-        document.getElementById('editContaParcelas').value = parcelas;
-        editContaModal.style.display = 'block';
-      }
-
-      document.getElementById('editContaForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const id = document.getElementById('editContaId').value;
-        const tipo = document.getElementById('editContaTipo').value;
-        const nome = document.getElementById('editContaNome').value;
-        const valor = parseFloat(document.getElementById('editContaValor').value);
-        const parcelas = parseInt(document.getElementById('editContaParcelas').value);
-
-        if (isNaN(valor) || valor <= 0) { alert('Por favor, insira um valor válido para a conta.'); return; }
-        if (isNaN(parcelas) || parcelas <= 0) { alert('Por favor, insira um número válido de parcelas.'); return; }
-
-        await sendRequest('updateConta', { tipo, nome, valor, parcelas }, id);
-        editContaModal.style.display = 'none';
-        fetchData();
-      });
-
-      // Função para Excluir
-      async function deleteRecord(type, id) {
-        if (confirm(`Tem certeza que deseja excluir este ${type}?`)) {
-          await sendRequest(`delete${type}`, {}, id);
-          fetchData();
-        }
-      }
-
-      // Função para Marcar como Pago
-      async function markAsPaid(checkbox) {
-        const originalId = checkbox.dataset.originalId;
-        const sheet = checkbox.dataset.sheet;
-        const isChecked = checkbox.checked;
-        const status = isChecked ? 'Sim' : 'Não';
-
-        // Envia a requisição para o Apps Script para atualizar o status de 'pago'
-        const result = await sendRequest(`mark${sheet.slice(0, -1)}AsPaid`, { pago: status }, originalId);
-
-        if (result.status === 'success') {
-          // Atualiza a classe CSS do item na UI
-          const listItem = checkbox.closest('.list-item') || checkbox.closest('.compra');
-          if (listItem) {
-            if (isChecked) {
-              listItem.classList.add('item-pago');
-            } else {
-              listItem.classList.remove('item-pago');
-            }
-          }
-          // Re-busca os dados para atualizar os totais e o estado dos checkboxes
-          fetchData();
-        } else {
-          // Reverte o checkbox se houve erro
-          checkbox.checked = !isChecked;
-        }
-      }
     </script>
   </body>
 </html>
-
