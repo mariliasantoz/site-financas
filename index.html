@@ -1202,6 +1202,36 @@ async function markCartaoAsPaid(cartao, checkbox) {
           checkbox.checked = !isChecked;
         }
       }
+
+  // Correção: iniciar com o mês atual automaticamente
+  let currentDate = new Date();
+  let currentMonth = currentDate.getMonth() + 1;
+  let currentYear = currentDate.getFullYear();
+  let selectedMonth = currentMonth;
+  let selectedYear = currentYear;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('mesAnoAtual').textContent = formatarMesAno(selectedMonth, selectedYear);
+    fetchData();
+  });
+
+  // Correção visual: termômetro com fundo branco e borda vermelha
+  function updateThermometer(totalReceitas, totalDespesas, totalPago) {
+    const saldo = totalReceitas - totalDespesas;
+    const saldoDiv = document.getElementById("saldoTotal");
+    const barra = document.getElementById("thermometerBar");
+
+    saldoDiv.innerText = `Saldo: ${formatCurrency(saldo)}`;
+    saldoDiv.style.color = "red";
+    saldoDiv.style.border = "2px solid red";
+    saldoDiv.style.backgroundColor = "white";
+
+    barra.style.backgroundColor = "white";
+    barra.style.border = "2px solid red";
+    barra.style.height = "24px";
+    barra.style.borderRadius = "6px";
+    barra.style.margin = "4px 0";
+  }
     </script>
   </body>
 </html>
