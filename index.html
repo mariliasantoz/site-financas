@@ -81,20 +81,22 @@
       header h2 {
         color: #555; /* [129] */
         margin-top: 0; /* [129] */
-        display: inline-block; /* [130] */
+        display: block; /* Corrigido: para que o h2 ocupe sua própria linha */
         position: relative; /* [130] */
-        padding: 0 120px; /* [130] */
+        padding: 0; /* Corrigido: remover padding horizontal */
+        z-index: 10; /* Corrigido: garantir que o nome do mês fique acima dos botões */
       }
       .nav-buttons {
-          position: absolute; /* [131] */
-          top: 50%; /* [131] */
-          transform: translateY(-50%); /* [131] */
+          position: relative; /* Corrigido: para que os botões fiquem abaixo do h2 */
+          top: auto; /* Corrigido */
+          transform: none; /* Corrigido */
           width: 100%;
           display: flex;
           justify-content: space-between;
           padding: 0 20px;
           box-sizing: border-box; /* [132] */
           left: 0; /* [133] */
+          z-index: 1; /* Corrigido: garantir que os botões fiquem atrás do nome do mês */
       }
       .nav-buttons button {
           background-color: #007bff; /* [134] */
@@ -121,7 +123,8 @@
         color: #333;
       }
       .saldo-bar-container {
-        background-color: #ddd; /* [140] */
+        background-color: white; /* Corrigido: termômetro branco */
+        border: 1px solid #ddd; /* Corrigido: borda sutil */
         border-radius: 5px; /* [140] */
         height: 25px;
         margin-top: 10px;
@@ -144,10 +147,13 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
+        color: red; /* Corrigido: fonte vermelha */
         font-weight: bold; /* [147] */
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* [147] */
+        text-shadow: none; /* Corrigido: removido shadow para melhor contraste */
         font-size: 0.9em;
+        border: 1px solid red; /* Corrigido: borda vermelha */
+        border-radius: 5px;
+        box-sizing: border-box;
       }
 
       /* SEÇÃO DE CATEGORIAS (Receitas, Contas Fixas, Variáveis) */
@@ -719,6 +725,7 @@
       // URL do seu Cloudflare Worker
       const WORKER_URL = 'https://painel-financas-proxy.mariliaedua.workers.dev/'; // Substitua pela URL do seu Worker
 
+      // Corrigido: inicializar com mês e ano atuais
       let currentMonth = new Date().getMonth() + 1; // Mês atual (1-12)
       let currentYear = new Date().getFullYear(); // Ano atual
 
@@ -849,9 +856,32 @@
         document.getElementById('totalContasVariaveisCategoria').textContent = formatCurrency(totalContasVariaveis);
         document.getElementById('markAllContasFixasPaid').checked = allFixasPaid && contasFixasList.children.length > 0;
         document.getElementById('markAllContasVariaveisPaid').checked = allVariaveisPaid && contasVariaveisList.children.length > 0;
+
+        // Adicionar event listeners para os checkboxes totais de Contas
+        document.getElementById('markAllContasFixasPaid').onchange = function() {
+          markAllContasAsPaid('Fixa', this.checked);
+        };
+        document.getElementById('markAllContasVariaveisPaid').onchange = function() {
+          markAllContasAsPaid('Variável', this.checked);
+        };
       }
 
-      /*function displayCompras(compras) {
+      async function markAllContasAsPaid(tipoConta, isChecked) {
+        const sheetName = 'Contas';
+        const status = isChecked ? 'Sim' : 'Não';
+        const contas = await sendRequest('getContas'); // Busca todas as contas do mês
+        const contasFiltradas = contas.data.filter(conta => conta.tipo === tipoConta);
+
+        for (const conta of contasFiltradas) {
+          // Apenas atualiza se o status for diferente para evitar chamadas desnecessárias
+          if ((String(conta.pago).toLowerCase() === 'sim') !== isChecked) {
+            await sendRequest('markContaAsPaid', { pago: status }, conta.originalId || conta.id);
+          }
+        }
+        fetchData(); // Re-busca os dados para atualizar a UI
+      }
+
+      function displayCompras(compras) {
         const cartoesGrid = document.getElementById('cartoesGrid');
         cartoesGrid.innerHTML = '';
         const comprasPorCartao = {};
@@ -868,18 +898,21 @@
         for (const cartao in comprasPorCartao) {
           const cartaoBox = document.createElement('div');
           cartaoBox.classList.add('cartao-box');
-          cartaoBox.classList.add(cartao.toLowerCase().replace(/ /g, '')); // Adiciona classe para estilo
+          cartaoBox.classList.add(cartao.toLowerCase().replace(/ /g, ''));
+
           cartaoBox.innerHTML = `
             <h3>${cartao}</h3>
             <div class="cartao-list" id="${cartao.replace(/ /g, '')}List"></div>
             <div class="total-cartao">
               <span>Total:</span>
               <span id="total${cartao.replace(/ /g, '')}Cartao">${formatCurrency(comprasPorCartao[cartao].total)}</span>
+              <input type="checkbox" class="checkbox-pago-total" data-cartao="${cartao}">
             </div>
           `;
           cartoesGrid.appendChild(cartaoBox);
 
           const listElement = document.getElementById(`${cartao.replace(/ /g, '')}List`);
+          let allCartaoPaid = true;
           comprasPorCartao[cartao].compras.forEach(compra => {
             const isPaid = String(compra.pago).toLowerCase() === 'sim';
             const compraDiv = document.createElement('div');
@@ -897,106 +930,64 @@
               </div>
             `;
             listElement.appendChild(compraDiv);
+            if (!isPaid) allCartaoPaid = false;
           });
+          // Definir o estado do checkbox total do cartão
+          const cartaoCheckbox = cartaoBox.querySelector('.checkbox-pago-total');
+          cartaoCheckbox.checked = allCartaoPaid && comprasPorCartao[cartao].compras.length > 0;
+          cartaoCheckbox.onchange = function() {
+            markAllComprasCartaoAsPaid(this.dataset.cartao, this.checked);
+          };
         }
-      }*/
-      function displayCompras(compras) {
-  const cartoesGrid = document.getElementById('cartoesGrid');
-  cartoesGrid.innerHTML = '';
-  const comprasPorCartao = {};
+      }
 
-  compras.forEach(compra => {
-    const cartao = compra.cartao || 'Outro';
-    if (!comprasPorCartao[cartao]) {
-      comprasPorCartao[cartao] = { total: 0, compras: [] };
-    }
-    comprasPorCartao[cartao].total += parseFloat(compra.valor || 0);
-    comprasPorCartao[cartao].compras.push(compra);
-  });
+      async function markAllComprasCartaoAsPaid(cartao, isChecked) {
+        const status = isChecked ? 'Sim' : 'Não';
+        const result = await sendRequest('markCartaoAsPaid', { cartao, pago: status });
+        if (result.status === 'success') {
+          fetchData();
+        } else {
+          // Reverte o checkbox se houve erro
+          const cartaoCheckbox = document.querySelector(`.cartao-box.${cartao.toLowerCase().replace(/ /g, '')} .checkbox-pago-total`);
+          if (cartaoCheckbox) {
+            cartaoCheckbox.checked = !isChecked;
+          }
+        }
+      }
 
-  for (const cartao in comprasPorCartao) {
-    const cartaoBox = document.createElement('div');
-    cartaoBox.classList.add('cartao-box');
-    cartaoBox.classList.add(cartao.toLowerCase().replace(/ /g, ''));
-
-    cartaoBox.innerHTML = `
-      <h3>${cartao}</h3>
-      <div class="cartao-list" id="${cartao.replace(/ /g, '')}List"></div>
-      <div class="total-cartao">
-        <span>Total:</span>
-        <span id="total${cartao.replace(/ /g, '')}Cartao">${formatCurrency(comprasPorCartao[cartao].total)}</span>
-        <input type="checkbox" class="checkbox-pago-total" onchange="markCartaoAsPaid('${cartao}', this)">
-      </div>
-    `;
-    cartoesGrid.appendChild(cartaoBox);
-
-    const listElement = document.getElementById(`${cartao.replace(/ /g, '')}List`);
-    comprasPorCartao[cartao].compras.forEach(compra => {
-      const isPaid = String(compra.pago).toLowerCase() === 'sim';
-      const compraDiv = document.createElement('div');
-      compraDiv.classList.add('compra');
-      if (isPaid) compraDiv.classList.add('item-pago');
-      compraDiv.innerHTML = `
-        <div class="list-item-content">
-          <span>${compra.nome} (${compra.parcelas})</span>
-          <span>${formatCurrency(compra.valor)}</span>
-        </div>
-        <div class="list-item-controls">
-          <button class="edit-button" onclick="openEditCompraModal('${compra.originalId || compra.id}', '${compra.nome}', ${compra.valor}, '${compra.parcelas}', '${compra.cartao}', '${compra.responsavel}')">Editar</button>
-          <button class="delete-button" onclick="deleteRecord('Compra', '${compra.originalId || compra.id}')">Excluir</button>
-        </div>
-      `;
-      listElement.appendChild(compraDiv);
-    });
-  }
-}
-
-async function markCartaoAsPaid(cartao, checkbox) {
-  const status = checkbox.checked ? 'Sim' : 'Não';
-  const result = await sendRequest('markCartaoAsPaid', { cartao, pago: status });
-  if (result.status === 'success') {
-    fetchData();
-  } else {
-    checkbox.checked = !checkbox.checked;
-    alert('Erro ao marcar cartão como pago.');
-  }
-}
       function updateTotals(totals) {
-        document.getElementById('totalReceitas').textContent = formatCurrency(totals.totalReceitas || 0);
-        document.getElementById('totalDespesasMes').textContent = formatCurrency(totals.totalDespesasMes || 0);
-        document.getElementById('totalPago').textContent = formatCurrency(totals.totalPago || 0);
-        const totalAPagar = (totals.totalDespesasMes || 0) - (totals.totalPago || 0);
+        const totalReceitas = totals.totalReceitas || 0;
+        const totalDespesasMes = totals.totalDespesasMes || 0;
+        const totalPago = totals.totalPago || 0;
+        const totalAPagar = totalDespesasMes - totalPago;
+        const saldo = totalReceitas - totalDespesasMes;
+
+        document.getElementById('totalReceitas').textContent = formatCurrency(totalReceitas);
+        document.getElementById('totalDespesasMes').textContent = formatCurrency(totalDespesasMes);
+        document.getElementById('totalPago').textContent = formatCurrency(totalPago);
         document.getElementById('totalAPagar').textContent = formatCurrency(totalAPagar);
 
-        const saldo = (totals.totalReceitas || 0) - (totals.totalDespesasMes || 0);
         const saldoBar = document.getElementById('saldoBar');
         const saldoLabel = document.getElementById('saldoLabel');
-
-        let percentage = 0;
-        if (totals.totalReceitas > 0 || totals.totalDespesasMes > 0) {
-            percentage = (totals.totalPago / totals.totalDespesasMes) * 100;
-            if (isNaN(percentage)) percentage = 0; // Evita NaN se totalDespesasMes for 0
-            percentage = Math.min(percentage, 100); // Limita a 100%
-        }
-
-        saldoBar.style.width = `${percentage}%`;
-        if (saldo >= 0) {
-          saldoBar.style.backgroundColor = 'green';
-        } else {
-          saldoBar.style.backgroundColor = 'red';
-        }
         saldoLabel.textContent = `Saldo: ${formatCurrency(saldo)}`;
+
+        if (totalReceitas > 0) {
+          const percentage = Math.min(100, Math.max(0, (saldo / totalReceitas) * 100));
+          saldoBar.style.width = `${percentage}%`;
+          if (saldo >= 0) {
+            saldoBar.style.backgroundColor = 'green';
+          } else {
+            saldoBar.style.backgroundColor = 'red';
+          }
+        } else {
+          saldoBar.style.width = '0%';
+        }
       }
 
       function displayComprasPorResponsavel(compras) {
         const responsaveisContainer = document.getElementById('responsaveisContainer');
         responsaveisContainer.innerHTML = '';
         const comprasPorResponsavel = {};
-
-        // Inicializa com todos os responsáveis esperados
-        ['Liana', 'Stefany', 'Marília', 'Nosso ❤️'].forEach(r => {
-            comprasPorResponsavel[r] = { total: 0, compras: [] };
-        });
 
         compras.forEach(compra => {
           const responsavel = compra.responsavel || 'Outro';
