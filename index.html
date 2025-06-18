@@ -22,12 +22,6 @@
         padding: 20px;
         border-radius: 8px;
       }
-      /* Justificar conteúdo das compras por cartão */
-      .cartao-list,
-      .cartao-list p,
-      .compra .list-item-content span {
-      text-align: justify;
-      }
       /* Caixas (exceto o container principal) */
       .totals-section,
       .categorias-section,
@@ -728,53 +722,6 @@
     </div>
 
     <script>
-      function displayReceitas(receitas) {
-  const receitasList = document.getElementById('receitasList');
-  receitasList.innerHTML = '';
-  let totalReceitas = 0;
-  receitas.forEach(receita => {
-    totalReceitas += parseFloat(receita.valor || 0);
-    const listItem = document.createElement('div');
-    listItem.classList.add('list-item');
-    listItem.innerHTML = `
-      <span>${receita.nome} - ${formatCurrency(receita.valor)}</span>
-      <div class="list-item-controls">
-        <button class="edit-button" onclick="openEditReceitaModal('${receita.id}', '${receita.nome}', ${receita.valor})">Edit</button>
-        <button class="delete-button" onclick="deleteRecord('Receita', '${receita.id}')">X</button>
-      </div>
-    `;
-    receitasList.appendChild(listItem);
-  });
-  document.getElementById('totalReceitasCategoria').textContent = formatCurrency(totalReceitas);
-}
-
-function displayContas(contas) {
-  // ...código anterior...
-  listItem.innerHTML = `
-    <span>${conta.nome} (${conta.parcelas}) - ${formatCurrency(conta.valor)}</span>
-    <div class="list-item-controls">
-      <button class="edit-button" onclick="openEditContaModal('${conta.originalId || conta.id}', '${conta.tipo}', '${conta.nome}', ${conta.valor}, '${conta.parcelas}')">Edit</button>
-      <button class="delete-button" onclick="deleteRecord('Conta', '${conta.originalId || conta.id}')">X</button>
-      <input type="checkbox" data-id="${conta.id}" data-original-id="${conta.originalId || conta.id}" data-sheet="Contas" ${isPaid ? 'checked' : ''} onchange="markAsPaid(this)">
-    </div>
-  `;
-  // ...continua normalmente...
-}
-
-function displayCompras(compras) {
-  // ...código anterior...
-  compraDiv.innerHTML = `
-    <div class="list-item-content">
-      <span>${compra.nome} (${compra.parcelas})</span>
-      <span>${formatCurrency(compra.valor)}</span>
-    </div>
-    <div class="list-item-controls">
-      <button class="edit-button" onclick="openEditCompraModal('${compra.originalId || compra.id}', '${compra.nome}', ${compra.valor}, '${compra.parcelas}', '${compra.cartao}', '${compra.responsavel}')">Edit</button>
-      <button class="delete-button" onclick="deleteRecord('Compra', '${compra.originalId || compra.id}')">X</button>
-    </div>
-  `;
-  // ...continua normalmente...
-}
       // URL do seu Cloudflare Worker
       const WORKER_URL = 'https://painel-financas-proxy.mariliaedua.workers.dev/'; // Substitua pela URL do seu Worker
 
@@ -860,8 +807,8 @@ function displayCompras(compras) {
           listItem.innerHTML = `
             <span>${receita.nome} - ${formatCurrency(receita.valor)}</span>
             <div class="list-item-controls">
-              <button class="edit-button" onclick="openEditReceitaModal('${receita.id}', '${receita.nome}', ${receita.valor})">Edit</button>
-              <button class="delete-button" onclick="deleteRecord('Receita', '${receita.id}')">X</button>
+              <button class="edit-button" onclick="openEditReceitaModal('${receita.id}', '${receita.nome}', ${receita.valor})">Editar</button>
+              <button class="delete-button" onclick="deleteRecord('Receita', '${receita.id}')">Excluir</button>
             </div>
           `;
           receitasList.appendChild(listItem);
