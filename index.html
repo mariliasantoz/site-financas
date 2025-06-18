@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt">
   <head>
@@ -1192,64 +1193,6 @@
           checkbox.checked = !isChecked;
         }
       }
-    
-// Correção para carregar mês vigente ao abrir ou atualizar
-const today = new Date();
-const currentSystemMonth = today.getMonth() + 1;
-const currentSystemYear = today.getFullYear();
-
-const savedMonth = localStorage.getItem('currentMonth');
-const savedYear = localStorage.getItem('currentYear');
-
-if (!savedMonth || !savedYear || parseInt(savedMonth) !== currentSystemMonth || parseInt(savedYear) !== currentSystemYear) {
-  localStorage.setItem('currentMonth', currentSystemMonth);
-  localStorage.setItem('currentYear', currentSystemYear);
-}
-
-let currentMonth = parseInt(localStorage.getItem('currentMonth'));
-let currentYear = parseInt(localStorage.getItem('currentYear'));
-
-function changeMonth(delta) {
-  currentMonth += delta;
-  if (currentMonth > 12) {
-    currentMonth = 1;
-    currentYear++;
-  } else if (currentMonth < 1) {
-    currentMonth = 12;
-    currentYear--;
-  }
-  localStorage.setItem('currentMonth', currentMonth);
-  localStorage.setItem('currentYear', currentYear);
-  updateMonthYearDisplay();
-  fetchData();
-}
-
-// Correção definitiva dos checkboxes
-async function markAsPaid(checkbox) {
-  const isChecked = checkbox.checked;
-  const status = isChecked ? "Sim" : "Não";
-  const id = checkbox.dataset.originalId;
-  const sheet = checkbox.dataset.sheet;
-
-  if (!id || !sheet) return;
-
-  const action = sheet === 'Contas' ? 'markContaAsPaid' : 'markCompraAsPaid';
-  const result = await sendRequest(action, { pago: status }, id);
-
-  if (result.status !== 'success') {
-    alert("Erro ao atualizar status de pagamento.");
-    checkbox.checked = !isChecked;
-  } else {
-    fetchData();
-  }
-}
-
-document.addEventListener('change', function(e) {
-  if (e.target && e.target.matches('input[type="checkbox"][data-id]')) {
-    markAsPaid(e.target);
-  }
-});
-
-</script>
+    </script>
   </body>
 </html>
