@@ -81,15 +81,15 @@
       header h2 {
         color: #555; /* [129] */
         margin-top: 0; /* [129] */
-        display: inline-block; /* [130] */
+        display: block; /* Corrigido: para que o h2 ocupe sua própria linha */
         position: relative; /* [130] */
-        padding: 0 120px; /* [130] */
+        padding: 0; /* Corrigido: remover padding horizontal */
         z-index: 10; /* Corrigido: garantir que o nome do mês fique acima dos botões */
       }
       .nav-buttons {
-          position: absolute; /* [131] */
-          top: 50%; /* [131] */
-          transform: translateY(-50%); /* [131] */
+          position: relative; /* Corrigido: para que os botões fiquem abaixo do h2 */
+          top: auto; /* Corrigido */
+          transform: none; /* Corrigido */
           width: 100%;
           display: flex;
           justify-content: space-between;
@@ -856,6 +856,29 @@
         document.getElementById('totalContasVariaveisCategoria').textContent = formatCurrency(totalContasVariaveis);
         document.getElementById('markAllContasFixasPaid').checked = allFixasPaid && contasFixasList.children.length > 0;
         document.getElementById('markAllContasVariaveisPaid').checked = allVariaveisPaid && contasVariaveisList.children.length > 0;
+
+        // Adicionar event listeners para os checkboxes totais de Contas
+        document.getElementById('markAllContasFixasPaid').onchange = function() {
+          markAllContasAsPaid('Fixa', this.checked);
+        };
+        document.getElementById('markAllContasVariaveisPaid').onchange = function() {
+          markAllContasAsPaid('Variável', this.checked);
+        };
+      }
+
+      async function markAllContasAsPaid(tipoConta, isChecked) {
+        const sheetName = 'Contas';
+        const status = isChecked ? 'Sim' : 'Não';
+        const contas = await sendRequest('getContas'); // Busca todas as contas do mês
+        const contasFiltradas = contas.data.filter(conta => conta.tipo === tipoConta);
+
+        for (const conta of contasFiltradas) {
+          // Apenas atualiza se o status for diferente para evitar chamadas desnecessárias
+          if ((String(conta.pago).toLowerCase() === 'sim') !== isChecked) {
+            await sendRequest('markContaAsPaid', { pago: status }, conta.originalId || conta.id);
+          }
+        }
+        fetchData(); // Re-busca os dados para atualizar a UI
       }
 
       function displayCompras(compras) {
@@ -883,12 +906,13 @@
             <div class="total-cartao">
               <span>Total:</span>
               <span id="total${cartao.replace(/ /g, '')}Cartao">${formatCurrency(comprasPorCartao[cartao].total)}</span>
-              <input type="checkbox" class="checkbox-pago-total" onchange="markCartaoAsPaid('${cartao}', this)">
+              <input type="checkbox" class="checkbox-pago-total" data-cartao="${cartao}">
             </div>
           `;
           cartoesGrid.appendChild(cartaoBox);
 
           const listElement = document.getElementById(`${cartao.replace(/ /g, '')}List`);
+          let allCartaoPaid = true;
           comprasPorCartao[cartao].compras.forEach(compra => {
             const isPaid = String(compra.pago).toLowerCase() === 'sim';
             const compraDiv = document.createElement('div');
@@ -902,20 +926,32 @@
               <div class="list-item-controls">
                 <button class="edit-button" onclick="openEditCompraModal('${compra.originalId || compra.id}', '${compra.nome}', ${compra.valor}, '${compra.parcelas}', '${compra.cartao}', '${compra.responsavel}')">Editar</button>
                 <button class="delete-button" onclick="deleteRecord('Compra', '${compra.originalId || compra.id}')">Excluir</button>
+                <input type="checkbox" data-id="${compra.id}" data-original-id="${compra.originalId || compra.id}" data-sheet="Compras" ${isPaid ? 'checked' : ''} onchange="markAsPaid(this)">
               </div>
             `;
             listElement.appendChild(compraDiv);
+            if (!isPaid) allCartaoPaid = false;
           });
+          // Definir o estado do checkbox total do cartão
+          const cartaoCheckbox = cartaoBox.querySelector('.checkbox-pago-total');
+          cartaoCheckbox.checked = allCartaoPaid && comprasPorCartao[cartao].compras.length > 0;
+          cartaoCheckbox.onchange = function() {
+            markAllComprasCartaoAsPaid(this.dataset.cartao, this.checked);
+          };
         }
       }
 
-      async function markCartaoAsPaid(cartao, checkbox) {
-        const status = checkbox.checked ? 'Sim' : 'Não';
+      async function markAllComprasCartaoAsPaid(cartao, isChecked) {
+        const status = isChecked ? 'Sim' : 'Não';
         const result = await sendRequest('markCartaoAsPaid', { cartao, pago: status });
         if (result.status === 'success') {
           fetchData();
         } else {
-          checkbox.checked = !checkbox.checked;
+          // Reverte o checkbox se houve erro
+          const cartaoCheckbox = document.querySelector(`.cartao-box.${cartao.toLowerCase().replace(/ /g, '')} .checkbox-pago-total`);
+          if (cartaoCheckbox) {
+            cartaoCheckbox.checked = !isChecked;
+          }
         }
       }
 
