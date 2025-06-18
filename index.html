@@ -807,8 +807,8 @@
           listItem.innerHTML = `
             <span>${receita.nome} - ${formatCurrency(receita.valor)}</span>
             <div class="list-item-controls">
-              <button class="edit-button" onclick="openEditReceitaModal('${receita.id}', '${receita.nome}', ${receita.valor})">Editar</button>
-              <button class="delete-button" onclick="deleteRecord('Receita', '${receita.id}')">Excluir</button>
+              <button class="edit-button" onclick="openEditReceitaModal('${receita.id}', '${receita.nome}', ${receita.valor})">Edit</button>
+              <button class="delete-button" onclick="deleteRecord('Receita', '${receita.id}')">X</button>
             </div>
           `;
           receitasList.appendChild(listItem);
