@@ -867,18 +867,18 @@
       }
 
       async function markAllContasAsPaid(tipoConta, isChecked) {
-        const sheetName = 'Contas';
         const status = isChecked ? 'Sim' : 'Não';
-        const contas = await sendRequest('getContas'); // Busca todas as contas do mês
+        const contas = await sendRequest('getContas');
+        if (!contas.data) return;
+        
         const contasFiltradas = contas.data.filter(conta => conta.tipo === tipoConta);
-
+        
         for (const conta of contasFiltradas) {
-          // Apenas atualiza se o status for diferente para evitar chamadas desnecessárias
           if ((String(conta.pago).toLowerCase() === 'sim') !== isChecked) {
             await sendRequest('markContaAsPaid', { pago: status }, conta.originalId || conta.id);
           }
         }
-        fetchData(); // Re-busca os dados para atualizar a UI
+        fetchData();
       }
 
       function displayCompras(compras) {
@@ -926,7 +926,6 @@
               <div class="list-item-controls">
                 <button class="edit-button" onclick="openEditCompraModal('${compra.originalId || compra.id}', '${compra.nome}', ${compra.valor}, '${compra.parcelas}', '${compra.cartao}', '${compra.responsavel}')">Editar</button>
                 <button class="delete-button" onclick="deleteRecord('Compra', '${compra.originalId || compra.id}')">Excluir</button>
-                <input type="checkbox" data-id="${compra.id}" data-original-id="${compra.originalId || compra.id}" data-sheet="Compras" ${isPaid ? 'checked' : ''} onchange="markAsPaid(this)">
               </div>
             `;
             listElement.appendChild(compraDiv);
@@ -1196,3 +1195,4 @@
     </script>
   </body>
 </html>
+
