@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt">
   <head>
@@ -251,7 +250,7 @@
       }
       .cartao-box.nubank { background-color: #f3e5f5; border: 1px solid #ce93d8; } /* [173] */
       .cartao-box.santander { background-color: #ffebee; border: 1px solid #ef9a9a; } /* [174] */
-      .cartao-box.mercadopago { background-color: #c4e0f5; border: 1px solid #57b1f2; } /* [175] */
+      .cartao-box.mercadopago { background-color: #e3f2fd; border: 1px solid #90caf9; } /* [175] */
       .cartao-box.amazon { background-color: #fff3e0; border: 1px solid #ffcc80; } /* [176] */
       .cartao-box h3 {
         margin-top: 0;
@@ -726,9 +725,10 @@
       // URL do seu Cloudflare Worker
       const WORKER_URL = 'https://painel-financas-proxy.mariliaedua.workers.dev/'; // Substitua pela URL do seu Worker
 
-      // Corrigido: inicializar com mês e ano atuais
-      let currentMonth = new Date().getMonth() + 1; // Mês atual (1-12)
-      let currentYear = new Date().getFullYear(); // Ano atual
+      // CORRIGIDO: Garantir que sempre inicialize com o mês e ano atuais do Brasil
+      const now = new Date();
+      let currentMonth = now.getMonth() + 1; // Mês atual (1-12)
+      let currentYear = now.getFullYear(); // Ano atual
 
       document.addEventListener('DOMContentLoaded', () => {
         updateMonthYearDisplay();
@@ -1196,3 +1196,4 @@
     </script>
   </body>
 </html>
+
