@@ -4,80 +4,81 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Painel Financeiro</title>
-    <link rel="icon" type="image/png" href="favicon.png">
+        <link rel="icon" type="image/png" href="favicon.png">
+
     <style>
       /* CONFIGURAÇÃO GERAL */
       body {
-        font-family: Arial, sans-serif; /* [116] */
-        background-color: #f2f2f2; /* [116] */
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
         margin: 0;
         padding: 20px;
         color: black; /* Texto padrão em preto */
       }
       .container {
-        max-width: 1200px; /* [117] */
-        margin: auto; /* [117] */
+        max-width: 1200px;
+        margin: auto;
         background-color: #fff;
         padding: 20px;
-        border-radius: 8px;
-      }
+        border-radius: 8px;      }
       /* Caixas (exceto o container principal) */
       .totals-section,
       .categorias-section,
       /* .form-sections-wrapper, */ /* Removido daqui para não ser uma caixa azul */
-      .form-section, /* Aplicar a cada form individual - AGORA SERÁ UMA CAIXA AZUL */ /* [118] */
+      .form-section, /* Aplicar a cada form individual - AGORA SERÁ UMA CAIXA AZUL */
       .cartoes-section,
       .compras-responsaveis,
       .categoria-box,
       .responsavel-box,
       .cartao-box {
-        background-color: #e3f2fd; /* [118] */
-        border: 1px solid #90caf9; /* [118] */
+        background-color: #e3f2fd;
+        border: 1px solid #90caf9;
         border-radius: 5px;
-        margin-bottom: 20px; /* Espaçamento entre seções */ /* [118] */
-        padding: 15px; /* [119] */
+        margin-bottom: 20px; /* Espaçamento entre seções */
+        padding: 15px;
       }
+
       /* BOTÕES */
       button {
-        background-color: #4caf50; /* [120] */
-        color: #fff; /* [120] */
+        background-color: #4caf50;
+        color: #fff;
         border: none;
         border-radius: 5px;
         padding: 8px 12px;
         cursor: pointer;
         font-size: 0.9em;
-        transition: background-color 0.3s ease; /* [121] */
+        transition: background-color 0.3s ease;
       }
       button:hover {
-        background-color: #45a049; /* [122] */
+        background-color: #45a049;
       }
       button.delete-button {
-        background-color: #f44336; /* [123] */
-        margin-left: 5px; /* [123] */
+        background-color: #f44336;
+        margin-left: 5px;
       }
       button.delete-button:hover {
-        background-color: #da190b; /* [124] */
+        background-color: #da190b;
       }
       button.edit-button {
-        background-color: #ff9800; /* [125] */
-        margin-left: 5px; /* [125] */
+        background-color: #ff9800;
+        margin-left: 5px;
       }
       button.edit-button:hover {
-        background-color: #e68a00; /* [126] */
+        background-color: #e68a00;
       }
+
       /* CABEÇALHO */
       header {
-        text-align: center; /* [127] */
-        margin-bottom: 20px; /* [127] */
-        position: relative;
-      }
+        text-align: center;
+        margin-bottom: 20px;
+        position: relative;      }
       header h1 {
-        color: #333; /* [128] */
-        margin-bottom: 10px; /* [128] */
+        color: #333;
+        margin-bottom: 10px;
       }
       header h2 {
-        color: #555; /* [129] */
-        margin-top: 0; /* [129] */
+        color: #555;
+        margin-top: 0;
         display: block; /* Corrigido: para que o h2 ocupe sua própria linha */
         position: relative; /* [130] */
         padding: 0; /* Corrigido: remover padding horizontal */
@@ -91,147 +92,150 @@
           display: flex;
           justify-content: space-between;
           padding: 0 20px;
-          box-sizing: border-box; /* [132] */
-          left: 0; /* [133] */
+          box-sizing: border-box;
+          left: 0;
           z-index: 1; /* Corrigido: garantir que os botões fiquem atrás do nome do mês */
       }
       .nav-buttons button {
-          background-color: #007bff; /* [134] */
-          color: white; /* [134] */
+          background-color: #007bff;
+          color: white;
           padding: 5px 10px;
           border: none;
           border-radius: 5px;
           cursor: pointer;
-          font-size: 1em; /* [135] */
+          font-size: 1em;
       }
       .nav-buttons button:hover {
-          background-color: #0056b3; /* [136] */
+          background-color: #0056b3;
       }
+
       /* SEÇÃO DE TOTAIS */
       .totals-section {
         /* Herda padding e margin-bottom da regra geral de caixas */
       }
       .totals-wrapper {
-        display: flex; /* [139] */
-        justify-content: space-around; /* [139] */
+        display: flex;
+        justify-content: space-around;
         margin-bottom: 15px;
         font-weight: bold;
         color: #333;
       }
       .saldo-bar-container {
         background-color: white; /* Corrigido: termômetro branco */
-        border-radius: 5px; /* [140] */
+        border-radius: 5px;
         height: 25px;
         margin-top: 10px;
-        overflow: hidden; /* [141] */
-        position: relative; /* [141] */
+        overflow: hidden;
+        position: relative;
       }
       .saldo-bar {
         height: 100%;
-        width: 0%; /* [142] */
-        background-color: green; /* Cor padrão inicial, será ajustada via JS */ /* [143] */
-        border-radius: 5px; /* [144] */
-        transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out; /* [144] */
+        width: 0%;
+        background-color: green; /* Cor padrão inicial, será ajustada via JS */
+        border-radius: 5px;
+        transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out;
       }
       .saldo-label {
-        position: absolute; /* [146] */
-        top: 0; /* [146] */
-        left: 0; /* [146] */
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
         color: black; /* Corrigido: fonte preta */
-        font-weight: bold; /* [147] */
+        font-weight: bold;
         text-shadow: none; /* Corrigido: removido shadow para melhor contraste */
         font-size: 0.9em;
         border-radius: 5px;
         box-sizing: border-box;
       }
+
       /* SEÇÃO DE CATEGORIAS (Receitas, Contas Fixas, Variáveis) */
       .categorias-section {
          /* Herda padding e margin-bottom da regra geral de caixas */
       }
       .categorias-columns {
-        display: grid; /* [150] */
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* [150] */
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 20px;
       }
       .categoria-box {
         text-align: center;
-        display: flex; /* [152] */
-        flex-direction: column; /* [152] */
+        display: flex;
+        flex-direction: column;
          /* Herda padding e margin-bottom da regra geral de caixas */
       }
       .categoria-box h3 {
         margin-top: 0;
-        color: #333; /* [153] */
+        color: #333;
       }
       .categoria-list {
         text-align: left;
-        margin-bottom: 10px; /* [154] */
-        flex-grow: 1; /* [154] */
-        min-height: 50px; /* [155] */
+        margin-bottom: 10px;
+        flex-grow: 1;
+        min-height: 50px;
       }
       .categoria-list p {
-        margin: 5px 0; /* [156] */
-        color: #555; /* [156] */
+        margin: 5px 0;
+        color: #555;
       }
       .list-item {
-        display: flex; /* [157] */
-        justify-content: space-between; /* [157] */
+        display: flex;
+        justify-content: space-between;
         align-items: center;
         padding: 5px 0;
-        border-bottom: 1px dashed #c0c0c0; /* [158] */
+        border-bottom: 1px dashed #c0c0c0;
       }
       .list-item:last-child {
-        border-bottom: none; /* [159] */
+        border-bottom: none;
       }
       .list-item span {
         flex-grow: 1;
-        text-align: left; /* [160] */
-        margin-right: 10px; /* [160] */
+        text-align: left;
+        margin-right: 10px;
       }
       .list-item-controls {
-          display: flex; /* [161] */
-          justify-content: flex-end; /* [161] */
+          display: flex;
+          justify-content: flex-end;
           align-items: center;
           flex-shrink: 0;
       }
       .list-item-controls button {
-          margin-left: 5px; /* [162] */
-          padding: 4px 8px; /* [162] */
+          margin-left: 5px;
+          padding: 4px 8px;
           font-size: 0.8em;
       }
       .list-item-controls input[type="checkbox"] {
-          margin-left: 5px; /* [163] */
-          width: 16px; /* [163] */
-          height: 16px; /* [163] */
+          margin-left: 5px;
+          width: 16px;
+          height: 16px;
       }
       .categoria-box .total-categoria {
-        font-weight: bold; /* [164] */
-        margin-top: 10px; /* [164] */
+        font-weight: bold;
+        margin-top: 10px;
         padding-top: 10px;
         border-top: 1px solid #c0c0c0;
-        display: flex; /* [165] */
-        justify-content: space-between; /* [165] */
-        align-items: center; /* [165] */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
       .total-categoria .checkbox-pago-total {
-          margin-left: 10px; /* [166] */
-          width: 20px; /* [166] */
-          height: 20px; /* [167] */
-          cursor: pointer; /* [167] */
+          margin-left: 10px;
+          width: 20px;
+          height: 20px;
+          cursor: pointer;
       }
+
       /* SEÇÃO DE CARTÕES */
       .cartoes-section {
         /* Herda padding e margin-bottom da regra geral de caixas */
       }
       .cartoes-grid {
-        display: grid; /* [170] */
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* [171] */
-        gap: 20px; /* [171] */
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
       }
       .cartao-box {
         text-align: center;
@@ -240,89 +244,90 @@
         /* Herda padding, margin-bottom, border e background da regra geral de caixas,
            mas cores específicas abaixo podem sobrescrever o background/border. */
       }
-      .cartao-box.nubank { background-color: #f3e5f5; border: 1px solid #ce93d8; } /* [173] */
-      .cartao-box.santander { background-color: #ffebee; border: 1px solid #ef9a9a; } /* [174] */
-      .cartao-box.mercadopago { background-color: #e3f2fd; border: 1px solid #90caf9; } /* [175] */
-      .cartao-box.amazon { background-color: #fff3e0; border: 1px solid #ffcc80; } /* [176] */
+      .cartao-box.nubank { background-color: #f3e5f5; border: 1px solid #ce93d8; }
+      .cartao-box.santander { background-color: #ffebee; border: 1px solid #ef9a9a; }
+      .cartao-box.mercadopago { background-color: #e3f2fd; border: 1px solid #90caf9; }
+      .cartao-box.amazon { background-color: #fff3e0; border: 1px solid #ffcc80; }
       .cartao-box h3 {
         margin-top: 0;
-        color: #333; /* [177] */
+        color: #333;
       }
       .cartao-list {
         text-align: left;
-        margin-bottom: 10px; /* [178] */
-        flex-grow: 1; /* [178] */
+        margin-bottom: 10px;
+        flex-grow: 1;
         min-height: 50px;
         max-height: 400px; /* NOVO: Altura máxima para scroll */
         overflow-y: auto; /* NOVO: Scroll vertical */
         padding-right: 5px; /* NOVO: Espaço para a barra de scroll */
       }
       .cartao-list p {
-        margin: 5px 0; /* [179] */
-        color: #555; /* [179] */
+        margin: 5px 0;
+        color: #555;
       }
       .cartao-box .total-cartao {
-        font-weight: bold; /* [180] */
-        margin-top: 10px; /* [180] */
+        font-weight: bold;
+        margin-top: 10px;
         padding-top: 10px;
         border-top: 1px solid #a7d9f7;
-        display: flex; /* [181] */
-        justify-content: space-between; /* [181] */
-        align-items: center; /* [181] */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
       .cartao-box .total-cartao .checkbox-pago-total {
-          margin-left: 10px; /* [182] */
-          width: 20px; /* [182] */
-          height: 20px; /* [182] */
+          margin-left: 10px;
+          width: 20px;
+          height: 20px;
           cursor: pointer;
       }
       .compra {
-        display: flex; /* [183] */
-        justify-content: space-between; /* [183] */
+        display: flex;
+        justify-content: space-between;
         align-items: center;
         padding: 5px;
         border-bottom: 1px dashed #c0c0c0;
-        border-radius: 3px; /* [184] */
-        margin-bottom: 3px; /* [185] */
+        border-radius: 3px;
+        margin-bottom: 3px;
       }
       .compra:last-child {
-        border-bottom: none; /* [186] */
+        border-bottom: none;
       }
       .compra .list-item-content {
-          flex-grow: 1; /* [187] */
-          display: flex; /* [187] */
+          flex-grow: 1;
+          display: flex;
           justify-content: space-between;
           align-items: center;
           margin-right: 5px;
       }
       .compra .list-item-content span {
-          flex-grow: 1; /* [188] */
-          text-align: left; /* [188] */
+          flex-grow: 1;
+          text-align: left;
           font-size: 0.9em;
       }
       .compra .list-item-controls {
-          flex-shrink: 0; /* [189] */
+          flex-shrink: 0;
       }
+
       /* SEÇÃO DE FORMULÁRIOS */
       .form-sections-wrapper { /* Agora é apenas um container flexível */
-        display: flex; /* [190] */
-        gap: 20px; /* [190] */
+        display: flex;
+        gap: 20px;
         margin-bottom: 20px; /* Para espaçar do próximo elemento */
       }
       .form-section { /* Cada form agora é uma caixa azul */
-        flex: 1; /* [191] */
-        text-align: center; /* [191] */
+        flex: 1;
+        text-align: center;
         /* background-color, border, padding, border-radius, margin-bottom
            são herdados da regra geral de caixas no início do <style> */
       }
       .form-section h2 {
         margin-top: 0;
-        margin-bottom: 15px; /* [193] */
-        color: #333; /* [193] */
+        margin-bottom: 15px;
+        color: #333;
       }
-      .form-section label { 
-        display: block; /* [194] */
-        margin-bottom: 5px; /* [194] */
+      .form-section label {
+        display: block;
+        margin-bottom: 5px;
         text-align: left;
         font-weight: bold;
         font-size: 0.9em;
@@ -330,101 +335,869 @@
       .form-section input[type="text"],
       .form-section input[type="number"],
       .form-section select {
-        width: 100%; /* [195] */
-        padding: 8px; /* [195] */
+        width: 100%;
+        padding: 8px;
         margin-bottom: 10px;
         border: 1px solid #ccc;
         border-radius: 4px;
-        box-sizing: border-box; /* [196] */
+        box-sizing: border-box;
       }
       .form-section .row {
         display: flex;
-        gap: 10px; /* [197] */
-        margin-bottom: 10px; /* [197] */
-        align-items: center; 
+        gap: 10px;
+        margin-bottom: 10px;
+        align-items: center;
       }
       .form-section .row input,
       .form-section .row select {
-        flex-grow: 1; /* [198] */
-        margin-bottom: 0; /* [198] */
+        flex-grow: 1;
+        margin-bottom: 0;
       }
       .form-section button {
-        width: 100%; /* [199] */
-        margin-top: 10px; /* [199] */
+        width: 100%;
+        margin-top: 10px;
       }
+
       /* SEÇÃO DE COMPRAS POR RESPONSÁVEL */
       .compras-responsaveis {
-        text-align: center; /* [200] */
+        text-align: center;
          /* Herda padding e margin-bottom da regra geral de caixas */
       }
       .compras-responsaveis h2 {
         margin-top: 0;
-        color: #333; /* [201] */
+        color: #333;
       }
       .responsaveis-container {
-        display: grid; /* [202] */
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* [202] */
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
         gap: 20px;
         margin-top: 15px;
       }
       .responsavel-box {
-        text-align: center; /* [203] */
+        text-align: center;
         /* Herda padding, margin-bottom, border e background da regra geral de caixas */
       }
       .responsavel-box h3 {
         margin-bottom: 10px;
-        font-size: 1.2em; /* [204] */
-        padding: 5px; /* [204] */
+        font-size: 1.2em;
+        padding: 5px;
         border-radius: 3px;
-        display: inline-block; /* [204] */
+        display: inline-block;
       }
       .responsavel-box p.total-responsavel {
-        margin: 10px 0 5px 0; /* [205] */
-        font-size: 1em; /* [205] */
+        margin: 10px 0 5px 0;
+        font-size: 1em;
         font-weight: bold;
-        border-top: 1px solid #ccc; /* [206] */
-        padding-top: 10px; /* [206] */
+        border-top: 1px solid #ccc;
+        padding-top: 10px;
       }
       .responsavel-list {
-          text-align: left; /* [207] */
-          font-size: 0.9em; /* [207] */
-          max-height: 150px; /* [208] */
-          overflow-y: auto; /* [208] */
-          padding-right: 5px; /* [208] */
-          margin-top: 10px; /* [208] */
+          text-align: left;
+          font-size: 0.9em;
+          max-height: 150px;
+          overflow-y: auto;
+          padding-right: 5px;
+          margin-top: 10px;
       }
        .responsavel-list .compra-item {
-          display: flex; /* [209] */
-          justify-content: space-between; /* [209] */
+          display: flex;
+          justify-content: space-between;
           padding: 3px 0;
           border-bottom: 1px dotted #eee;
        }
        .responsavel-list .compra-item:last-child {
-           border-bottom: none; /* [210] */
+           border-bottom: none;
        }
        .responsavel-list .compra-nome {
-           flex-grow: 1; /* [211] */
-           margin-right: 10px; /* [211] */
+           flex-grow: 1;
+           margin-right: 10px;
            white-space: nowrap;
            overflow: hidden;
            text-overflow: ellipsis;
        }
        .responsavel-list .compra-detalhes {
-           flex-shrink: 0; /* [212] */
-           white-space: nowrap; /* [212] */
+           flex-shrink: 0;
+           white-space: nowrap;
        }
+
       /* Cores para Responsáveis */
-      .responsavel-liana { background-color: #add8e6; } /* [213] */
-      .responsavel-stefany { background-color: #ffb347; } /* [214] */
+      .responsavel-liana { background-color: #add8e6; }
+      .responsavel-stefany { background-color: #ffb347; }
       .responsavel-marilia { background-color: #dda0dd; }
-      .responsavel-nosso { background-color: #ffc0cb; } /* [215] */
+      .responsavel-nosso { background-color: #ffc0cb; }
+
       /* Cores para background de itens de compra */
-      .compra-bg-liana { background-color: rgba(173, 216, 230, 0.3); } /* [216] */
-      .compra-bg-stefany { background-color: rgba(255, 179, 71, 0.3); } /* [217] */
-      .compra-bg-marilia { background-color: rgba(106, 90, 205, 0.4); } /* [218] */
-      .compra-bg-nosso { background-color: rgba(255, 192, 203, 0.3); } /* [219] */
+      .compra-bg-liana { background-color: rgba(173, 216, 230, 0.3); }
+      .compra-bg-stefany { background-color: rgba(255, 179, 71, 0.3); }
+      .compra-bg-marilia { background-color: rgba(106, 90, 205, 0.4); }
+      .compra-bg-nosso { background-color: rgba(255, 192, 203, 0.3); }
+
       /* RODAPÉ */
       footer {
-        text-align: center; /* [220] */
-        margin-top: 20px; /* [220] */
-        padding-top:
+        text-align: center;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #ccc;
+      }
+      footer p span {
+        margin: 0 5px;
+        font-weight: bold;
+        padding: 4px 8px;
+        border-radius: 3px;
+      }
+      footer .liana { background-color: #add8e6; }
+      footer .stefany { background-color: #ffb347; }
+      footer .marilia { background-color: #dda0dd; }
+      footer .nosso { background-color: #ffc0cb; }
+
+      /* Estilo para item pago */
+      .item-pago {
+          text-decoration: line-through;
+          color: grey;
+          opacity: 0.7;
+      }
+
+      /* Modal Styles */
+      .modal {
+          display: none;
+          position: fixed;
+          z-index: 1000;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          overflow: auto;
+          background-color: rgba(0,0,0,0.4);
+      }
+      .modal-content {
+          background-color: #fefefe;
+          margin: 15% auto;
+          padding: 20px;
+          border: 1px solid #888;
+          width: 80%;
+          max-width: 500px;
+          border-radius: 8px;
+          position: relative;
+      }
+      .close-button {
+          color: #aaa;
+          position: absolute;
+          top: 10px;
+          right: 15px;
+          font-size: 28px;
+          font-weight: bold;
+      }
+      .close-button:hover,
+      .close-button:focus {
+          color: black;
+          text-decoration: none;
+          cursor: pointer;
+      }
+      .modal h2 {
+          margin-top: 0;
+      }
+      .modal label {
+          display: block;
+          margin-bottom: 5px;
+      }
+      .modal input[type="text"],
+      .modal input[type="number"],
+      .modal select {
+          width: 100%;
+          padding: 8px;
+          margin-bottom: 10px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+      }
+      .modal button {
+          width: 100%;
+          margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Painel Financeiro Familiar</h1>
+        <div class="nav-buttons">
+          <br>
+            <br>
+            <button onclick="changeMonth(-1)">Mês Anterior</button>
+            <h2 id="currentMonthYear"></h2>
+            <button onclick="changeMonth(1)">Próximo Mês</button>
+        </div>
+      </header>
+
+      <section class="totals-section">
+        <div class="totals-wrapper">
+          <div>Receitas: <span id="totalReceitas">R$ 0,00</span></div>
+          <div>Despesas: <span id="totalDespesasMes">R$ 0,00</span></div>
+          <div>Pago: <span id="totalPago">R$ 0,00</span></div>
+          <div>A Pagar: <span id="totalAPagar">R$ 0,00</span></div>
+        </div>
+        <div class="saldo-bar-container">
+          <div class="saldo-bar" id="saldoBar"></div>
+          <div class="saldo-label" id="saldoLabel">Saldo: R$ 0,00</div>
+        </div>
+      </section>
+
+      <section class="categorias-section">
+        <h2>Resumo Mensal</h2>
+        <div class="categorias-columns">
+          <div class="categoria-box">
+            <h3>Receitas</h3>
+            <div id="receitasList" class="categoria-list"></div>
+            <div class="total-categoria">
+              <span>Total Receitas:</span>
+              <span id="totalReceitasCategoria">R$ 0,00</span>
+            </div>
+          </div>
+          <div class="categoria-box">
+            <h3>Contas Fixas</h3>
+            <div id="contasFixasList" class="categoria-list"></div>
+            <div class="total-categoria">
+              <span>Total Contas Fixas:</span>
+              <span id="totalContasFixasCategoria">R$ 0,00</span>
+              <input type="checkbox" id="markAllContasFixasPaid" class="checkbox-pago-total">
+            </div>
+          </div>
+           <div class="categoria-box">
+            <h3>Contas Variáveis</h3>
+            <div id="contasVariaveisList" class="categoria-list"></div>
+            <div class="total-categoria">
+              <span>Total Contas Variáveis:</span>
+              <span id="totalContasVariaveisCategoria">R$ 0,00</span>
+              <input type="checkbox" id="markAllContasVariaveisPaid" class="checkbox-pago-total">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cartoes-section">
+        <h2>Compras por Cartão</h2>
+        <div class="cartoes-grid" id="cartoesGrid"></div>
+      </section>
+
+      <section class="form-sections-wrapper">
+        <div class="form-section">
+          <h2>Adicionar Receita</h2>
+          <form id="addReceitaForm">
+            <label for="receitaNome">Nome:</label>
+            <input type="text" id="receitaNome" required />
+            <label for="receitaValor">Valor:</label>
+            <input type="number" id="receitaValor" step="0.01" required />
+            <button type="submit">Adicionar Receita</button>
+          </form>
+        </div>
+
+        <div class="form-section">
+          <h2>Adicionar Compra (Cartão)</h2>
+          <form id="addCompraForm">
+            <label for="compraNome">Nome:</label>
+            <input type="text" id="compraNome" required />
+            <label for="compraValor">Valor:</label>
+            <input type="number" id="compraValor" step="0.01" required />
+            <div class="row">
+              <label for="compraParcelas">Parcelas:</label>
+              <input type="number" id="compraParcelas" value="1" min="1" required />
+              <label for="compraCartao">Cartão:</label>
+              <select id="compraCartao" required>
+                <option value="Nubank">Nubank</option>
+                <option value="Santander">Santander</option>
+                <option value="Mercado Pago">Mercado Pago</option>
+                <option value="Amazon">Amazon</option>
+                <option value="Outro">Outro</option>
+              </select>
+            </div>
+            <label for="compraResponsavel">Responsável:</label>
+            <select id="compraResponsavel" required>
+              <option value="Liana">Liana</option>
+              <option value="Stefany">Stefany</option>
+              <option value="Marília">Marília</option>
+              <option value="Nosso ❤️">Nosso ❤️</option>
+            </select>
+            <button type="submit">Adicionar Compra</button>
+          </form>
+        </div>
+
+        <div class="form-section">
+          <h2>Adicionar Conta (Fixa/Variável)</h2>
+          <form id="addContaForm">
+            <label for="contaTipo">Tipo:</label>
+            <select id="contaTipo" required>
+              <option value="Fixa">Fixa</option>
+              <option value="Variável">Variável</option>
+            </select>
+            <label for="contaNome">Nome:</label>
+            <input type="text" id="contaNome" required />
+            <label for="contaValor">Valor:</label>
+            <input type="number" id="contaValor" step="0.01" required />
+            <label for="contaParcelas">Parcelas:</label>
+            <input type="number" id="contaParcelas" value="1" min="1" required />
+            <button type="submit">Adicionar Conta</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="compras-responsaveis">
+        <h2>Compras por Responsável</h2>
+        <div class="responsaveis-container" id="responsaveisContainer"></div>
+      </section>
+
+      <footer>
+        <p>Desenvolvido com ❤️ por <span class="liana">Liana</span>, <span class="stefany">Stefany</span>, <span class="marilia">Marília</span> e <span class="nosso">Nosso ❤️</span></p>
+      </footer>
+    </div>
+
+    <div id="editReceitaModal" class="modal">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2>Editar Receita</h2>
+        <form id="editReceitaForm">
+          <input type="hidden" id="editReceitaId">
+          <label for="editReceitaNome">Nome:</label>
+          <input type="text" id="editReceitaNome" required>
+          <label for="editReceitaValor">Valor:</label>
+          <input type="number" id="editReceitaValor" step="0.01" required>
+          <button type="submit">Salvar Alterações</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="editCompraModal" class="modal">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2>Editar Compra</h2>
+        <form id="editCompraForm">
+           <input type="hidden" id="editCompraId">
+          <label for="editCompraNome">Nome:</label>
+          <input type="text" id="editCompraNome" required>
+          <label for="editCompraValor">Valor:</label>
+          <input type="number" id="editCompraValor" step="0.01" required>
+          <label for="editCompraParcelas">Parcelas:</label>
+          <input type="text" id="editCompraParcelas" required>
+          <label for="editCompraCartao">Cartão:</label>
+          <select id="editCompraCartao" required>
+            <option value="Nubank">Nubank</option>
+            <option value="Santander">Santander</option>
+            <option value="Mercado Pago">Mercado Pago</option>
+            <option value="Amazon">Amazon</option>
+            <option value="Outro">Outro</option>
+          </select>
+          <label for="editCompraResponsavel">Responsável:</label>
+          <select id="editCompraResponsavel" required>
+            <option value="Liana">Liana</option>
+            <option value="Stefany">Stefany</option>
+            <option value="Marília">Marília</option>
+            <option value="Nosso ❤️">Nosso ❤️</option>
+          </select>
+          <button type="submit">Salvar Alterações</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="editContaModal" class="modal">
+       <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2>Editar Conta</h2>
+        <form id="editContaForm">
+          <input type="hidden" id="editContaId">
+          <label for="editContaTipo">Tipo:</label>
+          <select id="editContaTipo" required>
+            <option value="Fixa">Fixa</option>
+            <option value="Variável">Variável</option>
+           </select>
+          <label for="editContaNome">Nome:</label>
+          <input type="text" id="editContaNome" required>
+          <label for="editContaValor">Valor:</label>
+          <input type="number" id="editContaValor" step="0.01" required>
+          <label for="editContaParcelas">Parcelas:</label>
+          <input type="number" id="editContaParcelas" required>
+          <button type="submit">Salvar Alterações</button>
+        </form>
+       </div>
+    </div>
+
+    <script>
+      // URL do seu Cloudflare Worker
+      const WORKER_URL = 'https://painel-financas-proxy.mariliaedua.workers.dev/'; // Substitua pela URL do seu Worker
+
+      // CORRIGIDO: Forçar inicialização com mês e ano atuais do Brasil
+      function getCurrentBrazilDate() {
+        // Retorna um objeto Date no fuso horário de São Paulo.
+        const now = new Date();
+        const brazilTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Sao_Paulo"}));
+        return {
+          month: brazilTime.getMonth() + 1, // Mês atual (1-12)
+          year: brazilTime.getFullYear()    // Ano atual
+        };
+      }
+
+      const initialDate = getCurrentBrazilDate();
+      let currentMonth = initialDate.month;
+      let currentYear = initialDate.year;
+      
+      document.addEventListener('DOMContentLoaded', () => {
+        // A data já é definida para o mês/ano atual do Brasil na inicialização
+        updateMonthYearDisplay();
+        fetchData();
+      });
+      
+      async function sendRequest(action, data = {}, recordId = null) {
+        const payload = { action, data, recordId, month: currentMonth, year: currentYear };
+        console.log('Enviando payload:', payload);
+        try {
+          const response = await fetch(WORKER_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+          });
+          const result = await response.json();
+          console.log('Resposta do Worker:', result);
+          if (result.status === 'error') {
+            alert('Erro: ' + result.message);
+          }
+          return result;
+        } catch (error) {
+          console.error('Erro ao enviar requisição:', error);
+          alert('Erro de comunicação com o servidor. Verifique sua conexão ou tente novamente mais tarde.');
+          return { status: 'error', message: error.message };
+        }
+      }
+
+      function updateMonthYearDisplay() {
+        const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+        document.getElementById('currentMonthYear').textContent = `${monthNames[currentMonth - 1]} de ${currentYear}`;
+      }
+
+      function changeMonth(delta) {
+        currentMonth += delta;
+        if (currentMonth > 12) {
+          currentMonth = 1;
+          currentYear++;
+        } else if (currentMonth < 1) {
+          currentMonth = 12;
+          currentYear--;
+        }
+        updateMonthYearDisplay();
+        fetchData();
+      }
+
+      async function fetchData() {
+        console.log(`Buscando dados para ${currentMonth}/${currentYear}`);
+        const [receitasRes, comprasRes, contasRes, totaisRes] = await Promise.all([
+          sendRequest('getReceitas'),
+          sendRequest('getCompras'),
+          sendRequest('getContas'),
+          sendRequest('getTotais')
+        ]);
+        displayReceitas(receitasRes.data || []);
+        displayContas(contasRes.data || []);
+        displayCompras(comprasRes.data || []);
+        updateTotals(totaisRes.data || {});
+        displayComprasPorResponsavel(comprasRes.data || []);
+      }
+
+      function formatCurrency(value) {
+        return parseFloat(value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+      }
+
+      function displayReceitas(receitas) {
+        const receitasList = document.getElementById('receitasList');
+        receitasList.innerHTML = '';
+        let totalReceitas = 0;
+        receitas.forEach(receita => {
+          totalReceitas += parseFloat(receita.valor || 0);
+          const listItem = document.createElement('div');
+          listItem.classList.add('list-item');
+          listItem.innerHTML = `
+            <span>${receita.nome} - ${formatCurrency(receita.valor)}</span>
+            <div class="list-item-controls">
+              <button class="edit-button" onclick="openEditReceitaModal('${receita.id}', '${receita.nome}', ${receita.valor})">Edit</button>
+              <button class="delete-button" onclick="deleteRecord('Receita', '${receita.id}')">X</button>
+            </div>
+          `;
+          receitasList.appendChild(listItem);
+        });
+        document.getElementById('totalReceitasCategoria').textContent = formatCurrency(totalReceitas);
+      }
+
+      function displayContas(contas) {
+        const contasFixasList = document.getElementById('contasFixasList');
+        const contasVariaveisList = document.getElementById('contasVariaveisList');
+        contasFixasList.innerHTML = '';
+        contasVariaveisList.innerHTML = '';
+        let totalContasFixas = 0;
+        let totalContasVariaveis = 0;
+        let allFixasPaid = true;
+        let allVariaveisPaid = true;
+
+        contas.forEach(conta => {
+          const isPaid = String(conta.pago).toLowerCase() === 'sim';
+          const listItem = document.createElement('div');
+          listItem.classList.add('list-item');
+          if (isPaid) listItem.classList.add('item-pago');
+
+          // CORREÇÃO: O ID para marcar como pago deve ser o ID original do registro-pai.
+          listItem.innerHTML = `
+            <span>${conta.nome} (${conta.parcelas}) - ${formatCurrency(conta.valor)}</span>
+            <div class="list-item-controls">
+              <button class="edit-button" onclick="openEditContaModal('${conta.originalId || conta.id}', '${conta.tipo}', '${conta.nome}', ${conta.valor}, '${conta.parcelas}')">Edit</button>
+              <button class="delete-button" onclick="deleteRecord('Conta', '${conta.originalId || conta.id}')">X</button>
+              <input type="checkbox" data-id="${conta.originalId || conta.id}" data-sheet="Contas" ${isPaid ? 'checked' : ''} onchange="markAsPaid(this, 'Conta')">
+            </div>
+          `;
+
+          if (conta.tipo === 'Fixa') {
+            contasFixasList.appendChild(listItem);
+            totalContasFixas += parseFloat(conta.valor || 0);
+            if (!isPaid) allFixasPaid = false;
+          } else {
+            contasVariaveisList.appendChild(listItem);
+            totalContasVariaveis += parseFloat(conta.valor || 0);
+            if (!isPaid) allVariaveisPaid = false;
+          }
+        });
+
+        document.getElementById('totalContasFixasCategoria').textContent = formatCurrency(totalContasFixas);
+        document.getElementById('totalContasVariaveisCategoria').textContent = formatCurrency(totalContasVariaveis);
+        document.getElementById('markAllContasFixasPaid').checked = allFixasPaid && contasFixasList.children.length > 0;
+        document.getElementById('markAllContasVariaveisPaid').checked = allVariaveisPaid && contasVariaveisList.children.length > 0;
+        // Adicionar event listeners para os checkboxes totais de Contas
+        document.getElementById('markAllContasFixasPaid').onchange = function() {
+          markAllContasAsPaid('Fixa', this.checked);
+        };
+        document.getElementById('markAllContasVariaveisPaid').onchange = function() {
+          markAllContasAsPaid('Variável', this.checked);
+        };
+      }
+
+      async function markAllContasAsPaid(tipoConta, isChecked) {
+        const status = isChecked ? 'Sim' : 'Não';
+        // A lógica de marcar todos como pagos precisa ser implementada no backend.
+        // O ideal é uma nova ação no Apps Script para evitar múltiplos requests.
+        // Por agora, vamos iterar, mas ciente da limitação.
+        const contas = await sendRequest('getContas');
+        if (!contas.data) return;
+        
+        const contasFiltradas = contas.data.filter(conta => conta.tipo === tipoConta);
+        for (const conta of contasFiltradas) {
+          if ((String(conta.pago).toLowerCase() === 'sim') !== isChecked) {
+             // A ação aqui deve ser 'updateConta', não 'markContaAsPaid' para ser genérico
+            await sendRequest('updateConta', { pago: status }, conta.originalId || conta.id);
+          }
+        }
+        fetchData();
+      }
+
+      function displayCompras(compras) {
+        const cartoesGrid = document.getElementById('cartoesGrid');
+        cartoesGrid.innerHTML = '';
+        const comprasPorCartao = {};
+
+        compras.forEach(compra => {
+          const cartao = compra.cartao || 'Outro';
+          if (!comprasPorCartao[cartao]) {
+            comprasPorCartao[cartao] = { total: 0, compras: [] };
+          }
+          comprasPorCartao[cartao].total += parseFloat(compra.valor || 0);
+          comprasPorCartao[cartao].compras.push(compra);
+        });
+        for (const cartao in comprasPorCartao) {
+          const cartaoBox = document.createElement('div');
+          cartaoBox.classList.add('cartao-box');
+          cartaoBox.classList.add(cartao.toLowerCase().replace(/ /g, ''));
+
+          cartaoBox.innerHTML = `
+            <h3>${cartao}</h3>
+            <div class="cartao-list" id="${cartao.replace(/ /g, '')}List"></div>
+            <div class="total-cartao">
+              <span>Total:</span>
+              <span id="total${cartao.replace(/ /g, '')}Cartao">${formatCurrency(comprasPorCartao[cartao].total)}</span>
+              <input type="checkbox" class="checkbox-pago-total" data-cartao="${cartao}">
+             </div>
+          `;
+          cartoesGrid.appendChild(cartaoBox);
+          const listElement = document.getElementById(`${cartao.replace(/ /g, '')}List`);
+          let allCartaoPaid = true;
+          comprasPorCartao[cartao].compras.forEach(compra => {
+            const isPaid = String(compra.pago).toLowerCase() === 'sim';
+            const compraDiv = document.createElement('div');
+            compraDiv.classList.add('compra');
+            if (isPaid) compraDiv.classList.add('item-pago');
+            
+            // CORREÇÃO: O ID para marcar como pago deve ser o ID original do registro-pai.
+            compraDiv.innerHTML = `
+              <div class="list-item-content">
+                 <span>${compra.nome} (${compra.parcelas})</span>
+                <span>${formatCurrency(compra.valor)}</span>
+              </div>
+              <div class="list-item-controls">
+                <button class="edit-button" onclick="openEditCompraModal('${compra.originalId || compra.id}', '${compra.nome}', ${compra.valor}, '${compra.parcelas}', '${compra.cartao}', '${compra.responsavel}')">Edit</button>
+                <button class="delete-button" onclick="deleteRecord('Compra', '${compra.originalId || compra.id}')">X</button>
+                <input type="checkbox" data-id="${compra.originalId || compra.id}" data-sheet="Compras" ${isPaid ? 'checked' : ''} onchange="markAsPaid(this, 'Compra')">
+               </div>
+            `;
+            listElement.appendChild(compraDiv);
+            if (!isPaid) allCartaoPaid = false;
+          });
+          
+          // Definir o estado do checkbox total do cartão
+          const cartaoCheckbox = cartaoBox.querySelector('.checkbox-pago-total');
+          cartaoCheckbox.checked = allCartaoPaid && comprasPorCartao[cartao].compras.length > 0;
+          cartaoCheckbox.onchange = function() {
+            markAllComprasCartaoAsPaid(this.dataset.cartao, this.checked);
+          };
+        }
+      }
+
+      async function markAllComprasCartaoAsPaid(cartao, isChecked) {
+        const status = isChecked ? 'Sim' : 'Não';
+        const result = await sendRequest('markCartaoAsPaid', { cartao, pago: status });
+        if (result.status === 'success') {
+          fetchData();
+        } else {
+          // Reverte o checkbox se houve erro
+          const cartaoCheckbox = document.querySelector(`.cartao-box.${cartao.toLowerCase().replace(/ /g, '')} .checkbox-pago-total`);
+          if (cartaoCheckbox) {
+            cartaoCheckbox.checked = !isChecked;
+          }
+        }
+      }
+
+      function updateTotals(totals) {
+        const totalReceitas = totals.totalReceitas || 0;
+        const totalDespesasMes = totals.totalDespesasMes || 0;
+        const totalPago = totals.totalPago || 0;
+        const totalAPagar = totalDespesasMes - totalPago;
+        const saldo = totalReceitas - totalDespesasMes;
+
+        document.getElementById('totalReceitas').textContent = formatCurrency(totalReceitas);
+        document.getElementById('totalDespesasMes').textContent = formatCurrency(totalDespesasMes);
+        document.getElementById('totalPago').textContent = formatCurrency(totalPago);
+        document.getElementById('totalAPagar').textContent = formatCurrency(totalAPagar);
+        const saldoBar = document.getElementById('saldoBar');
+        const saldoLabel = document.getElementById('saldoLabel');
+        const saldoContainer = document.querySelector('.saldo-bar-container');
+        saldoLabel.textContent = `Saldo: ${formatCurrency(saldo)}`;
+        if (totalReceitas > 0) {
+          const percentage = Math.min(100, Math.max(0, (saldo / totalReceitas) * 100));
+          saldoBar.style.width = `${percentage}%`;
+          
+          if (saldo >= 0) {
+            saldoBar.style.backgroundColor = 'green';
+            saldoContainer.style.border = '1px solid green'; // Borda verde para saldo positivo
+          } else {
+            saldoBar.style.backgroundColor = 'red';
+            saldoContainer.style.border = '1px solid red'; // Borda vermelha para saldo negativo
+          }
+        } else {
+          saldoBar.style.width = '0%';
+          saldoContainer.style.border = '1px solid #ddd'; // Borda padrão
+        }
+      }
+
+      function displayComprasPorResponsavel(compras) {
+        const responsaveisContainer = document.getElementById('responsaveisContainer');
+        responsaveisContainer.innerHTML = '';
+        const comprasPorResponsavel = {};
+
+        compras.forEach(compra => {
+          const responsavel = compra.responsavel || 'Outro';
+          if (!comprasPorResponsavel[responsavel]) {
+            comprasPorResponsavel[responsavel] = { total: 0, compras: [] };
+          }
+          comprasPorResponsavel[responsavel].total += parseFloat(compra.valor || 0);
+          comprasPorResponsavel[responsavel].compras.push(compra);
+        });
+        for (const responsavel in comprasPorResponsavel) {
+          const responsavelBox = document.createElement('div');
+          responsavelBox.classList.add('responsavel-box');
+          responsavelBox.classList.add(`responsavel-${responsavel.toLowerCase().replace(/ /g, '').replace('❤️', '')}`);
+          responsavelBox.innerHTML = `
+            <h3>${responsavel}</h3>
+            <div class="responsavel-list"></div>
+            <p class="total-responsavel">Total: ${formatCurrency(comprasPorResponsavel[responsavel].total)}</p>
+          `;
+          responsaveisContainer.appendChild(responsavelBox);
+
+          const listElement = responsavelBox.querySelector('.responsavel-list');
+          comprasPorResponsavel[responsavel].compras.forEach(compra => {
+            const compraItem = document.createElement('div');
+            compraItem.classList.add('compra-item');
+            if (String(compra.pago).toLowerCase() === 'sim') compraItem.classList.add('item-pago');
+            compraItem.innerHTML = `
+              <span class="compra-nome">${compra.nome} (${compra.parcelas})</span>
+              <span class="compra-detalhes">${formatCurrency(compra.valor)}</span>
+             `;
+            listElement.appendChild(compraItem);
+          });
+        }
+      }
+
+      // Funções de Adição
+      document.getElementById('addReceitaForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const nome = document.getElementById('receitaNome').value;
+        const valor = parseFloat(document.getElementById('receitaValor').value);
+        if (isNaN(valor) || valor <= 0) { alert('Por favor, insira um valor válido para a receita.'); return; }
+        await sendRequest('addReceita', { nome, valor });
+        document.getElementById('addReceitaForm').reset();
+        fetchData();
+      });
+      document.getElementById('addCompraForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const nome = document.getElementById('compraNome').value;
+        const valor = parseFloat(document.getElementById('compraValor').value);
+        const parcelas = parseInt(document.getElementById('compraParcelas').value);
+        const cartao = document.getElementById('compraCartao').value;
+        const responsavel = document.getElementById('compraResponsavel').value;
+
+        if (isNaN(valor) || valor <= 0) { alert('Por favor, insira um valor válido para a compra.'); return; }
+        if (isNaN(parcelas) || parcelas <= 0) { alert('Por favor, insira um número válido de parcelas.'); return; }
+
+        await sendRequest('addCompraCartao', { nome, valor, parcelas, cartao, responsavel });
+        document.getElementById('addCompraForm').reset();
+        fetchData();
+      });
+      document.getElementById('addContaForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const tipo = document.getElementById('contaTipo').value;
+        const nome = document.getElementById('contaNome').value;
+        const valor = parseFloat(document.getElementById('contaValor').value);
+        const parcelas = parseInt(document.getElementById('contaParcelas').value);
+
+        if (isNaN(valor) || valor <= 0) { alert('Por favor, insira um valor válido para a conta.'); return; }
+        if (isNaN(parcelas) || parcelas <= 0) { alert('Por favor, insira um número válido de parcelas.'); return; }
+
+        await sendRequest('addConta', { tipo, nome, valor, parcelas });
+        document.getElementById('addContaForm').reset();
+        fetchData();
+      });
+      // Funções de Edição (Modais)
+      const editReceitaModal = document.getElementById('editReceitaModal');
+      const editCompraModal = document.getElementById('editCompraModal');
+      const editContaModal = document.getElementById('editContaModal');
+
+      document.querySelectorAll('.close-button').forEach(button => {
+        button.addEventListener('click', () => {
+          editReceitaModal.style.display = 'none';
+          editCompraModal.style.display = 'none';
+          editContaModal.style.display = 'none';
+        });
+      });
+      window.addEventListener('click', (event) => {
+        if (event.target == editReceitaModal) {
+          editReceitaModal.style.display = 'none';
+        } else if (event.target == editCompraModal) {
+          editCompraModal.style.display = 'none';
+        } else if (event.target == editContaModal) {
+          editContaModal.style.display = 'none';
+        }
+      });
+      function openEditReceitaModal(id, nome, valor) {
+        document.getElementById('editReceitaId').value = id;
+        document.getElementById('editReceitaNome').value = nome;
+        document.getElementById('editReceitaValor').value = valor;
+        editReceitaModal.style.display = 'block';
+      }
+
+      document.getElementById('editReceitaForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('editReceitaId').value;
+        const nome = document.getElementById('editReceitaNome').value;
+        const valor = parseFloat(document.getElementById('editReceitaValor').value);
+        if (isNaN(valor) || valor <= 0) { alert('Por favor, insira um valor válido para a receita.'); return; }
+        await sendRequest('updateReceita', { nome, valor }, id);
+        editReceitaModal.style.display = 'none';
+        fetchData();
+      });
+      function openEditCompraModal(id, nome, valor, parcelas, cartao, responsavel) {
+        document.getElementById('editCompraId').value = id;
+        document.getElementById('editCompraNome').value = nome;
+        document.getElementById('editCompraValor').value = valor;
+        document.getElementById('editCompraParcelas').value = parcelas;
+        document.getElementById('editCompraCartao').value = cartao;
+        document.getElementById('editCompraResponsavel').value = responsavel;
+        editCompraModal.style.display = 'block';
+      }
+
+      document.getElementById('editCompraForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('editCompraId').value;
+        const nome = document.getElementById('editCompraNome').value;
+        const valor = parseFloat(document.getElementById('editCompraValor').value);
+        const parcelas = document.getElementById('editCompraParcelas').value;
+        const cartao = document.getElementById('editCompraCartao').value;
+        const responsavel = document.getElementById('editCompraResponsavel').value;
+
+        if (isNaN(valor) || valor <= 0) { alert('Por favor, insira um valor válido para a compra.'); return; }
+        // Parcelas pode ser string como '1/3', então não validar como int
+
+        await sendRequest('updateCompra', { nome, valor, parcelas, cartao, responsavel }, id);
+        editCompraModal.style.display = 'none';
+        fetchData();
+      });
+      function openEditContaModal(id, tipo, nome, valor, parcelas) {
+        document.getElementById('editContaId').value = id;
+        document.getElementById('editContaTipo').value = tipo;
+        document.getElementById('editContaNome').value = nome;
+        document.getElementById('editContaValor').value = valor;
+        document.getElementById('editContaParcelas').value = parcelas;
+        editContaModal.style.display = 'block';
+      }
+
+      document.getElementById('editContaForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('editContaId').value;
+        const tipo = document.getElementById('editContaTipo').value;
+        const nome = document.getElementById('editContaNome').value;
+        const valor = parseFloat(document.getElementById('editContaValor').value);
+        const parcelas = parseInt(document.getElementById('editContaParcelas').value);
+
+        if (isNaN(valor) || valor <= 0) { alert('Por favor, insira um valor válido para a conta.'); return; }
+         if (isNaN(parcelas) || parcelas <= 0) { alert('Por favor, insira um número válido de parcelas.'); return; }
+
+        await sendRequest('updateConta', { tipo, nome, valor, parcelas }, id);
+        editContaModal.style.display = 'none';
+        fetchData();
+      });
+      // Função para Excluir
+      async function deleteRecord(type, id) {
+        if (confirm(`Tem certeza que deseja excluir este ${type}?`)) {
+          await sendRequest(`delete${type}`, {}, id);
+          fetchData();
+        }
+      }
+
+      // CORREÇÃO: Função para Marcar como Pago
+      async function markAsPaid(checkbox, type) {
+        const id = checkbox.dataset.id; // ID original do registro-pai
+        const isChecked = checkbox.checked;
+        const status = isChecked ? 'Sim' : 'Não';
+
+        // Desabilita o checkbox para evitar cliques duplos durante a requisição
+        checkbox.disabled = true;
+
+        // A ação é genérica 'update' + tipo, que já existe no backend
+        const action = `update${type}`;
+        const result = await sendRequest(action, { pago: status }, id);
+
+        if (result.status === 'success') {
+          // Atualiza a UI e os totais buscando os dados novamente
+          fetchData();
+        } else {
+          // Se falhar, reverte o estado do checkbox e alerta o usuário
+          alert(`Não foi possível atualizar o status de pagamento. Tente novamente.`);
+          checkbox.checked = !isChecked;
+        }
+        
+        // Reabilita o checkbox após a conclusão
+        checkbox.disabled = false;
+      }
+    </script>
+  </body>
+</html>
