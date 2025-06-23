@@ -806,7 +806,7 @@
           listItem.innerHTML = `
             <span>${receita.nome} - ${formatCurrency(receita.valor)}</span>
             <div class="list-item-controls">
-              <button class="edit-button" onclick="openEditReceitaModal('${receita.id}', '${receita.nome}', ${receita.valor})">Edit</button>
+              <button class="edit-button" onclick="openEditReceitaModal('${receita.id}', '${receita.nome}', ${receita.valor})">✏️</button>
               <button class="delete-button" onclick="deleteRecord('Receita', '${receita.id}')">X</button>
             </div>
           `;
@@ -834,7 +834,7 @@
           listItem.innerHTML = `
             <span>${conta.nome} (${conta.parcelas}) - ${formatCurrency(conta.valor)}</span>
             <div class="list-item-controls">
-              <button class="edit-button" onclick="openEditContaModal('${conta.originalId || conta.id}', '${conta.tipo}', '${conta.nome}', ${conta.valor}, '${conta.parcelas}')">Edit</button>
+              <button class="edit-button" onclick="openEditContaModal('${conta.originalId || conta.id}', '${conta.tipo}', '${conta.nome}', ${conta.valor}, '${conta.parcelas}')">✏️</button>
               <button class="delete-button" onclick="deleteRecord('Conta', '${conta.originalId || conta.id}')">X</button>
               <input type="checkbox" data-id="${conta.originalId || conta.id}" ${isPaid ? 'checked' : ''} onchange="markAsPaid(this, 'Conta')">
             </div>
@@ -913,7 +913,7 @@
                  <span>${formatCurrency(compra.valor)}</span>
               </div>
               <div class="list-item-controls">
-                <button class="edit-button" onclick="openEditCompraModal('${compra.originalId || compra.id}', '${compra.nome}', ${compra.valor}, '${compra.parcelas}', '${compra.cartao}', '${compra.responsavel}')">Edit</button>
+                <button class="edit-button" onclick="openEditCompraModal('${compra.originalId || compra.id}', '${compra.nome}', ${compra.valor}, '${compra.parcelas}', '${compra.cartao}', '${compra.responsavel}')">✏️</button>
                 <button class="delete-button" onclick="deleteRecord('Compra', '${compra.originalId || compra.id}')">X</button>
               </div>
             `;
