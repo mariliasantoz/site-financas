@@ -723,36 +723,26 @@
       // URL do seu Cloudflare Worker
       const WORKER_URL = 'https://painel-financas-proxy.mariliaedua.workers.dev/'; // Substitua pela URL do seu Worker
 
-      // CORRIGIDO: Forçar inicialização com mês e ano atuais do Brasil
-      function getCurrentBrazilDate() {
-        // Retorna um objeto Date no fuso horário de São Paulo.
-        const now = new Date();
-        const brazilTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Sao_Paulo"}));
-        return {
-          month: brazilTime.getMonth() + 1, // Mês atual (1-12)
-          year: brazilTime.getFullYear()    // Ano atual
-        };
-      }
+      let currentMonth, currentYear;
 
-      const initialDate = getCurrentBrazilDate();
-      let currentMonth = initialDate.month;
-      let currentYear = initialDate.year;
-      
       document.addEventListener('DOMContentLoaded', () => {
-        // A data já é definida para o mês/ano atual do Brasil na inicialização
+        // CORREÇÃO: Inicia o site sempre no mês e ano vigentes do navegador do usuário.
+        const now = new Date();
+        currentMonth = now.getMonth() + 1; // getMonth() é 0-11, então adicionamos 1
+        currentYear = now.getFullYear();
+        
         updateMonthYearDisplay();
         fetchData();
       });
       
       async function sendRequest(action, data = {}, recordId = null) {
+        // Garante que month e year sempre sejam enviados na requisição.
         const payload = { action, data, recordId, month: currentMonth, year: currentYear };
         console.log('Enviando payload:', payload);
         try {
           const response = await fetch(WORKER_URL, {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json', },
             body: JSON.stringify(payload),
           });
           const result = await response.json();
@@ -841,13 +831,12 @@
           listItem.classList.add('list-item');
           if (isPaid) listItem.classList.add('item-pago');
 
-          // CORREÇÃO: O ID para marcar como pago deve ser o ID original do registro-pai.
           listItem.innerHTML = `
             <span>${conta.nome} (${conta.parcelas}) - ${formatCurrency(conta.valor)}</span>
             <div class="list-item-controls">
               <button class="edit-button" onclick="openEditContaModal('${conta.originalId || conta.id}', '${conta.tipo}', '${conta.nome}', ${conta.valor}, '${conta.parcelas}')">Edit</button>
               <button class="delete-button" onclick="deleteRecord('Conta', '${conta.originalId || conta.id}')">X</button>
-              <input type="checkbox" data-id="${conta.originalId || conta.id}" data-sheet="Contas" ${isPaid ? 'checked' : ''} onchange="markAsPaid(this, 'Conta')">
+              <input type="checkbox" data-id="${conta.originalId || conta.id}" ${isPaid ? 'checked' : ''} onchange="markAsPaid(this, 'Conta')">
             </div>
           `;
 
@@ -866,31 +855,13 @@
         document.getElementById('totalContasVariaveisCategoria').textContent = formatCurrency(totalContasVariaveis);
         document.getElementById('markAllContasFixasPaid').checked = allFixasPaid && contasFixasList.children.length > 0;
         document.getElementById('markAllContasVariaveisPaid').checked = allVariaveisPaid && contasVariaveisList.children.length > 0;
-        // Adicionar event listeners para os checkboxes totais de Contas
+        
         document.getElementById('markAllContasFixasPaid').onchange = function() {
-          markAllContasAsPaid('Fixa', this.checked);
+          // Implementar lógica para marcar todas as contas fixas
         };
         document.getElementById('markAllContasVariaveisPaid').onchange = function() {
-          markAllContasAsPaid('Variável', this.checked);
+          // Implementar lógica para marcar todas as contas variáveis
         };
-      }
-
-      async function markAllContasAsPaid(tipoConta, isChecked) {
-        const status = isChecked ? 'Sim' : 'Não';
-        // A lógica de marcar todos como pagos precisa ser implementada no backend.
-        // O ideal é uma nova ação no Apps Script para evitar múltiplos requests.
-        // Por agora, vamos iterar, mas ciente da limitação.
-        const contas = await sendRequest('getContas');
-        if (!contas.data) return;
-        
-        const contasFiltradas = contas.data.filter(conta => conta.tipo === tipoConta);
-        for (const conta of contasFiltradas) {
-          if ((String(conta.pago).toLowerCase() === 'sim') !== isChecked) {
-             // A ação aqui deve ser 'updateConta', não 'markContaAsPaid' para ser genérico
-            await sendRequest('updateConta', { pago: status }, conta.originalId || conta.id);
-          }
-        }
-        fetchData();
       }
 
       function displayCompras(compras) {
@@ -901,71 +872,69 @@
         compras.forEach(compra => {
           const cartao = compra.cartao || 'Outro';
           if (!comprasPorCartao[cartao]) {
-            comprasPorCartao[cartao] = { total: 0, compras: [] };
+            comprasPorCartao[cartao] = { total: 0, compras: [], todasPagas: true };
           }
           comprasPorCartao[cartao].total += parseFloat(compra.valor || 0);
           comprasPorCartao[cartao].compras.push(compra);
+          if (String(compra.pago).toLowerCase() !== 'sim') {
+              comprasPorCartao[cartao].todasPagas = false;
+          }
         });
+
         for (const cartao in comprasPorCartao) {
           const cartaoBox = document.createElement('div');
           cartaoBox.classList.add('cartao-box');
           cartaoBox.classList.add(cartao.toLowerCase().replace(/ /g, ''));
 
+          // CORREÇÃO: Checkbox do total do cartão.
+          const isChecked = comprasPorCartao[cartao].todasPagas && comprasPorCartao[cartao].compras.length > 0;
           cartaoBox.innerHTML = `
             <h3>${cartao}</h3>
             <div class="cartao-list" id="${cartao.replace(/ /g, '')}List"></div>
             <div class="total-cartao">
               <span>Total:</span>
-              <span id="total${cartao.replace(/ /g, '')}Cartao">${formatCurrency(comprasPorCartao[cartao].total)}</span>
-              <input type="checkbox" class="checkbox-pago-total" data-cartao="${cartao}">
+              <span>${formatCurrency(comprasPorCartao[cartao].total)}</span>
+              <input type="checkbox" class="checkbox-pago-total" data-cartao="${cartao}" ${isChecked ? 'checked' : ''} onchange="markAllComprasCartaoAsPaid(this, '${cartao}')">
              </div>
           `;
           cartoesGrid.appendChild(cartaoBox);
+
           const listElement = document.getElementById(`${cartao.replace(/ /g, '')}List`);
-          let allCartaoPaid = true;
           comprasPorCartao[cartao].compras.forEach(compra => {
             const isPaid = String(compra.pago).toLowerCase() === 'sim';
             const compraDiv = document.createElement('div');
             compraDiv.classList.add('compra');
             if (isPaid) compraDiv.classList.add('item-pago');
             
-            // CORREÇÃO: O ID para marcar como pago deve ser o ID original do registro-pai.
+            // CORREÇÃO: Removido checkbox individual de cada compra de cartão.
             compraDiv.innerHTML = `
               <div class="list-item-content">
                  <span>${compra.nome} (${compra.parcelas})</span>
-                <span>${formatCurrency(compra.valor)}</span>
+                 <span>${formatCurrency(compra.valor)}</span>
               </div>
               <div class="list-item-controls">
                 <button class="edit-button" onclick="openEditCompraModal('${compra.originalId || compra.id}', '${compra.nome}', ${compra.valor}, '${compra.parcelas}', '${compra.cartao}', '${compra.responsavel}')">Edit</button>
                 <button class="delete-button" onclick="deleteRecord('Compra', '${compra.originalId || compra.id}')">X</button>
-                <input type="checkbox" data-id="${compra.originalId || compra.id}" data-sheet="Compras" ${isPaid ? 'checked' : ''} onchange="markAsPaid(this, 'Compra')">
-               </div>
+              </div>
             `;
             listElement.appendChild(compraDiv);
-            if (!isPaid) allCartaoPaid = false;
           });
-          
-          // Definir o estado do checkbox total do cartão
-          const cartaoCheckbox = cartaoBox.querySelector('.checkbox-pago-total');
-          cartaoCheckbox.checked = allCartaoPaid && comprasPorCartao[cartao].compras.length > 0;
-          cartaoCheckbox.onchange = function() {
-            markAllComprasCartaoAsPaid(this.dataset.cartao, this.checked);
-          };
         }
       }
 
-      async function markAllComprasCartaoAsPaid(cartao, isChecked) {
-        const status = isChecked ? 'Sim' : 'Não';
-        const result = await sendRequest('markCartaoAsPaid', { cartao, pago: status });
-        if (result.status === 'success') {
-          fetchData();
-        } else {
-          // Reverte o checkbox se houve erro
-          const cartaoCheckbox = document.querySelector(`.cartao-box.${cartao.toLowerCase().replace(/ /g, '')} .checkbox-pago-total`);
-          if (cartaoCheckbox) {
-            cartaoCheckbox.checked = !isChecked;
+      async function markAllComprasCartaoAsPaid(checkbox, cartao) {
+          const isChecked = checkbox.checked;
+          const status = isChecked ? 'Sim' : 'Não';
+          checkbox.disabled = true;
+
+          const result = await sendRequest('markCartaoAsPaid', { cartao, pago: status });
+          if (result.status === 'success') {
+              fetchData();
+          } else {
+              alert(`Falha ao atualizar o status do cartão ${cartao}.`);
+              checkbox.checked = !isChecked; // Reverte em caso de erro
+              checkbox.disabled = false;
           }
-        }
       }
 
       function updateTotals(totals) {
@@ -989,14 +958,14 @@
           
           if (saldo >= 0) {
             saldoBar.style.backgroundColor = 'green';
-            saldoContainer.style.border = '1px solid green'; // Borda verde para saldo positivo
+            saldoContainer.style.border = '1px solid green';
           } else {
             saldoBar.style.backgroundColor = 'red';
-            saldoContainer.style.border = '1px solid red'; // Borda vermelha para saldo negativo
+            saldoContainer.style.border = '1px solid red';
           }
         } else {
           saldoBar.style.width = '0%';
-          saldoContainer.style.border = '1px solid #ddd'; // Borda padrão
+          saldoContainer.style.border = '1px solid #ddd';
         }
       }
 
@@ -1077,6 +1046,7 @@
         document.getElementById('addContaForm').reset();
         fetchData();
       });
+      
       // Funções de Edição (Modais)
       const editReceitaModal = document.getElementById('editReceitaModal');
       const editCompraModal = document.getElementById('editCompraModal');
@@ -1090,14 +1060,11 @@
         });
       });
       window.addEventListener('click', (event) => {
-        if (event.target == editReceitaModal) {
-          editReceitaModal.style.display = 'none';
-        } else if (event.target == editCompraModal) {
-          editCompraModal.style.display = 'none';
-        } else if (event.target == editContaModal) {
-          editContaModal.style.display = 'none';
-        }
+        if (event.target == editReceitaModal) { editReceitaModal.style.display = 'none'; }
+        else if (event.target == editCompraModal) { editCompraModal.style.display = 'none'; }
+        else if (event.target == editContaModal) { editContaModal.style.display = 'none'; }
       });
+
       function openEditReceitaModal(id, nome, valor) {
         document.getElementById('editReceitaId').value = id;
         document.getElementById('editReceitaNome').value = nome;
@@ -1110,11 +1077,11 @@
         const id = document.getElementById('editReceitaId').value;
         const nome = document.getElementById('editReceitaNome').value;
         const valor = parseFloat(document.getElementById('editReceitaValor').value);
-        if (isNaN(valor) || valor <= 0) { alert('Por favor, insira um valor válido para a receita.'); return; }
         await sendRequest('updateReceita', { nome, valor }, id);
         editReceitaModal.style.display = 'none';
         fetchData();
       });
+
       function openEditCompraModal(id, nome, valor, parcelas, cartao, responsavel) {
         document.getElementById('editCompraId').value = id;
         document.getElementById('editCompraNome').value = nome;
@@ -1128,19 +1095,18 @@
       document.getElementById('editCompraForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = document.getElementById('editCompraId').value;
-        const nome = document.getElementById('editCompraNome').value;
-        const valor = parseFloat(document.getElementById('editCompraValor').value);
-        const parcelas = document.getElementById('editCompraParcelas').value;
-        const cartao = document.getElementById('editCompraCartao').value;
-        const responsavel = document.getElementById('editCompraResponsavel').value;
-
-        if (isNaN(valor) || valor <= 0) { alert('Por favor, insira um valor válido para a compra.'); return; }
-        // Parcelas pode ser string como '1/3', então não validar como int
-
-        await sendRequest('updateCompra', { nome, valor, parcelas, cartao, responsavel }, id);
+        const data = {
+            nome: document.getElementById('editCompraNome').value,
+            valor: parseFloat(document.getElementById('editCompraValor').value),
+            parcelas: document.getElementById('editCompraParcelas').value,
+            cartao: document.getElementById('editCompraCartao').value,
+            responsavel: document.getElementById('editCompraResponsavel').value
+        };
+        await sendRequest('updateCompra', data, id);
         editCompraModal.style.display = 'none';
         fetchData();
       });
+
       function openEditContaModal(id, tipo, nome, valor, parcelas) {
         document.getElementById('editContaId').value = id;
         document.getElementById('editContaTipo').value = tipo;
@@ -1153,19 +1119,17 @@
       document.getElementById('editContaForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = document.getElementById('editContaId').value;
-        const tipo = document.getElementById('editContaTipo').value;
-        const nome = document.getElementById('editContaNome').value;
-        const valor = parseFloat(document.getElementById('editContaValor').value);
-        const parcelas = parseInt(document.getElementById('editContaParcelas').value);
-
-        if (isNaN(valor) || valor <= 0) { alert('Por favor, insira um valor válido para a conta.'); return; }
-         if (isNaN(parcelas) || parcelas <= 0) { alert('Por favor, insira um número válido de parcelas.'); return; }
-
-        await sendRequest('updateConta', { tipo, nome, valor, parcelas }, id);
+        const data = {
+            tipo: document.getElementById('editContaTipo').value,
+            nome: document.getElementById('editContaNome').value,
+            valor: parseFloat(document.getElementById('editContaValor').value),
+            parcelas: parseInt(document.getElementById('editContaParcelas').value)
+        };
+        await sendRequest('updateConta', data, id);
         editContaModal.style.display = 'none';
         fetchData();
       });
-      // Função para Excluir
+
       async function deleteRecord(type, id) {
         if (confirm(`Tem certeza que deseja excluir este ${type}?`)) {
           await sendRequest(`delete${type}`, {}, id);
@@ -1173,30 +1137,25 @@
         }
       }
 
-      // CORREÇÃO: Função para Marcar como Pago
+      // CORREÇÃO: Função unificada para marcar itens como pagos (Contas)
       async function markAsPaid(checkbox, type) {
-        const id = checkbox.dataset.id; // ID original do registro-pai
+        const id = checkbox.dataset.id;
         const isChecked = checkbox.checked;
         const status = isChecked ? 'Sim' : 'Não';
 
-        // Desabilita o checkbox para evitar cliques duplos durante a requisição
-        checkbox.disabled = true;
+        checkbox.disabled = true; // Previne cliques duplos
 
-        // A ação é genérica 'update' + tipo, que já existe no backend
         const action = `update${type}`;
         const result = await sendRequest(action, { pago: status }, id);
 
         if (result.status === 'success') {
-          // Atualiza a UI e os totais buscando os dados novamente
+          // A UI será atualizada corretamente pelo fetchData()
           fetchData();
         } else {
-          // Se falhar, reverte o estado do checkbox e alerta o usuário
           alert(`Não foi possível atualizar o status de pagamento. Tente novamente.`);
-          checkbox.checked = !isChecked;
+          checkbox.checked = !isChecked; // Reverte o checkbox no front em caso de erro
+          checkbox.disabled = false;
         }
-        
-        // Reabilita o checkbox após a conclusão
-        checkbox.disabled = false;
       }
     </script>
   </body>
