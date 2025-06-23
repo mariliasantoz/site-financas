@@ -124,7 +124,6 @@
       }
       .saldo-bar-container {
         background-color: white; /* Corrigido: termômetro branco */
-        border: 1px solid #ddd; /* Corrigido: borda sutil */
         border-radius: 5px; /* [140] */
         height: 25px;
         margin-top: 10px;
@@ -147,11 +146,10 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        color: red; /* Corrigido: fonte vermelha */
+        color: black; /* Corrigido: fonte preta */
         font-weight: bold; /* [147] */
         text-shadow: none; /* Corrigido: removido shadow para melhor contraste */
         font-size: 0.9em;
-        border: 1px solid red; /* Corrigido: borda vermelha */
         border-radius: 5px;
         box-sizing: border-box;
       }
@@ -261,6 +259,9 @@
         margin-bottom: 10px; /* [178] */
         flex-grow: 1; /* [178] */
         min-height: 50px;
+        max-height: 400px; /* NOVO: Altura máxima para scroll */
+        overflow-y: auto; /* NOVO: Scroll vertical */
+        padding-right: 5px; /* NOVO: Espaço para a barra de scroll */
       }
       .cartao-list p {
         margin: 5px 0; /* [179] */
@@ -929,7 +930,11 @@
 
           const listElement = document.getElementById(`${cartao.replace(/ /g, '')}List`);
           let allCartaoPaid = true;
-          comprasPorCartao[cartao].compras.forEach(compra => {
+          
+          // NOVO: Limitar a exibição inicial a 20 registros
+          const comprasToShow = comprasPorCartao[cartao].compras.slice(0, 20);
+          
+          comprasToShow.forEach(compra => {
             const isPaid = String(compra.pago).toLowerCase() === 'sim';
             const compraDiv = document.createElement('div');
             compraDiv.classList.add('compra');
@@ -947,6 +952,30 @@
             listElement.appendChild(compraDiv);
             if (!isPaid) allCartaoPaid = false;
           });
+          
+          // NOVO: Se há mais de 20 registros, adicionar os restantes (ocultos inicialmente)
+          if (comprasPorCartao[cartao].compras.length > 20) {
+            const remainingCompras = comprasPorCartao[cartao].compras.slice(20);
+            remainingCompras.forEach(compra => {
+              const isPaid = String(compra.pago).toLowerCase() === 'sim';
+              const compraDiv = document.createElement('div');
+              compraDiv.classList.add('compra');
+              if (isPaid) compraDiv.classList.add('item-pago');
+              compraDiv.innerHTML = `
+                <div class="list-item-content">
+                  <span>${compra.nome} (${compra.parcelas})</span>
+                  <span>${formatCurrency(compra.valor)}</span>
+                </div>
+                <div class="list-item-controls">
+                  <button class="edit-button" onclick="openEditCompraModal('${compra.originalId || compra.id}', '${compra.nome}', ${compra.valor}, '${compra.parcelas}', '${compra.cartao}', '${compra.responsavel}')">Edit</button>
+                  <button class="delete-button" onclick="deleteRecord('Compra', '${compra.originalId || compra.id}')">X</button>
+                </div>
+              `;
+              listElement.appendChild(compraDiv);
+              if (!isPaid) allCartaoPaid = false;
+            });
+          }
+          
           // Definir o estado do checkbox total do cartão
           const cartaoCheckbox = cartaoBox.querySelector('.checkbox-pago-total');
           cartaoCheckbox.checked = allCartaoPaid && comprasPorCartao[cartao].compras.length > 0;
@@ -984,18 +1013,24 @@
 
         const saldoBar = document.getElementById('saldoBar');
         const saldoLabel = document.getElementById('saldoLabel');
+        const saldoContainer = document.querySelector('.saldo-bar-container');
         saldoLabel.textContent = `Saldo: ${formatCurrency(saldo)}`;
 
         if (totalReceitas > 0) {
           const percentage = Math.min(100, Math.max(0, (saldo / totalReceitas) * 100));
           saldoBar.style.width = `${percentage}%`;
+          
+          // NOVO: Ajustar cores do termômetro baseado no saldo
           if (saldo >= 0) {
             saldoBar.style.backgroundColor = 'green';
+            saldoContainer.style.border = '1px solid green'; // Borda verde para saldo positivo
           } else {
             saldoBar.style.backgroundColor = 'red';
+            saldoContainer.style.border = '1px solid red'; // Borda vermelha para saldo negativo
           }
         } else {
           saldoBar.style.width = '0%';
+          saldoContainer.style.border = '1px solid #ddd'; // Borda padrão
         }
       }
 
