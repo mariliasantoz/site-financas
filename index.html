@@ -725,12 +725,27 @@
       // URL do seu Cloudflare Worker
       const WORKER_URL = 'https://painel-financas-proxy.mariliaedua.workers.dev/'; // Substitua pela URL do seu Worker
 
-      // CORRIGIDO: Garantir que sempre inicialize com o mês e ano atuais do Brasil
-      const now = new Date();
-      let currentMonth = now.getMonth() + 1; // Mês atual (1-12)
-      let currentYear = now.getFullYear(); // Ano atual
+      // CORRIGIDO: Forçar inicialização com mês e ano atuais do Brasil
+      function getCurrentBrazilDate() {
+        const now = new Date();
+        // Garantir que sempre use o fuso horário do Brasil (UTC-3)
+        const brazilTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Sao_Paulo"}));
+        return {
+          month: brazilTime.getMonth() + 1, // Mês atual (1-12)
+          year: brazilTime.getFullYear()    // Ano atual
+        };
+      }
+
+      const currentDate = getCurrentBrazilDate();
+      let currentMonth = currentDate.month;
+      let currentYear = currentDate.year;
 
       document.addEventListener('DOMContentLoaded', () => {
+        // Garantir que sempre inicie no mês atual
+        const todayDate = getCurrentBrazilDate();
+        currentMonth = todayDate.month;
+        currentYear = todayDate.year;
+        
         updateMonthYearDisplay();
         fetchData();
       });
