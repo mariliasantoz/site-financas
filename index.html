@@ -836,7 +836,7 @@
             <div class="list-item-controls">
               <button class="edit-button" onclick="openEditContaModal('${conta.originalId || conta.id}', '${conta.tipo}', '${conta.nome}', ${conta.valor}, '${conta.parcelas}')">✏️</button>
               <button class="delete-button" onclick="deleteRecord('Conta', '${conta.originalId || conta.id}')">X</button>
-              <input type="checkbox" data-id="${conta.originalId || conta.id}" data-tipo="${conta.tipo}" ${isPaid ? 'checked' : ''} onchange="markAsPaid(this, 'Conta')">
+              <input type="checkbox" data-id="${conta.originalId || conta.id}" ${isPaid ? 'checked' : ''} onchange="markAsPaid(this, 'Conta')">
             </div>
           `;
 
@@ -856,37 +856,18 @@
         document.getElementById('markAllContasFixasPaid').checked = allFixasPaid && contasFixasList.children.length > 0;
         document.getElementById('markAllContasVariaveisPaid').checked = allVariaveisPaid && contasVariaveisList.children.length > 0;
         
-        // CORREÇÃO: Implementar lógica para marcar todas as contas fixas
         document.getElementById('markAllContasFixasPaid').onchange = function() {
-          markAllContasByType('Fixa', this.checked);
+          // Implementar lógica para marcar todas as contas fixas
         };
-        // CORREÇÃO: Implementar lógica para marcar todas as contas variáveis
         document.getElementById('markAllContasVariaveisPaid').onchange = function() {
-          markAllContasByType('Variável', this.checked);
+          // Implementar lógica para marcar todas as contas variáveis
         };
-      }
-
-      // CORREÇÃO: Nova função para marcar todas as contas de um tipo
-      function markAllContasByType(tipo, isChecked) {
-        const checkboxes = document.querySelectorAll(`input[type="checkbox"][data-tipo="${tipo}"]`);
-        checkboxes.forEach(checkbox => {
-          if (checkbox.checked !== isChecked) {
-            checkbox.checked = isChecked;
-            markAsPaid(checkbox, 'Conta');
-          }
-        });
       }
 
       function displayCompras(compras) {
         const cartoesGrid = document.getElementById('cartoesGrid');
         cartoesGrid.innerHTML = '';
         const comprasPorCartao = {};
-
-        // Inicializar todos os cartões
-        const cartoesDefinidos = ['Nubank', 'Santander', 'Mercado Pago', 'Amazon'];
-        cartoesDefinidos.forEach(cartao => {
-          comprasPorCartao[cartao] = { total: 0, compras: [], todasPagas: true };
-        });
 
         compras.forEach(compra => {
           const cartao = compra.cartao || 'Outro';
@@ -896,109 +877,64 @@
           comprasPorCartao[cartao].total += parseFloat(compra.valor || 0);
           comprasPorCartao[cartao].compras.push(compra);
           if (String(compra.pago).toLowerCase() !== 'sim') {
-            comprasPorCartao[cartao].todasPagas = false;
+              comprasPorCartao[cartao].todasPagas = false;
           }
         });
 
-        Object.keys(comprasPorCartao).forEach(cartao => {
-          const cartaoData = comprasPorCartao[cartao];
+        for (const cartao in comprasPorCartao) {
           const cartaoBox = document.createElement('div');
-          cartaoBox.classList.add('cartao-box', cartao.toLowerCase().replace(/\s+/g, ''));
-          
-          let comprasHtml = '';
-          if (cartaoData.compras.length === 0) {
-            comprasHtml = '<p>Nenhuma compra neste mês</p>';
-          } else {
-            cartaoData.compras.forEach(compra => {
-              const isPaid = String(compra.pago).toLowerCase() === 'sim';
-              const responsavelClass = getResponsavelClass(compra.responsavel);
-              comprasHtml += `
-                <div class="compra ${isPaid ? 'item-pago' : ''} ${responsavelClass}">
-                  <div class="list-item-content">
-                    <span>${compra.nome} (${compra.parcelas}) - ${formatCurrency(compra.valor)}</span>
-                  </div>
-                  <div class="list-item-controls">
-                    <button class="edit-button" onclick="openEditCompraModal('${compra.originalId || compra.id}', '${compra.nome}', ${compra.valor}, '${compra.parcelas}', '${compra.cartao}', '${compra.responsavel}')">✏️</button>
-                    <button class="delete-button" onclick="deleteRecord('Compra', '${compra.originalId || compra.id}')">X</button>
-                    <input type="checkbox" data-id="${compra.originalId || compra.id}" data-cartao="${cartao}" ${isPaid ? 'checked' : ''} onchange="markAsPaid(this, 'Compra')">
-                  </div>
-                </div>
-              `;
-            });
-          }
+          cartaoBox.classList.add('cartao-box');
+          cartaoBox.classList.add(cartao.toLowerCase().replace(/ /g, ''));
 
+          // CORREÇÃO: Checkbox do total do cartão.
+          const isChecked = comprasPorCartao[cartao].todasPagas && comprasPorCartao[cartao].compras.length > 0;
           cartaoBox.innerHTML = `
             <h3>${cartao}</h3>
-            <div class="cartao-list">${comprasHtml}</div>
+            <div class="cartao-list" id="${cartao.replace(/ /g, '')}List"></div>
             <div class="total-cartao">
-              <span>Total: ${formatCurrency(cartaoData.total)}</span>
-              <input type="checkbox" class="checkbox-pago-total" data-cartao="${cartao}" ${cartaoData.todasPagas && cartaoData.compras.length > 0 ? 'checked' : ''} onchange="markAllCartaoAsPaid('${cartao}', this.checked)">
-            </div>
+              <span>Total:</span>
+              <span>${formatCurrency(comprasPorCartao[cartao].total)}</span>
+              <input type="checkbox" class="checkbox-pago-total" data-cartao="${cartao}" ${isChecked ? 'checked' : ''} onchange="markAllComprasCartaoAsPaid(this, '${cartao}')">
+             </div>
           `;
           cartoesGrid.appendChild(cartaoBox);
-        });
+
+          const listElement = document.getElementById(`${cartao.replace(/ /g, '')}List`);
+          comprasPorCartao[cartao].compras.forEach(compra => {
+            const isPaid = String(compra.pago).toLowerCase() === 'sim';
+            const compraDiv = document.createElement('div');
+            compraDiv.classList.add('compra');
+            if (isPaid) compraDiv.classList.add('item-pago');
+            
+            // CORREÇÃO: Removido checkbox individual de cada compra de cartão.
+            compraDiv.innerHTML = `
+              <div class="list-item-content">
+                 <span>${compra.nome} (${compra.parcelas})</span>
+                 <span>${formatCurrency(compra.valor)}</span>
+              </div>
+              <div class="list-item-controls">
+                <button class="edit-button" onclick="openEditCompraModal('${compra.originalId || compra.id}', '${compra.nome}', ${compra.valor}, '${compra.parcelas}', '${compra.cartao}', '${compra.responsavel}')">✏️</button>
+                <button class="delete-button" onclick="deleteRecord('Compra', '${compra.originalId || compra.id}')">X</button>
+              </div>
+            `;
+            listElement.appendChild(compraDiv);
+          });
+        }
       }
 
-      // CORREÇÃO: Nova função para marcar todas as compras de um cartão
-      function markAllCartaoAsPaid(cartao, isChecked) {
-        const checkboxes = document.querySelectorAll(`input[type="checkbox"][data-cartao="${cartao}"]`);
-        checkboxes.forEach(checkbox => {
-          if (checkbox.classList && checkbox.classList.contains('checkbox-pago-total')) return; // Pular o checkbox total
-          if (checkbox.checked !== isChecked) {
-            checkbox.checked = isChecked;
-            markAsPaid(checkbox, 'Compra');
+      async function markAllComprasCartaoAsPaid(checkbox, cartao) {
+          const isChecked = checkbox.checked;
+          const status = isChecked ? 'Sim' : 'Não';
+          checkbox.disabled = true;
+
+          const result = await sendRequest('markCartaoAsPaid', { cartao, pago: status });
+          if (result.status === 'success') {
+              fetchData();
+          } else {
+              alert(`Falha ao atualizar o status do cartão ${cartao}.`);
+              checkbox.checked = !isChecked; // Reverte em caso de erro
+              checkbox.disabled = false;
           }
-        });
-      }
-
-      function getResponsavelClass(responsavel) {
-        const responsavelMap = {
-          'Liana': 'compra-bg-liana',
-          'Stefany': 'compra-bg-stefany',
-          'Marília': 'compra-bg-marilia',
-          'Nosso ❤️': 'compra-bg-nosso'
-        };
-        return responsavelMap[responsavel] || '';
-      }
-
-      function displayComprasPorResponsavel(compras) {
-        const responsaveisContainer = document.getElementById('responsaveisContainer');
-        responsaveisContainer.innerHTML = '';
-        const comprasPorResponsavel = {
-          'Liana': { total: 0, compras: [] },
-          'Stefany': { total: 0, compras: [] },
-          'Marília': { total: 0, compras: [] },
-          'Nosso ❤️': { total: 0, compras: [] }
-        };
-
-        compras.forEach(compra => {
-          const responsavel = compra.responsavel || 'Outro';
-          if (comprasPorResponsavel[responsavel]) {
-            comprasPorResponsavel[responsavel].total += parseFloat(compra.valor || 0);
-            comprasPorResponsavel[responsavel].compras.push(compra);
-          }
-        });
-
-        Object.keys(comprasPorResponsavel).forEach(responsavel => {
-          const responsavelData = comprasPorResponsavel[responsavel];
-          const responsavelBox = document.createElement('div');
-          responsavelBox.classList.add('responsavel-box');
-          
-          const responsavelClass = responsavel.toLowerCase().replace(/\s+/g, '').replace('❤️', '');
-          responsavelBox.innerHTML = `
-            <h3 class="responsavel-${responsavelClass}">${responsavel}</h3>
-            <div class="responsavel-list">
-              ${responsavelData.compras.map(compra => `
-                <div class="compra-item">
-                  <span class="compra-nome">${compra.nome}</span>
-                  <span class="compra-detalhes">(${compra.parcelas}) ${formatCurrency(compra.valor)}</span>
-                </div>
-              `).join('')}
-            </div>
-            <p class="total-responsavel">Total: ${formatCurrency(responsavelData.total)}</p>
-          `;
-          responsaveisContainer.appendChild(responsavelBox);
-        });
       }
 
       function updateTotals(totals) {
@@ -1012,59 +948,75 @@
         document.getElementById('totalDespesasMes').textContent = formatCurrency(totalDespesasMes);
         document.getElementById('totalPago').textContent = formatCurrency(totalPago);
         document.getElementById('totalAPagar').textContent = formatCurrency(totalAPagar);
-
         const saldoBar = document.getElementById('saldoBar');
         const saldoLabel = document.getElementById('saldoLabel');
+        const saldoContainer = document.querySelector('.saldo-bar-container');
         saldoLabel.textContent = `Saldo: ${formatCurrency(saldo)}`;
-
         if (totalReceitas > 0) {
-          const percentage = Math.min(Math.max((saldo / totalReceitas) * 100, 0), 100);
+          const percentage = Math.min(100, Math.max(0, (saldo / totalReceitas) * 100));
           saldoBar.style.width = `${percentage}%`;
-          if (saldo > 0) {
+          
+          if (saldo >= 0) {
             saldoBar.style.backgroundColor = 'green';
-          } else if (saldo === 0) {
-            saldoBar.style.backgroundColor = 'orange';
+            saldoContainer.style.border = '1px solid green';
           } else {
             saldoBar.style.backgroundColor = 'red';
+            saldoContainer.style.border = '1px solid red';
           }
         } else {
           saldoBar.style.width = '0%';
-          saldoBar.style.backgroundColor = 'gray';
+          saldoContainer.style.border = '1px solid #ddd';
         }
       }
 
-      async function markAsPaid(checkbox, type) {
-        const recordId = checkbox.getAttribute('data-id');
-        const isPaid = checkbox.checked ? 'Sim' : 'Não';
-        const action = type === 'Compra' ? 'markCompraAsPaid' : 'markContaAsPaid';
-        
-        const result = await sendRequest(action, { pago: isPaid }, recordId);
-        if (result.status === 'success') {
-          fetchData();
+      function displayComprasPorResponsavel(compras) {
+        const responsaveisContainer = document.getElementById('responsaveisContainer');
+        responsaveisContainer.innerHTML = '';
+        const comprasPorResponsavel = {};
+
+        compras.forEach(compra => {
+          const responsavel = compra.responsavel || 'Outro';
+          if (!comprasPorResponsavel[responsavel]) {
+            comprasPorResponsavel[responsavel] = { total: 0, compras: [] };
+          }
+          comprasPorResponsavel[responsavel].total += parseFloat(compra.valor || 0);
+          comprasPorResponsavel[responsavel].compras.push(compra);
+        });
+        for (const responsavel in comprasPorResponsavel) {
+          const responsavelBox = document.createElement('div');
+          responsavelBox.classList.add('responsavel-box');
+          responsavelBox.classList.add(`responsavel-${responsavel.toLowerCase().replace(/ /g, '').replace('❤️', '')}`);
+          responsavelBox.innerHTML = `
+            <h3>${responsavel}</h3>
+            <div class="responsavel-list"></div>
+            <p class="total-responsavel">Total: ${formatCurrency(comprasPorResponsavel[responsavel].total)}</p>
+          `;
+          responsaveisContainer.appendChild(responsavelBox);
+
+          const listElement = responsavelBox.querySelector('.responsavel-list');
+          comprasPorResponsavel[responsavel].compras.forEach(compra => {
+            const compraItem = document.createElement('div');
+            compraItem.classList.add('compra-item');
+            if (String(compra.pago).toLowerCase() === 'sim') compraItem.classList.add('item-pago');
+            compraItem.innerHTML = `
+              <span class="compra-nome">${compra.nome} (${compra.parcelas})</span>
+              <span class="compra-detalhes">${formatCurrency(compra.valor)}</span>
+             `;
+            listElement.appendChild(compraItem);
+          });
         }
       }
 
-      async function deleteRecord(type, id) {
-        if (!confirm(`Tem certeza que deseja excluir este registro?`)) return;
-        const action = `delete${type}`;
-        const result = await sendRequest(action, {}, id);
-        if (result.status === 'success') {
-          fetchData();
-        }
-      }
-
-      // Event Listeners para formulários
+      // Funções de Adição
       document.getElementById('addReceitaForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const nome = document.getElementById('receitaNome').value;
         const valor = parseFloat(document.getElementById('receitaValor').value);
-        const result = await sendRequest('addReceita', { nome, valor });
-        if (result.status === 'success') {
-          document.getElementById('addReceitaForm').reset();
-          fetchData();
-        }
+        if (isNaN(valor) || valor <= 0) { alert('Por favor, insira um valor válido para a receita.'); return; }
+        await sendRequest('addReceita', { nome, valor });
+        document.getElementById('addReceitaForm').reset();
+        fetchData();
       });
-
       document.getElementById('addCompraForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const nome = document.getElementById('compraNome').value;
@@ -1072,33 +1024,63 @@
         const parcelas = parseInt(document.getElementById('compraParcelas').value);
         const cartao = document.getElementById('compraCartao').value;
         const responsavel = document.getElementById('compraResponsavel').value;
-        const result = await sendRequest('addCompraCartao', { nome, valor, parcelas, cartao, responsavel });
-        if (result.status === 'success') {
-          document.getElementById('addCompraForm').reset();
-          fetchData();
-        }
-      });
 
+        if (isNaN(valor) || valor <= 0) { alert('Por favor, insira um valor válido para a compra.'); return; }
+        if (isNaN(parcelas) || parcelas <= 0) { alert('Por favor, insira um número válido de parcelas.'); return; }
+
+        await sendRequest('addCompraCartao', { nome, valor, parcelas, cartao, responsavel });
+        document.getElementById('addCompraForm').reset();
+        fetchData();
+      });
       document.getElementById('addContaForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const tipo = document.getElementById('contaTipo').value;
         const nome = document.getElementById('contaNome').value;
         const valor = parseFloat(document.getElementById('contaValor').value);
         const parcelas = parseInt(document.getElementById('contaParcelas').value);
-        const result = await sendRequest('addConta', { tipo, nome, valor, parcelas });
-        if (result.status === 'success') {
-          document.getElementById('addContaForm').reset();
-          fetchData();
-        }
+
+        if (isNaN(valor) || valor <= 0) { alert('Por favor, insira um valor válido para a conta.'); return; }
+        if (isNaN(parcelas) || parcelas <= 0) { alert('Por favor, insira um número válido de parcelas.'); return; }
+
+        await sendRequest('addConta', { tipo, nome, valor, parcelas });
+        document.getElementById('addContaForm').reset();
+        fetchData();
+      });
+      
+      // Funções de Edição (Modais)
+      const editReceitaModal = document.getElementById('editReceitaModal');
+      const editCompraModal = document.getElementById('editCompraModal');
+      const editContaModal = document.getElementById('editContaModal');
+
+      document.querySelectorAll('.close-button').forEach(button => {
+        button.addEventListener('click', () => {
+          editReceitaModal.style.display = 'none';
+          editCompraModal.style.display = 'none';
+          editContaModal.style.display = 'none';
+        });
+      });
+      window.addEventListener('click', (event) => {
+        if (event.target == editReceitaModal) { editReceitaModal.style.display = 'none'; }
+        else if (event.target == editCompraModal) { editCompraModal.style.display = 'none'; }
+        else if (event.target == editContaModal) { editContaModal.style.display = 'none'; }
       });
 
-      // Funções para modais de edição
       function openEditReceitaModal(id, nome, valor) {
         document.getElementById('editReceitaId').value = id;
         document.getElementById('editReceitaNome').value = nome;
         document.getElementById('editReceitaValor').value = valor;
-        document.getElementById('editReceitaModal').style.display = 'block';
+        editReceitaModal.style.display = 'block';
       }
+
+      document.getElementById('editReceitaForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('editReceitaId').value;
+        const nome = document.getElementById('editReceitaNome').value;
+        const valor = parseFloat(document.getElementById('editReceitaValor').value);
+        await sendRequest('updateReceita', { nome, valor }, id);
+        editReceitaModal.style.display = 'none';
+        fetchData();
+      });
 
       function openEditCompraModal(id, nome, valor, parcelas, cartao, responsavel) {
         document.getElementById('editCompraId').value = id;
@@ -1107,8 +1089,23 @@
         document.getElementById('editCompraParcelas').value = parcelas;
         document.getElementById('editCompraCartao').value = cartao;
         document.getElementById('editCompraResponsavel').value = responsavel;
-        document.getElementById('editCompraModal').style.display = 'block';
+        editCompraModal.style.display = 'block';
       }
+
+      document.getElementById('editCompraForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('editCompraId').value;
+        const data = {
+            nome: document.getElementById('editCompraNome').value,
+            valor: parseFloat(document.getElementById('editCompraValor').value),
+            parcelas: document.getElementById('editCompraParcelas').value,
+            cartao: document.getElementById('editCompraCartao').value,
+            responsavel: document.getElementById('editCompraResponsavel').value
+        };
+        await sendRequest('updateCompra', data, id);
+        editCompraModal.style.display = 'none';
+        fetchData();
+      });
 
       function openEditContaModal(id, tipo, nome, valor, parcelas) {
         document.getElementById('editContaId').value = id;
@@ -1116,65 +1113,50 @@
         document.getElementById('editContaNome').value = nome;
         document.getElementById('editContaValor').value = valor;
         document.getElementById('editContaParcelas').value = parcelas;
-        document.getElementById('editContaModal').style.display = 'block';
+        editContaModal.style.display = 'block';
       }
-
-      // Event listeners para fechar modais
-      document.querySelectorAll('.close-button').forEach(button => {
-        button.addEventListener('click', (e) => {
-          e.target.closest('.modal').style.display = 'none';
-        });
-      });
-
-      // Event listeners para formulários de edição
-      document.getElementById('editReceitaForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const id = document.getElementById('editReceitaId').value;
-        const nome = document.getElementById('editReceitaNome').value;
-        const valor = parseFloat(document.getElementById('editReceitaValor').value);
-        const result = await sendRequest('updateReceita', { nome, valor }, id);
-        if (result.status === 'success') {
-          document.getElementById('editReceitaModal').style.display = 'none';
-          fetchData();
-        }
-      });
-
-      document.getElementById('editCompraForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const id = document.getElementById('editCompraId').value;
-        const nome = document.getElementById('editCompraNome').value;
-        const valor = parseFloat(document.getElementById('editCompraValor').value);
-        const parcelas = document.getElementById('editCompraParcelas').value;
-        const cartao = document.getElementById('editCompraCartao').value;
-        const responsavel = document.getElementById('editCompraResponsavel').value;
-        const result = await sendRequest('updateCompra', { nome, valor, parcelas, cartao, responsavel }, id);
-        if (result.status === 'success') {
-          document.getElementById('editCompraModal').style.display = 'none';
-          fetchData();
-        }
-      });
 
       document.getElementById('editContaForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = document.getElementById('editContaId').value;
-        const tipo = document.getElementById('editContaTipo').value;
-        const nome = document.getElementById('editContaNome').value;
-        const valor = parseFloat(document.getElementById('editContaValor').value);
-        const parcelas = parseInt(document.getElementById('editContaParcelas').value);
-        const result = await sendRequest('updateConta', { tipo, nome, valor, parcelas }, id);
-        if (result.status === 'success') {
-          document.getElementById('editContaModal').style.display = 'none';
-          fetchData();
-        }
+        const data = {
+            tipo: document.getElementById('editContaTipo').value,
+            nome: document.getElementById('editContaNome').value,
+            valor: parseFloat(document.getElementById('editContaValor').value),
+            parcelas: parseInt(document.getElementById('editContaParcelas').value)
+        };
+        await sendRequest('updateConta', data, id);
+        editContaModal.style.display = 'none';
+        fetchData();
       });
 
-      // Fechar modal ao clicar fora dele
-      window.addEventListener('click', (e) => {
-        if (e.target.classList.contains('modal')) {
-          e.target.style.display = 'none';
+      async function deleteRecord(type, id) {
+        if (confirm(`Tem certeza que deseja excluir este ${type}?`)) {
+          await sendRequest(`delete${type}`, {}, id);
+          fetchData();
         }
-      });
+      }
+
+      // CORREÇÃO: Função unificada para marcar itens como pagos (Contas)
+      async function markAsPaid(checkbox, type) {
+        const id = checkbox.dataset.id;
+        const isChecked = checkbox.checked;
+        const status = isChecked ? 'Sim' : 'Não';
+
+        checkbox.disabled = true; // Previne cliques duplos
+
+        const action = `update${type}`;
+        const result = await sendRequest(action, { pago: status }, id);
+
+        if (result.status === 'success') {
+          // A UI será atualizada corretamente pelo fetchData()
+          fetchData();
+        } else {
+          alert(`Não foi possível atualizar o status de pagamento. Tente novamente.`);
+          checkbox.checked = !isChecked; // Reverte o checkbox no front em caso de erro
+          checkbox.disabled = false;
+        }
+      }
     </script>
   </body>
 </html>
-
