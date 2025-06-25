@@ -856,12 +856,17 @@
         document.getElementById('markAllContasFixasPaid').checked = allFixasPaid && contasFixasList.children.length > 0;
         document.getElementById('markAllContasVariaveisPaid').checked = allVariaveisPaid && contasVariaveisList.children.length > 0;
         
-        document.getElementById('markAllContasFixasPaid').onchange = function() {
-        markTipoContaAsPaid('Fixa', this.checked);
-        };
-        document.getElementById('markAllContasVariaveisPaid').onchange = function() {
-        markTipoContaAsPaid('Variável', this.checked);
-        };
+        document.getElementById('markAllContasFixasPaid').addEventListener('change', async function () {
+        this.disabled = true;
+        await markTipoContaAsPaid('Fixa', this.checked);
+        this.disabled = false;
+        });
+
+        document.getElementById('markAllContasVariaveisPaid').addEventListener('change', async function () {
+        this.disabled = true;
+        await markTipoContaAsPaid('Variável', this.checked);
+        this.disabled = false;
+        });
       }
 
       function displayCompras(compras) {
