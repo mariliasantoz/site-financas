@@ -726,17 +726,17 @@
       let currentMonth, currentYear;
 
       document.addEventListener('DOMContentLoaded', () => {
-        // CORREÇÃO: Inicia o site sempre no mês e ano vigentes do navegador do usuário.
+        // CORREÇÃO DEFINITIVA: Sempre iniciar com o mês e ano atuais
         const now = new Date();
-        currentMonth = now.getMonth() + 1; // getMonth() é 0-11, então adicionamos 1
+        currentMonth = now.getMonth() + 1; // getMonth() retorna 0-11, então +1 para 1-12
         currentYear = now.getFullYear();
         
+        console.log(`Inicializando com mês: ${currentMonth}, ano: ${currentYear}`);
         updateMonthYearDisplay();
         fetchData();
       });
       
       async function sendRequest(action, data = {}, recordId = null) {
-        // Garante que month e year sempre sejam enviados na requisição.
         const payload = { action, data, recordId, month: currentMonth, year: currentYear };
         console.log('Enviando payload:', payload);
         try {
@@ -824,6 +824,8 @@
         let totalContasVariaveis = 0;
         let allFixasPaid = true;
         let allVariaveisPaid = true;
+        let hasFixas = false;
+        let hasVariaveis = false;
 
         contas.forEach(conta => {
           const isPaid = String(conta.pago).toLowerCase() === 'sim';
@@ -843,54 +845,81 @@
           if (conta.tipo === 'Fixa') {
             contasFixasList.appendChild(listItem);
             totalContasFixas += parseFloat(conta.valor || 0);
+            hasFixas = true;
             if (!isPaid) allFixasPaid = false;
           } else {
             contasVariaveisList.appendChild(listItem);
             totalContasVariaveis += parseFloat(conta.valor || 0);
+            hasVariaveis = true;
             if (!isPaid) allVariaveisPaid = false;
           }
         });
 
         document.getElementById('totalContasFixasCategoria').textContent = formatCurrency(totalContasFixas);
         document.getElementById('totalContasVariaveisCategoria').textContent = formatCurrency(totalContasVariaveis);
-        document.getElementById('markAllContasFixasPaid').checked = allFixasPaid && contasFixasList.children.length > 0;
-        document.getElementById('markAllContasVariaveisPaid').checked = allVariaveisPaid && contasVariaveisList.children.length > 0;
         
-        // CORREÇÃO: Implementar lógica para marcar todas as contas fixas
-        document.getElementById('markAllContasFixasPaid').onchange = function() {
+        // CORREÇÃO: Atualizar checkboxes totais corretamente
+        const checkboxFixas = document.getElementById('markAllContasFixasPaid');
+        const checkboxVariaveis = document.getElementById('markAllContasVariaveisPaid');
+        
+        checkboxFixas.checked = allFixasPaid && hasFixas;
+        checkboxVariaveis.checked = allVariaveisPaid && hasVariaveis;
+        
+        // CORREÇÃO: Implementar lógica completa para marcar todas as contas
+        checkboxFixas.onchange = function() {
           markAllContasByType('Fixa', this.checked);
         };
-        // CORREÇÃO: Implementar lógica para marcar todas as contas variáveis
-        document.getElementById('markAllContasVariaveisPaid').onchange = function() {
+        checkboxVariaveis.onchange = function() {
           markAllContasByType('Variável', this.checked);
         };
       }
 
-      // CORREÇÃO: Nova função para marcar todas as contas de um tipo
+      // CORREÇÃO: Nova função robusta para marcar todas as contas de um tipo
       async function markAllContasByType(tipo, isChecked) {
+        console.log(`Marcando todas as contas do tipo ${tipo} como ${isChecked ? 'pagas' : 'não pagas'}`);
+        
         const checkboxes = document.querySelectorAll(`input[type="checkbox"][data-tipo="${tipo}"]`);
+        const status = isChecked ? 'Sim' : 'Não';
+        
+        // Desabilitar todos os checkboxes durante a operação
+        checkboxes.forEach(cb => cb.disabled = true);
+        
+        // Atualizar cada conta individualmente
         for (const checkbox of checkboxes) {
           if (checkbox.checked !== isChecked) {
-            checkbox.checked = isChecked;
             const id = checkbox.dataset.id;
-            const status = isChecked ? 'Sim' : 'Não';
-            await sendRequest('markContaAsPaid', { pago: status }, id);
+            try {
+              const result = await sendRequest('markContaAsPaid', { pago: status }, id);
+              if (result.status === 'success') {
+                checkbox.checked = isChecked;
+              } else {
+                console.error(`Erro ao atualizar conta ${id}:`, result.message);
+              }
+            } catch (error) {
+              console.error(`Erro ao atualizar conta ${id}:`, error);
+            }
           }
         }
+        
+        // Reabilitar checkboxes e atualizar dados
+        checkboxes.forEach(cb => cb.disabled = false);
         fetchData();
       }
 
       function displayCompras(compras) {
         const cartoesGrid = document.getElementById('cartoesGrid');
         cartoesGrid.innerHTML = '';
-        const comprasPorCartao = {};
-
-        // Inicializar todos os cartões
+        
+        // CORREÇÃO: Sempre exibir os 4 cartões principais
         const cartoesDefinidos = ['Nubank', 'Santander', 'Mercado Pago', 'Amazon'];
+        const comprasPorCartao = {};
+        
+        // Inicializar todos os cartões
         cartoesDefinidos.forEach(cartao => {
           comprasPorCartao[cartao] = { total: 0, compras: [], todasPagas: true };
         });
 
+        // Processar compras
         compras.forEach(compra => {
           const cartao = compra.cartao || 'Outro';
           if (!comprasPorCartao[cartao]) {
@@ -903,6 +932,7 @@
           }
         });
 
+        // Renderizar cartões
         Object.keys(comprasPorCartao).forEach(cartao => {
           const cartaoData = comprasPorCartao[cartao];
           const cartaoBox = document.createElement('div');
@@ -941,11 +971,30 @@
         });
       }
 
-      // CORREÇÃO: Nova função para marcar todas as compras de um cartão
+      // CORREÇÃO: Função robusta para marcar todas as compras de um cartão
       async function markAllCartaoAsPaid(cartao, isChecked) {
+        console.log(`Marcando todas as compras do cartão ${cartao} como ${isChecked ? 'pagas' : 'não pagas'}`);
+        
+        const checkbox = document.querySelector(`input[data-cartao="${cartao}"]`);
+        checkbox.disabled = true;
+        
         const status = isChecked ? 'Sim' : 'Não';
-        await sendRequest('markCartaoAsPaid', { cartao, pago: status });
-        fetchData();
+        
+        try {
+          const result = await sendRequest('markCartaoAsPaid', { cartao, pago: status });
+          if (result.status === 'success') {
+            console.log(`Compras do cartão ${cartao} atualizadas com sucesso`);
+            fetchData();
+          } else {
+            console.error(`Erro ao atualizar compras do cartão ${cartao}:`, result.message);
+            checkbox.checked = !isChecked; // Reverter em caso de erro
+          }
+        } catch (error) {
+          console.error(`Erro ao atualizar compras do cartão ${cartao}:`, error);
+          checkbox.checked = !isChecked; // Reverter em caso de erro
+        } finally {
+          checkbox.disabled = false;
+        }
       }
 
       function getResponsavelClass(responsavel) {
@@ -1012,21 +1061,23 @@
 
         const saldoBar = document.getElementById('saldoBar');
         const saldoLabel = document.getElementById('saldoLabel');
+        const saldoContainer = document.querySelector('.saldo-bar-container');
         saldoLabel.textContent = `Saldo: ${formatCurrency(saldo)}`;
 
         if (totalReceitas > 0) {
           const percentage = Math.min(Math.max((saldo / totalReceitas) * 100, 0), 100);
           saldoBar.style.width = `${percentage}%`;
-          if (saldo > 0) {
+          
+          if (saldo >= 0) {
             saldoBar.style.backgroundColor = 'green';
-          } else if (saldo === 0) {
-            saldoBar.style.backgroundColor = 'orange';
+            saldoContainer.style.border = '1px solid green';
           } else {
             saldoBar.style.backgroundColor = 'red';
+            saldoContainer.style.border = '1px solid red';
           }
         } else {
           saldoBar.style.width = '0%';
-          saldoBar.style.backgroundColor = 'gray';
+          saldoContainer.style.border = '1px solid #ddd';
         }
       }
 
@@ -1035,9 +1086,19 @@
         const isPaid = checkbox.checked ? 'Sim' : 'Não';
         const action = type === 'Compra' ? 'markCompraAsPaid' : 'markContaAsPaid';
         
-        const result = await sendRequest(action, { pago: isPaid }, recordId);
-        if (result.status === 'success') {
-          fetchData();
+        checkbox.disabled = true;
+        
+        try {
+          const result = await sendRequest(action, { pago: isPaid }, recordId);
+          if (result.status === 'success') {
+            fetchData();
+          } else {
+            checkbox.checked = !checkbox.checked; // Reverter em caso de erro
+          }
+        } catch (error) {
+          checkbox.checked = !checkbox.checked; // Reverter em caso de erro
+        } finally {
+          checkbox.disabled = false;
         }
       }
 
