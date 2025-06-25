@@ -627,7 +627,7 @@
             <label for="contaTipo">Tipo:</label>
             <select id="contaTipo" required>
               <option value="Fixa">Fixa</option>
-              <option value="Variável">Variável</option>
+              <option value="Variavel">Variável</option>
             </select>
             <label for="contaNome">Nome:</label>
             <input type="text" id="contaNome" required />
@@ -706,7 +706,7 @@
           <label for="editContaTipo">Tipo:</label>
           <select id="editContaTipo" required>
             <option value="Fixa">Fixa</option>
-            <option value="Variável">Variável</option>
+            <option value="Variavel">Variável</option>
            </select>
           <label for="editContaNome">Nome:</label>
           <input type="text" id="editContaNome" required>
@@ -864,7 +864,7 @@
 
         document.getElementById('markAllContasVariaveisPaid').addEventListener('change', async function () {
         this.disabled = true;
-        await markTipoContaAsPaid('Variável', this.checked);
+        await markTipoContaAsPaid('Variavel', this.checked);
         this.disabled = false;
         });
       }
