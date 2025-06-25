@@ -1142,26 +1142,29 @@
         }
       }
 
-      // CORREÇÃO: Função unificada para marcar itens como pagos (Contas)
       async function markAsPaid(checkbox, type) {
-        const id = checkbox.dataset.id;
-        const isChecked = checkbox.checked;
-        const status = isChecked ? 'Sim' : 'Não';
+      const id = checkbox.dataset.id;
+      const isChecked = checkbox.checked;
+      const status = isChecked ? 'Sim' : 'Não';
 
-        checkbox.disabled = true; // Previne cliques duplos
+      checkbox.disabled = true;
 
-        const action = `update${type}`;
-        const result = await sendRequest(action, { pago: status }, id);
+      const action = `update${type}`;
+      const result = await sendRequest(action, {
+      pago: status,
+      mes: currentMonth,
+      ano: currentYear
+      }, id);
 
-        if (result.status === 'success') {
-          // A UI será atualizada corretamente pelo fetchData()
-          fetchData();
-        } else {
-          alert(`Não foi possível atualizar o status de pagamento. Tente novamente.`);
-          checkbox.checked = !isChecked; // Reverte o checkbox no front em caso de erro
-          checkbox.disabled = false;
+      if (result.status === 'success') {
+        fetchData();
+      }else {
+        alert(`Não foi possível atualizar o status de pagamento. Tente novamente.`);
+        checkbox.checked = !isChecked;
+        checkbox.disabled = false;
         }
       }
+
         async function markTipoContaAsPaid(tipo, checked) {
         const status = checked ? 'Sim' : 'Não';
         const result = await sendRequest('markTipoContaAsPaid', { tipo, pago: status });
