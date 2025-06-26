@@ -1143,27 +1143,30 @@
       }
 
       async function markAsPaid(checkbox, type) {
-      const id = checkbox.dataset.id;
-      const isChecked = checkbox.checked;
-      const status = isChecked ? 'Sim' : 'Não';
-
-      checkbox.disabled = true;
-
-      const action = `update${type}`;
-      const result = await sendRequest(action, {
-      pago: status,
-      mes: currentMonth,
-      ano: currentYear
-      }, id);
-
-      if (result.status === 'success') {
-        fetchData();
-      }else {
-        alert(`Não foi possível atualizar o status de pagamento. Tente novamente.`);
-        checkbox.checked = !isChecked;
-        checkbox.disabled = false;
+          const id = checkbox.dataset.id;
+          const isChecked = checkbox.checked;
+          const status = isChecked ? 'Sim' : 'Não';
+        
+          checkbox.disabled = true;
+        
+          const action = type === 'Conta' ? 'markContaAsPaid' : `update${type}`;
+          const data = {
+            pago: status,
+            mes: currentMonth,
+            ano: currentYear
+          };
+        
+          const result = await sendRequest(action, data, id);
+        
+          if (result.status === 'success') {
+            fetchData();
+          } else {
+            alert(`Não foi possível atualizar o status de pagamento. Tente novamente.`);
+            checkbox.checked = !isChecked;
+            checkbox.disabled = false;
+          }
         }
-      }
+
 
         async function markTipoContaAsPaid(tipo, checked) {
         const status = checked ? 'Sim' : 'Não';
