@@ -607,7 +607,7 @@
                 <option value="Santander">Santander</option>
                 <option value="Mercado Pago">Mercado Pago</option>
                 <option value="Amazon">Amazon</option>
-                <option value="Outro">Caixa</option>
+                 <option value="Caixa">Caixa</option>
               </select>
             </div>
             <label for="compraResponsavel">Responsável:</label>
@@ -683,7 +683,7 @@
             <option value="Santander">Santander</option>
             <option value="Mercado Pago">Mercado Pago</option>
             <option value="Amazon">Amazon</option>
-            <option value="Outro">Caixa</option>
+            <option value="Caixa">Caixa</option>
           </select>
           <label for="editCompraResponsavel">Responsável:</label>
           <select id="editCompraResponsavel" required>
@@ -875,7 +875,7 @@
         const comprasPorCartao = {};
 
         compras.forEach(compra => {
-          const cartao = compra.cartao || 'Outro';
+          const cartao = compra.cartao || 'Caixa';
           if (!comprasPorCartao[cartao]) {
             comprasPorCartao[cartao] = { total: 0, compras: [], todasPagas: true };
           }
