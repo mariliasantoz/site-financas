@@ -726,10 +726,19 @@
       let currentMonth, currentYear;
 
       document.addEventListener('DOMContentLoaded', () => {
-        // CORREÇÃO: Inicia o site sempre no mês e ano vigentes do navegador do usuário.
+        // CORREÇÃO: Inicia o site sempre no mês seguinte ao mês vigente.
         const now = new Date();
-        currentMonth = now.getMonth() + 1; // getMonth() é 0-11, então adicionamos 1
-        currentYear = now.getFullYear();
+        let nextMonth = now.getMonth() + 2; // getMonth() é 0-11, então +2 para o próximo mês
+        let nextYear = now.getFullYear();
+        
+        // Ajusta ano se o próximo mês for janeiro (mês 13 vira 1 do próximo ano)
+        if (nextMonth > 12) {
+          nextMonth = 1;
+          nextYear++;
+        }
+        
+        currentMonth = nextMonth;
+        currentYear = nextYear;
         
         updateMonthYearDisplay();
         fetchData();
